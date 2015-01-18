@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ascii"?>
+
+	<HBox name="high_score" position="1,667" base_color="188,0,0" opaque="1" min_size="639,82" background_image="./gui/HUDs/combat_botton.png">
+            <Button name="nextUnitButton" text="Next unit" min_size="100,100" border_size="1"/>
+            <Button name="overwatchLightButton" text="Overw. Light" min_size="100,100" border_size="1"/>
+            <Button name="attackLightButton" text="L_attack." min_size="100,100" border_size="1"/>
+            <VBox name="unitInfo" base_color="0,0,0" opaque="1" min_size="300,100" background_image="./gui/HUDs/combat_botton.png"/>
+            <Button name="attackHeavyButton" text="H_attack." min_size="100,100" border_size="1"/>
+            <Button name="overwatchHeavyButton" text="Overw. Heavy" min_size="100,100" border_size="1"/>
+            <Button name="miniMapButton" text="Minimap" min_size="100,100" border_size="1"/>
+            <Button name="nextTurnButton" text="End turn" min_size="100,100" border_size="1"/>
+            <!--<Button name="attackButton" text="Attack!" min_size="100,100" border_size="1"/>-->
+	</HBox>
+
+
+
+	<!--<HBox name="high_score" position="1,667" base_color="188,0,0" opaque="1">-->
+            <!--<Button name="nextTurnButton" text="Next turn" min_size="100,100" border_size="1"/>-->
+            <!--<Button name="attackButton" text="Attack!" min_size="100,100" border_size="1"/>-->
+	<!--</HBox>-->
+
