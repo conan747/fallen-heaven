@@ -431,9 +431,9 @@ class World(object):
         renderer.activateAllLayers(self.scene.map)
 
         #Added by Jon
-        # rend = fife.CellSelectionRenderer.getInstance(self.cameras['main'])
-        # rend.setColor(1,0,0)
-        # rend.activateAllLayers(self.scene.map)
+        rend = fife.CellSelectionRenderer.getInstance(self.cameras['main'])
+        rend.setColor(1,0,0)
+        rend.activateAllLayers(self.scene.map)
 
         # The following renderers are used for debugging.
         # Note that by default ( that is after calling View.resetRenderers or Camera.resetRenderers )
