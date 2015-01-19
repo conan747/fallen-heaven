@@ -46,3 +46,37 @@ class TacticalHUD(object):
     #     self._fpstext.text = text
 
 
+
+class StrategicHUD(object):
+    def __init__(self, world):
+        self._world = world
+        self._widget = pychan.loadXML('gui/tactical_hud.xml')
+
+        # self._image = world.engine.getImageManager().load("./gui/HUDs/combat_botton.png")
+        # self._guiImage = fife.GuiImage(self._image)
+        # wid = self._widget.findChild(name="high_score")
+        # print wid._getName()
+        # wid.setBackgroundImage(self._guiImage)
+        # print "Image size:" , self._image.getWidth()
+        #
+        #
+        #
+        # print "Image size" , self._guiImage.getWidth(), self._guiImage.getHeight()
+
+        # self._widget.position = (0, 0)
+        self._widget.mapEvents({
+                # 'nextTurnButton' : self._world.onSkipTurnPress,
+                # 'attackLightButton' : self._world.onAttackButtonPressed
+        })
+
+
+    def show(self):
+        self._widget.show()
+
+    def hide(self):
+        self._widget.hide()
+
+    # def setFPSText(self, text):
+    #     self._fpstext.text = text
+
+

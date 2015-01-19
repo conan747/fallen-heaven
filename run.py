@@ -139,7 +139,7 @@ class IslandDemo(PychanApplicationBase):
                 os.makedirs(mapSaveDir)
 
             # save map file to directory
-            self.world.scene.save(mapSaveDir + "/savefile.xml")
+            self.universe.world.scene.save(mapSaveDir + "/savefile.xml")
         else:
             self.universe.pump()
 

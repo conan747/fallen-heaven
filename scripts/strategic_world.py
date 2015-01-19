@@ -37,15 +37,15 @@ from agents.beekeeper import Beekeeper
 from agents.agent import create_anonymous_agents
 from fife.extensions.fife_settings import Setting
 
-from gui.huds import TacticalHUD
+from gui.huds import StrategicHUD
 from combat import Trajectory
-from scripts.scene import Scene
+from scripts.strategic_scene import StrategicScene
 
 TDS = Setting(app_name="rio_de_hola")
 _MODE_DEFAULT, _MODE_ATTACK, _MODE_DROPSHIP = xrange(3)
 
 
-class TacticListener(fife.IKeyListener, fife.IMouseListener):
+class StrategicListener(fife.IKeyListener, fife.IMouseListener):
     """
 	Main game listener.  Listens for Mouse and Keyboard events.
 
@@ -64,6 +64,8 @@ class TacticListener(fife.IKeyListener, fife.IMouseListener):
         fife.IKeyListener.__init__(self)
 
         self._attached = False
+        self._cellSelectionRenderer = None
+
 
         self._lastmousepos = (0.0, 0.0)
 
@@ -87,24 +89,6 @@ class TacticListener(fife.IKeyListener, fife.IMouseListener):
             self._attached = False
 
 
-    def clickAttack(self, clickpoint):
-        '''
-        Handles the click action when attack is selected.
-        :return:
-        '''
-        if not self._world.activeUnit:
-            return
-
-        clickLocation = self._world.getLocationAt(clickpoint)
-        trajectory = Trajectory(self._world.scene.instance_to_agent[self._world.activeUnit], self._world.cameras['main'], self._world,0)
-        # print "Is is reachable?"
-        if trajectory.isInRange(clickLocation):
-
-        # print "Calculating Clear path:"
-            if trajectory.hasClearPath(clickLocation):
-                self._world.scene.instance_to_agent[self._world.activeUnit].attack(clickLocation)
-
-
     def clickDefault(self, clickpoint):
         # self.hide_instancemenu()
 
@@ -114,17 +98,13 @@ class TacticListener(fife.IKeyListener, fife.IMouseListener):
 
         if instances:
             # self.activeUnit = None
-            print "Current turn:" , self._world.scene.currentTurn
             for instance in instances:
                 id = instance.getFifeId()
                 print "Instance: ", id
-                print "Is it in: ", self._world.scene.factionUnits[self._world.scene.currentTurn]
-                if id in self._world.scene.factionUnits[self._world.scene.currentTurn]:
-                    print "Instance: " , id, " is owned by this player!"
-                    #self.activeUnit = id
+                if id in self._world.scene.instance_to_agent.keys():
                     self._world.selectUnit(id)
         if self._world.activeUnit:
-            self._world.scene.instance_to_agent[self._world.activeUnit].run(self._world.getLocationAt(clickpoint))
+            self._world.scene.instance_to_agent[self._world.activeUnit].teleport(self._world.getLocationAt(clickpoint))
 
 
     def mousePressed(self, evt):
@@ -155,6 +135,21 @@ class TacticListener(fife.IKeyListener, fife.IMouseListener):
     def mouseMoved(self, evt):
 
         self._world.mousePos = (evt.getX(), evt.getY())
+        ## TODO: Add cell highliting .
+
+
+        if not self._cellSelectionRenderer:
+            if self._world.cameras:
+                camera = self._world.cameras['main']
+                self._cellSelectionRenderer = fife.CellSelectionRenderer.getInstance(camera)
+                self._cellSelectionRenderer.setEnabled(True)
+                self._cellSelectionRenderer.activateAllLayers(self._world.scene.map)
+
+        if self._cellSelectionRenderer:
+            mousePoint = fife.ScreenPoint(evt.getX(), evt.getY())
+            self._cellSelectionRenderer.reset()
+            location = self._world.getLocationAt(mousePoint)
+            self._cellSelectionRenderer.selectLocation(location)
         # renderer = fife.InstanceRenderer.getInstance(self.cameras['main'])
         # renderer.removeAllOutlines()
 
@@ -245,7 +240,6 @@ class TacticListener(fife.IKeyListener, fife.IMouseListener):
             self.ctrldown = False
 
 
-
 class MapListener(fife.MapChangeListener):
     def __init__(self, map):
         fife.MapChangeListener.__init__(self)
@@ -297,7 +291,7 @@ class CursorHandler(object):
         self._cursor.set(cursorImg)
 
 
-class World(object):
+class StrategicWorld(object):
     """
     The world!
 
@@ -320,7 +314,7 @@ class World(object):
         self.dynamic_widgets = {}
 
         self.settings = settings
-        self.listener = TacticListener(self)
+        self.listener = StrategicListener(self)
         self.listener.attach()
 
         ## Added by Jon
@@ -347,10 +341,10 @@ class World(object):
         self.soundmanager = SoundManager(self.engine)
         self.music = None
 
-        self.scene = Scene(self, self.engine)
+        self.scene = StrategicScene(self, self.engine)
 
-        self.tacticalHUD = TacticalHUD(self)
-        self.tacticalHUD.show()
+        self.HUD = StrategicHUD(self)
+        self.HUD.show()
 
 
     def reset(self):
@@ -576,10 +570,6 @@ class World(object):
                     renderer.addSimpleLight("beekeeper_simple_light", node, self.light_sources, 120, 32, 1, 1, 255, 255, 255)
 
 
-    def onSkipTurnPress(self):
-        print "Skipping turn!"
-        self.scene.nextTurn()
-
     def pump(self):
         """
         Called every frame.
@@ -652,29 +642,3 @@ class World(object):
         # cursorfile = self.settings.get("rio", "CursorAttack")
         # cursorImage = cursor.getImage()
 
-    def onAttackButtonPressed(self):
-        self.setMode(_MODE_ATTACK)
-
-    '''
-    def collectGarbage(self):
-        """
-		This should be called once a frame.  It removes the object from the scene.
-		"""
-        for id in self._objectsToDelete:
-            self.removeObjectFromScene(id)
-
-        self._objectstodelete = list()
-
-    def removeObjectFromScene(self, id):
-        """
-		You would not normally call this function directly.  You should probably
-		call queueObjectForRemoval().
-
-		This function releases any memory allocated for the object by deleting
-		the FIFE instance.
-
-		@param obj: The object to delete
-		"""
-        obj = self.instance_to_agent[id]
-        self._layer.deleteInstance(obj.instance)
-    '''

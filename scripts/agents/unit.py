@@ -119,6 +119,13 @@ class Unit(Agent):
     def resetAP(self):
         self.properties.AP = self.properties._maxAP
 
+    def teleport(self, location):
+        exactcoords = location.getLayerCoordinates()
+        layercoords = fife.DoublePoint3D(int(exactcoords.x), int(exactcoords.y), int(exactcoords.z) )
+        location.setExactLayerCoordinates(layercoords)
+
+        if not self.world.scene.getInstacesInTile(location):
+            self.agent.setLocation(location)
 
     def run(self, location):
 

@@ -1,7 +1,8 @@
 __author__ = 'cos'
 
 
-from world import World
+from tactic_world import TacticWorld
+from strategic_world import StrategicWorld
 
 
 
@@ -17,7 +18,8 @@ class Universe(object):
         self._settings = settings
         self.world = None
 
-        self.startTactic(str(self._settings.get("rio", "MapFile")))
+        # self.startTactic(str(self._settings.get("rio", "MapFile")))
+        self.startStrategic(str(self._settings.get("rio", "MapFile")))
 
 
     def startTactic(self, mapFile):
@@ -27,10 +29,16 @@ class Universe(object):
         :return:
         '''
 
-        self.world = World(self._engine, self._settings)
+        self.world = TacticWorld(self._engine, self._settings)
 
         self.world.load(mapFile)
         print "Loading map: ", mapFile
+
+    def startStrategic(self, mapFile):
+        self.world = StrategicWorld(self._engine, self._settings)
+        self.world.load(mapFile)
+        print "Loading map: ", mapFile
+
 
     def pump(self):
         if self.world:

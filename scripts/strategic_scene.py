@@ -3,7 +3,7 @@ __author__ = 'cos'
 
 
 from fife import fife
-import world
+import tactic_world
 from agents.hero import Hero
 from agents.girl import Girl
 from agents.cloud import Cloud
@@ -22,7 +22,7 @@ from fife.extensions.savers import saveMapFile
 _MODE_DEFAULT, _MODE_ATTACK, _MODE_DROPSHIP = xrange(3)
 
 
-class Scene(object):
+class StrategicScene(object):
     """
     Master game scene.  Keeps track of all game objects.
 
@@ -56,8 +56,6 @@ class Scene(object):
         ## Added by Jon:
         self.factionUnits = {}      ## This will hold the units for each faction.
         self.currentTurn = True
-        self._player1 = True
-        self._player2 = False
         self._objectsToDelete = list()
 
 
@@ -67,6 +65,23 @@ class Scene(object):
         """
         pass
 
+    def getInstacesInTile(self, tileLocation):
+        '''
+        Returns a list of instance IDs that are located in the specific tile.
+        :param tileLocation: Exact Location of a tile.
+        :return: List of instance IDs.
+        '''
+
+        tilePos = tileLocation.getLayerCoordinates()
+        unitIDs = []
+        all_instances = self.agentlayer.getInstances()
+        for instance in all_instances:
+            instanceLocation = instance.getLocation().getLayerCoordinates()
+            if tilePos == instanceLocation:
+                unitIDs.append(id)
+
+        print "Found ", unitIDs.__len__(), " units on this tile."
+        return unitIDs
 
 
     def getUnitsInTile(self, tileLocation):
@@ -90,30 +105,6 @@ class Scene(object):
         pass
 
 
-    def resetAPs(self):
-        '''
-        Resets the AP points of all the units to its maximum.
-        '''
-        for unitID in self.factionUnits[self.currentTurn]:
-            print "Reseting: ", unitID
-            unit = self.instance_to_agent[unitID]
-            unit.resetAP()
-
-    def nextTurn(self):
-        '''
-        Skips to the next turn
-        '''
-        self.currentTurn = not self.currentTurn
-        self._world.selectUnit(None)
-        self.resetAPs()
-        self._world.setMode(_MODE_DEFAULT)
-        ## TO-DO: add a message stating who's turn it is.
-        # print self.instance_to_agent
-        # for key in self.instance_to_agent.keys():
-        #     instance = self.instance_to_agent[key]
-        #     instance.runTurn()
-
-
     def getInstance(self, id):
         '''
         ##!!!! See if we can get rid of this by replacing it with instance_to_agent .agent
@@ -124,37 +115,6 @@ class Scene(object):
         instance = [i for i in ids if i.getFifeId() == id]
         if instance:
             return instance[0]
-
-
-
-    def applyDamage(self, location, damage):
-        '''
-        Deals damage to a specific location (and all the units within).
-        :param location: Place where the damage is applied in the map.
-        :param damage: Ammount of damage dealt
-        :return:
-        '''
-        targetIDs = self.getUnitsInTile(location)
-        for unitID in targetIDs:
-            self.instance_to_agent[unitID].getDamage(damage)
-            print "Unit ", unitID, "recieved damage!"
-
-    def unitDied(self, unitID):
-        '''
-        Process the destruction of a unit
-        :param unitID: ID of the destroyed unit
-        :return:
-        '''
-
-        if unitID in self.instance_to_agent.keys():
-            obj = self.instance_to_agent[unitID]
-            self.instance_to_agent.__delitem__(unitID)
-            self.agentlayer.deleteInstance(obj.instance)
-        for player in range(2):
-            if unitID in self.factionUnits[player]:
-                self.factionUnits[player].remove(unitID)
-        else:
-            print "Could not delete instance: " , unitID
 
 
     def reset(self):
@@ -225,15 +185,16 @@ class Scene(object):
         Note that we keep a mapping from map instances (C++ model of stuff on the map)
         to the python agents for later reference.
         """
+
         self.agentlayer = self.map.getLayer('TechdemoMapGroundObjectLayer')
+
+
         self.hero = HumanSquad(TDS, self._world.model, 'PC', self.agentlayer, self._world)
         self.instance_to_agent[self.hero.agent.getFifeId()] = self.hero
-        self.factionUnits[self._player1] = [self.hero.agent.getFifeId()]
         self.hero.start()
 
         self.girl = HumanSquad(TDS, self._world.model, 'NPC:girl', self.agentlayer, self._world)
         self.instance_to_agent[self.girl.agent.getFifeId()] = self.girl
-        self.factionUnits[self._player2] = [self.girl.agent.getFifeId()]
         self.girl.start()
 
 

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ascii"?>
+
+
+<Container position="100,100" base_color="0,0,0" border_size="2" size="400,200">
+    <TextBox name="text" text="Skipping Turn" foreground_color="128,0,0" position="20,20"/>
+    <Button text="Ok" base_color="255,0,0" name="closeButton" position="160,150">
+    </Button>
+</Container>
