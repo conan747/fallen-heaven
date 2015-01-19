@@ -28,7 +28,6 @@ from fife.extensions.pychan import widgets
 from fife.extensions.pychan.internal import get_manager
 
 from scripts.common.eventlistenerbase import EventListenerBase
-from fife.extensions.savers import saveMapFile
 from fife.extensions.soundmanager import SoundManager
 from agents.hero import Hero
 from agents.girl import Girl

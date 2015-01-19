@@ -36,6 +36,8 @@ _INFANTRY, _GROUND, _HOOVER = xrange(3)
 _LWEAPON, _HWEAPON = xrange(2)
 
 
+## TODO: When unit is moving, prevent from selecting new position.
+
 class UnitProperties(object):
 
     _maxHealth = None

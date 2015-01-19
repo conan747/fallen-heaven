@@ -15,6 +15,8 @@ from fife.extensions.fife_settings import Setting
 from gui.huds import TacticalHUD
 from combat import Trajectory
 
+from fife.extensions.savers import saveMapFile
+
 
 
 _MODE_DEFAULT, _MODE_ATTACK, _MODE_DROPSHIP = xrange(3)

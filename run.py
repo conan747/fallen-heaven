@@ -34,7 +34,7 @@ from fife import fife
 print "Using the FIFE python module found here: ", os.path.dirname(fife.__file__)
 
 from fife.extensions import *
-from scripts import world
+from scripts.universe import Universe
 from scripts.common import eventlistenerbase
 from fife.extensions import pychan
 from fife.extensions.pychan.pychanbasicapplication import PychanApplicationBase
@@ -47,10 +47,10 @@ from fife.extensions.fife_utils import getUserDataDirectory
 TDS = FifePychanSettings(app_name="fallen")
 
 class ApplicationListener(eventlistenerbase.EventListenerBase):
-    def __init__(self, engine, world):
+    def __init__(self, engine):
         super(ApplicationListener, self).__init__(engine,regKeys=True,regCmd=True, regMouse=False, regConsole=True, regWidget=True)
         self.engine = engine
-        self.world = world
+        # self.world = world
         engine.getEventManager().setNonConsumableKeys([
                 fife.Key.ESCAPE,])
 
@@ -121,10 +121,8 @@ class ApplicationListener(eventlistenerbase.EventListenerBase):
 class IslandDemo(PychanApplicationBase):
     def __init__(self):
         super(IslandDemo,self).__init__(TDS)
-        self.world = world.World(self.engine, TDS)
-        self.listener = ApplicationListener(self.engine, self.world)
-        self.world.load(str(TDS.get("rio", "MapFile")))
-        print "Loading map: ", str(TDS.get("rio", "MapFile"))
+        self.listener = ApplicationListener(self.engine)
+        self.universe = Universe(self.engine, TDS)
 
     def createListener(self):
         pass # already created in constructor
@@ -141,9 +139,9 @@ class IslandDemo(PychanApplicationBase):
                 os.makedirs(mapSaveDir)
 
             # save map file to directory
-            self.world.save(mapSaveDir + "/savefile.xml")
+            self.world.scene.save(mapSaveDir + "/savefile.xml")
         else:
-            self.world.pump()
+            self.universe.pump()
 
 def main():
     app = IslandDemo()
