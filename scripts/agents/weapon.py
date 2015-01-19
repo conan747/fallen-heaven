@@ -41,7 +41,7 @@ class Weapon(object):
         Fires the weapon in the specified direction.
         To be rewritten
         """
-        self._world.applyDamage(location, self._damageContact)
+        self._world.scene.applyDamage(location, self._damageContact)
 
         ##Test: Spawn a unit.
 

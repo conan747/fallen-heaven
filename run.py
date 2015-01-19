@@ -121,7 +121,7 @@ class ApplicationListener(eventlistenerbase.EventListenerBase):
 class IslandDemo(PychanApplicationBase):
     def __init__(self):
         super(IslandDemo,self).__init__(TDS)
-        self.world = world.World(self.engine)
+        self.world = world.World(self.engine, TDS)
         self.listener = ApplicationListener(self.engine, self.world)
         self.world.load(str(TDS.get("rio", "MapFile")))
         print "Loading map: ", str(TDS.get("rio", "MapFile"))

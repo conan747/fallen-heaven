@@ -160,7 +160,7 @@ class Unit(Agent):
 
     def die(self):
         print "This unit is dead!"
-        self.world.unitDied(self.agent.getFifeId())
+        self.world.scene.unitDied(self.agent.getFifeId())
         # self.layer.deleteInstance(self.agent)
 
 

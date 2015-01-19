@@ -31,7 +31,7 @@ class TacticalHUD(object):
 
         # self._widget.position = (0, 0)
         self._widget.mapEvents({
-                'nextTurnButton' : self._world.nextTurn,
+                'nextTurnButton' : self._world.onSkipTurnPress,
                 'attackLightButton' : self._world.onAttackButtonPressed
         })
 
