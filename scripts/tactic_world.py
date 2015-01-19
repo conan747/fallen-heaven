@@ -364,7 +364,7 @@ class TacticWorld(object):
         if self.music:
             self.music.stop()
 
-        # self.scene.map, self.agentlayer = None, None
+        # self.scene.map, self.agentLayer = None, None
         self.cameras = {}
         # self.hero, self.girl, self.clouds, self.beekeepers = None, None, [], []
         self.cur_cam2_x, self.initial_cam2_x, self.cam2_scrolling_right = 0, 0, True
@@ -481,7 +481,7 @@ class TacticWorld(object):
         """
         Query the main camera for instances on our active(agent) layer.
         """
-        return self.cameras['main'].getMatchingInstances(clickpoint, self.scene.agentlayer)
+        return self.cameras['main'].getMatchingInstances(clickpoint, self.scene.agentLayer)
 
     def getLocationAt(self, clickpoint):
         """
@@ -490,7 +490,7 @@ class TacticWorld(object):
         """
         target_mapcoord = self.cameras['main'].toMapCoordinates(clickpoint, False)
         target_mapcoord.z = 0
-        location = fife.Location(self.scene.agentlayer)
+        location = fife.Location(self.scene.agentLayer)
         location.setMapCoordinates(target_mapcoord)
         return location
 

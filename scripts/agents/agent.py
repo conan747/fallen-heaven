@@ -25,22 +25,53 @@ from fife import fife
 from scripts.common.common import ProgrammingError
 
 class Agent(fife.InstanceActionListener):
-    def __init__(self, settings, model, agentName, layer, world, uniqInMap=True):
+    def __init__(self, unitName, nameSpace, world):
         fife.InstanceActionListener.__init__(self)
-        self.settings = settings
-        self.model = model
-        self.agentName = agentName
-        self.layer = layer
+        # self.settings = settings
+        # self.model = model
+        self.agentName = None
+        self.unitName = unitName
+        self.nameSpace = nameSpace
+        # self.layer = layer
         self.world = world
-        if uniqInMap:
-            self.agent = layer.getInstance(agentName)
-            if not self.agent:
-                # We have to create a new this instance.
-                object = model.getObject("boy", "http://www.fifengine.net/xml/rio_de_hola")
-                point = fife.Point3D(0,0,0)
-                self.agent = layer.createInstance(object, point)
 
+        # if uniqInMap:
+        #     self.agent = layer.getInstance(agentName)
+        #     if not self.agent:
+        #         # We have to create a new this instance.
+        #         object = model.getObject("boy", "http://www.fifengine.net/xml/rio_de_hola")
+        #         point = fife.Point3D(0,0,0)
+        #         self.agent = layer.createInstance(object, point)
+
+
+    def createInstance(self, location):
+        '''
+        Creates the instance of the object on the map.
+        :param location: Location where the instance will be.
+        :return:
+        '''
+        object = self.world.model.getObject(self.unitName, self.nameSpace)
+        point = location.getLayerCoordinates()
+        self.agent = self.world.scene.activeLayer.createInstance(object, point)
+
+        self.agent.addActionListener(self)
+
+
+    def selectInstance(self, instanceName):
+        '''
+        Looks for an instance with the same name in the map and associates it with this agent.
+        :param instanceName: Name of the instance in the loaded map on the "activeLayer"
+        :return: bool, true if it could be loaded.
+        '''
+        layer = self.world.scene.agentLayer
+        self.agent = layer.getInstance(instanceName)
+
+        if self.agent:
             self.agent.addActionListener(self)
+            return True
+        else:
+            return False
+
 
     def onInstanceActionFinished(self, instance, action):
         raise ProgrammingError('No OnActionFinished defined for Agent')

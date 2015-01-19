@@ -71,10 +71,10 @@ class Unit(Agent):
     properties = UnitProperties()
 
 
-    def __init__(self, settings, model, agentName, layer, world, uniqInMap=True):
-        super(Unit, self).__init__(settings, model, agentName, layer, world, uniqInMap)
-        self.instance = layer.getInstance(agentName)
-
+    def __init__(self, unitName, world):
+        self.nameSpace = "Unit"
+        super(Unit, self).__init__(unitName, self.nameSpace, world)
+        # self.agent = layer.getInstance(agentName)
         self._renderer = None
 
 
@@ -96,15 +96,15 @@ class Unit(Agent):
 
 
     def calculateDistance(self,location):
-        # print "Current Location", self.instance.getLocation().getMapCoordinates()
+        # print "Current Location", self.agent.getLocation().getMapCoordinates()
         # print "Target Location", location.getMapCoordinates()
         iPather = fife.RoutePather()
-        route = iPather.createRoute(self.instance.getLocation(),location, True)
+        route = iPather.createRoute(self.agent.getLocation(),location, True)
         # print "Beginning of the route", route.getStartNode().getMapCoordinates()
         # print "End of the route", route.getEndNode().getMapCoordinates()
         # if iPather.solveRoute(route):
             # print "Route solved!"
-        # route = fife.Route(self.instance.getLocation(),location)
+        # route = fife.Route(self.agent.getLocation(),location)
         # path = route.getPath()
         distance = route.getPathLength()
         # print "Distance to walk:", distance
@@ -137,7 +137,7 @@ class Unit(Agent):
         movesLeft = self.properties.AP / 10
 
         iPather = fife.RoutePather()
-        route = iPather.createRoute(self.instance.getLocation(),location, True)
+        route = iPather.createRoute(self.agent.getLocation(),location, True)
         route.cutPath(movesLeft) ## Cut the path short if too long
         self.properties.AP -= route.getPathLength() *10
         print "Path length:", route.getPathLength()
@@ -154,7 +154,7 @@ class Unit(Agent):
         self._renderer.setEnabled(True)
 
 
-        self.agent.move('run', route.getEndNode(), 4 * self.settings.get("rio", "TestAgentSpeed"))
+        self.agent.move('run', route.getEndNode(), 2)
 
 
     def kick(self, target):
@@ -210,39 +210,42 @@ class Unit(Agent):
 
 class GroundUnit(Unit):
 
-    def __init__(self, settings, model, agentName, layer, uniqInMap=True):
-        super(GroundUnit, self).__init__(settings, model, agentName, layer, uniqInMap)
+    def __init__(self, unitName, world):
+        super(GroundUnit, self).__init__(unitName, world)
         self.movement = _LAND
         self.properties._unitType = _GROUND
 
 
 class HooverUnit(Unit):
 
-    def __init__(self, settings, model, agentName, layer, uniqInMap=True):
-        super(HooverUnit, self).__init__(settings, model, agentName, layer, uniqInMap)
+    def __init__(self, unitName, world):
+        super(HooverUnit, self).__init__(unitName, world)
         self.movement = _AIR
         self.properties._unitType = _HOOVER
 
 
 class InfantryUnit(Unit):
 
-    def __init__(self, settings, model, agentName, layer, uniqInMap=True):
-        super(InfantryUnit, self).__init__(settings, model, agentName, layer, uniqInMap)
+    def __init__(self, unitName, world):
+        super(InfantryUnit, self).__init__(unitName, world)
         self.movement = _WALK
         self.properties._unitType = _INFANTRY
 
 
 class HumanSquad(InfantryUnit):
 
-    def __init__(self, settings, model, agentName, layer, uniqInMap=True):
-        super(HumanSquad, self).__init__(settings, model, agentName, layer, uniqInMap)
+    def __init__(self, world):
+
+        self.unitName = "HumanSquad"
+        super(HumanSquad, self).__init__(self.unitName, world)
+
 
         self.properties._cost = 20
         self.properties._maxAP = 70
         self.properties._maxHealth = 10
         self.properties._upkeep = 1
         self.properties._faction = "Human"
-        self.properties._unitName = "Squad"
+        # self.properties._unitName = "Squad"
 
         self.properties.initialize()
 

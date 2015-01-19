@@ -18,8 +18,8 @@ class Universe(object):
         self._settings = settings
         self.world = None
 
-        # self.startTactic(str(self._settings.get("rio", "MapFile")))
-        self.startStrategic(str(self._settings.get("rio", "MapFile")))
+        self.startTactic(str(self._settings.get("rio", "MapFile")))
+        # self.startStrategic(str(self._settings.get("rio", "MapFile")))
 
 
     def startTactic(self, mapFile):

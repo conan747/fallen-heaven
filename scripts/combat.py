@@ -37,7 +37,7 @@ class Trajectory(object):
         self._unit = unit
         self._weaponMode = weapon
         self._world = world
-        self._unitLocation = unit.instance.getLocation()
+        self._unitLocation = unit.agent.getLocation()
         self._weaponRange = 5 # to be changed!
         # self._renderer = self.cameras['main'].getRenderer('CellSelectionRenderer')
         # self._renderer.setColor(100,0,0)
@@ -74,6 +74,8 @@ class Trajectory(object):
         unitLocation = self._unitLocation
         unitLocation.setLayer(groundLayer)
         distance = unitLocation.getLayerDistanceTo(location)
+        if distance == 0:
+            return False
         # print "Shot length" , distance
         return (distance <= self._weaponRange)
         # route = iPather.createRoute(unitLocation,location, True)
@@ -98,7 +100,7 @@ class Trajectory(object):
         groundLayer = map.getLayer("GroundLayer")
         loc.setLayer(groundLayer)
 
-        fromLocation = self._unit.instance.getLocation()
+        fromLocation = self._unit.agent.getLocation()
         fromLocation.setLayer(groundLayer)
 
         iPather = fife.RoutePather()
@@ -106,11 +108,11 @@ class Trajectory(object):
         locationList = route.getPath()
         self._renderer.setEnabled(True)
 
-        unitLayer = self._unit.instance.getLocation().getLayer()
+        unitLayer = self._unit.agent.getLocation().getLayer()
         blocked = False
         # print "Unit layer:", unitLayer.getId()
         ## Don't use the last locations (i.e. the target) to check if it is reachable.
-        if locationList.__len__() > 2:
+        if locationList.__len__() >= 2:
             locationList.pop()
 
         while locationList.__len__()>0:
@@ -122,7 +124,7 @@ class Trajectory(object):
             unitFound = unitLayer.getInstancesAt(location)
             for instance in unitFound:
                 # print "Found instance: " , instance.getFifeId()
-                if instance.getId() != self._unit.instance.getId():
+                if instance.getId() != self._unit.agent.getId():
                     blocked = True
                     # renderColor = self._renderer.getColor()
                     # self._renderer.setColor(255,0,0)

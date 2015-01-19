@@ -315,7 +315,7 @@ class StrategicWorld(object):
 
         self.settings = settings
         self.listener = StrategicListener(self)
-        self.listener.attach()
+        # self.listener.attach()
 
         ## Added by Jon
         self.mousePos = (100,100)   ## this is used to move the camera. Alternative method possible!
@@ -354,7 +354,7 @@ class StrategicWorld(object):
         if self.music:
             self.music.stop()
 
-        # self.scene.map, self.agentlayer = None, None
+        # self.scene.map, self.agentLayer = None, None
         self.cameras = {}
         # self.hero, self.girl, self.clouds, self.beekeepers = None, None, [], []
         self.cur_cam2_x, self.initial_cam2_x, self.cam2_scrolling_right = 0, 0, True
@@ -384,6 +384,7 @@ class StrategicWorld(object):
             self.waves.gain = 16.0
             self.waves.play()
 
+        self.listener.attach()
 
         # self._music = self._soundmanager.createSoundEmitter("music/waynesmind2.ogg")
         # self._music.callback = self.musicHasFinished
@@ -471,16 +472,18 @@ class StrategicWorld(object):
         """
         Query the main camera for instances on our active(agent) layer.
         """
-        return self.cameras['main'].getMatchingInstances(clickpoint, self.scene.agentlayer)
+        return self.cameras['main'].getMatchingInstances(clickpoint, self.scene.agentLayer)
 
     def getLocationAt(self, clickpoint):
         """
         Query the main camera for the Map location (on the agent layer)
         that a screen point refers to.
         """
+        if not self.scene.agentLayer:
+            return None
         target_mapcoord = self.cameras['main'].toMapCoordinates(clickpoint, False)
         target_mapcoord.z = 0
-        location = fife.Location(self.scene.agentlayer)
+        location = fife.Location(self.scene.agentLayer)
         location.setMapCoordinates(target_mapcoord)
         return location
 

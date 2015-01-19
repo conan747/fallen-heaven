@@ -42,7 +42,7 @@ class TacticScene(object):
         self.engine = engine
         self._world = world
         self._model = engine.getModel()
-        self.agentlayer = None
+        self.agentLayer = None
 
         self._objectstodelete = list()
 
@@ -120,7 +120,7 @@ class TacticScene(object):
         :param id: FIFEID of the agent you want to obtain
         :return: Instance
         '''
-        ids = self.agentlayer.getInstances()
+        ids = self.agentLayer.getInstances()
         instance = [i for i in ids if i.getFifeId() == id]
         if instance:
             return instance[0]
@@ -149,7 +149,7 @@ class TacticScene(object):
         if unitID in self.instance_to_agent.keys():
             obj = self.instance_to_agent[unitID]
             self.instance_to_agent.__delitem__(unitID)
-            self.agentlayer.deleteInstance(obj.instance)
+            self.agentLayer.deleteInstance(obj.agent)
         for player in range(2):
             if unitID in self.factionUnits[player]:
                 self.factionUnits[player].remove(unitID)
@@ -171,7 +171,7 @@ class TacticScene(object):
 
         #initialize our scene array to some arbitrary size
 
-        self.map, self.agentlayer = None, None
+        self.map, self.agentLayer = None, None
         self.cameras = {}
         self.cur_cam2_x, self.initial_cam2_x, self.cam2_scrolling_right = 0, 0, True
         self.target_rotation = 0
@@ -225,16 +225,21 @@ class TacticScene(object):
         Note that we keep a mapping from map instances (C++ model of stuff on the map)
         to the python agents for later reference.
         """
-        self.agentlayer = self.map.getLayer('TechdemoMapGroundObjectLayer')
-        self.hero = HumanSquad(TDS, self._world.model, 'PC', self.agentlayer, self._world)
+        self.agentLayer = self.map.getLayer('TechdemoMapGroundObjectLayer')
+
+        self.hero = HumanSquad(self._world)
+        self.hero.selectInstance("PC")
         self.instance_to_agent[self.hero.agent.getFifeId()] = self.hero
-        self.factionUnits[self._player1] = [self.hero.agent.getFifeId()]
         self.hero.start()
 
-        self.girl = HumanSquad(TDS, self._world.model, 'NPC:girl', self.agentlayer, self._world)
+        self.girl = HumanSquad(self._world)
+        self.girl.selectInstance('NPC:girl')
         self.instance_to_agent[self.girl.agent.getFifeId()] = self.girl
-        self.factionUnits[self._player2] = [self.girl.agent.getFifeId()]
         self.girl.start()
+
+        # Add them to factions
+        self.factionUnits[self._player1] = [self.hero.agent.getFifeId()]
+        self.factionUnits[self._player2] = [self.girl.agent.getFifeId()]
 
 
         ## Spawn additional units:
@@ -247,7 +252,7 @@ class TacticScene(object):
         #self.girl.agent.setVisitor(True)
         #self.girl.agent.setVisitorRadius(1)
 
-        # self.beekeepers = create_anonymous_agents(TDS, self.model, 'beekeeper', self.agentlayer, self , Beekeeper)
+        # self.beekeepers = create_anonymous_agents(TDS, self.model, 'beekeeper', self.agentLayer, self , Beekeeper)
         # for beekeeper in self.beekeepers:
         #     self.instance_to_agent[beekeeper.agent.getFifeId()] = beekeeper
         #     self.factionUnits[self._player2].append(beekeeper.agent.getFifeId())
