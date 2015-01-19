@@ -41,11 +41,11 @@ class Weapon(object):
         Fires the weapon in the specified direction.
         To be rewritten
         """
-        # self._world.applyDamage(location, self._damageContact)
+        self._world.applyDamage(location, self._damageContact)
 
         ##Test: Spawn a unit.
 
-        hsquad = unit.HumanSquad(TDS, self._world.model, "Jon", self._world.agentlayer, uniqInMap=False)
+        # hsquad = unit.HumanSquad(TDS, self._world.model, "Jon", self._world.agentlayer, uniqInMap=False)
 
 
 class LightWeapon(Weapon):
