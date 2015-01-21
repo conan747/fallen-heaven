@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6d93f8ad-0f1a-42b5-a9ec-dedf6b7757a8" name="Default" comment="">
+    <list default="true" id="6d93f8ad-0f1a-42b5-a9ec-dedf6b7757a8" name="Default" comment="Lets proper creation of buildings.">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/scripts/agents/building.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/agents/agent.py" afterPath="$PROJECT_DIR$/scripts/agents/agent.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/combat.py" afterPath="$PROJECT_DIR$/scripts/combat.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/objects/buildings.xml" afterPath="$PROJECT_DIR$/objects/buildings.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/gui/huds.py" afterPath="$PROJECT_DIR$/scripts/gui/huds.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/objects/agents/girl/object.xml" afterPath="$PROJECT_DIR$/objects/agents/girl/object.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/strategic_scene.py" afterPath="$PROJECT_DIR$/scripts/strategic_scene.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/strategic_world.py" afterPath="$PROJECT_DIR$/scripts/strategic_world.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/tactic_scene.py" afterPath="$PROJECT_DIR$/scripts/tactic_scene.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/tactic_world.py" afterPath="$PROJECT_DIR$/scripts/tactic_world.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/agents/unit.py" afterPath="$PROJECT_DIR$/scripts/agents/unit.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/universe.py" afterPath="$PROJECT_DIR$/scripts/universe.py" />
@@ -34,21 +36,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="run.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/run.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1577" max-vertical-offset="2700">
-              <caret line="117" column="56" selection-start-line="117" selection-start-column="56" selection-end-line="117" selection-end-column="56" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="strategic_world.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scripts/strategic_world.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-1.7368422" vertical-offset="1641" max-vertical-offset="9795">
-              <caret line="116" column="0" selection-start-line="116" selection-start-column="0" selection-end-line="116" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="9947" max-vertical-offset="10545">
+              <caret line="680" column="25" selection-start-line="680" selection-start-column="25" selection-end-line="680" selection-end-column="25" />
               <folding>
                 <element signature="e#1006#1027#0" expanded="true" />
               </folding>
@@ -56,21 +48,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="unit.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scripts/agents/unit.py">
+      <file leaf-file-name="tactic_world.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/scripts/tactic_world.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-1.6140351" vertical-offset="2428" max-vertical-offset="3825">
-              <caret line="171" column="29" selection-start-line="171" selection-start-column="29" selection-end-line="171" selection-end-column="29" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="agent.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scripts/agents/agent.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="797" max-vertical-offset="1620">
-              <caret line="65" column="43" selection-start-line="65" selection-start-column="33" selection-end-line="65" selection-end-column="43" />
+            <state vertical-scroll-proportion="0.45212767" vertical-offset="5290" max-vertical-offset="10410">
+              <caret line="382" column="10" selection-start-line="382" selection-start-column="10" selection-end-line="382" selection-end-column="10" />
               <folding />
             </state>
           </provider>
@@ -79,53 +61,49 @@
       <file leaf-file-name="strategic_scene.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scripts/strategic_scene.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="2507" max-vertical-offset="3315">
-              <caret line="191" column="0" selection-start-line="191" selection-start-column="0" selection-end-line="199" selection-end-column="25" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="2847" max-vertical-offset="3420">
+              <caret line="234" column="31" selection-start-line="234" selection-start-column="31" selection-end-line="234" selection-end-column="31" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="combat.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scripts/combat.py">
+      <file leaf-file-name="building.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/scripts/agents/building.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="650" max-vertical-offset="1890">
-              <caret line="77" column="24" selection-start-line="77" selection-start-column="24" selection-end-line="77" selection-end-column="24" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="2177" max-vertical-offset="3885">
+              <caret line="156" column="39" selection-start-line="156" selection-start-column="39" selection-end-line="156" selection-end-column="39" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="fife.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../engine/python/fife/fife.py">
+      <file leaf-file-name="buildings.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/objects/buildings.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="65019" max-vertical-offset="245460">
-              <caret line="4323" column="0" selection-start-line="4323" selection-start-column="0" selection-end-line="4323" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="525">
+              <caret line="10" column="87" selection-start-line="10" selection-start-column="87" selection-end-line="10" selection-end-column="87" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="tactic_world.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scripts/tactic_world.py">
+      <file leaf-file-name="unit.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/scripts/agents/unit.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-1.6140351" vertical-offset="5203" max-vertical-offset="10530">
-              <caret line="353" column="0" selection-start-line="353" selection-start-column="0" selection-end-line="353" selection-end-column="0" />
-              <folding>
-                <element signature="e#1006#1027#0" expanded="true" />
-              </folding>
+            <state vertical-scroll-proportion="0.0" vertical-offset="2355" max-vertical-offset="4035">
+              <caret line="167" column="0" selection-start-line="167" selection-start-column="0" selection-end-line="167" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="tactic_scene.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/scripts/tactic_scene.py">
+      <file leaf-file-name="agent.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/scripts/agents/agent.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="1.8169014" vertical-offset="1620" max-vertical-offset="4140">
-              <caret line="151" column="52" selection-start-line="151" selection-start-column="52" selection-end-line="151" selection-end-column="52" />
-              <folding>
-                <element signature="e#22#43#0" expanded="true" />
-              </folding>
+            <state vertical-scroll-proportion="0.0" vertical-offset="611" max-vertical-offset="1650">
+              <caret line="74" column="0" selection-start-line="74" selection-start-column="0" selection-end-line="74" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -138,6 +116,16 @@
               <folding>
                 <element signature="e#21#57#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="fife.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../../engine/python/fife/fife.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="722" max-vertical-offset="245505">
+              <caret line="56" column="0" selection-start-line="56" selection-start-column="0" selection-end-line="56" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -179,15 +167,18 @@
         <option value="$PROJECT_DIR$/run.py" />
         <option value="$PROJECT_DIR$/scripts/strateic_scene.py" />
         <option value="$PROJECT_DIR$/gui/dialogs/next_turn.xml" />
-        <option value="$PROJECT_DIR$/scripts/gui/huds.py" />
-        <option value="$PROJECT_DIR$/scripts/strategic_world.py" />
-        <option value="$PROJECT_DIR$/scripts/agents/agent.py" />
-        <option value="$PROJECT_DIR$/scripts/strategic_scene.py" />
-        <option value="$PROJECT_DIR$/scripts/universe.py" />
-        <option value="$PROJECT_DIR$/scripts/tactic_world.py" />
-        <option value="$PROJECT_DIR$/scripts/agents/unit.py" />
         <option value="$PROJECT_DIR$/scripts/tactic_scene.py" />
         <option value="$PROJECT_DIR$/scripts/combat.py" />
+        <option value="$PROJECT_DIR$/scripts/gui/huds.py" />
+        <option value="$PROJECT_DIR$/objects/agents/girl/object.xml" />
+        <option value="$PROJECT_DIR$/scripts/agents/agent.py" />
+        <option value="$PROJECT_DIR$/scripts/agents/unit.py" />
+        <option value="$PROJECT_DIR$/scripts/universe.py" />
+        <option value="$PROJECT_DIR$/scripts/strategic_scene.py" />
+        <option value="$PROJECT_DIR$/objects/buildings.xml" />
+        <option value="$PROJECT_DIR$/scripts/agents/building.py" />
+        <option value="$PROJECT_DIR$/scripts/strategic_world.py" />
+        <option value="$PROJECT_DIR$/scripts/tactic_world.py" />
       </list>
     </option>
   </component>
@@ -265,7 +256,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="scripts" />
+              <option name="myItemId" value="objects" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -326,8 +317,12 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/scripts" />
+      <recent name="$PROJECT_DIR$/objects" />
       <recent name="$PROJECT_DIR$/scripts/agents" />
+      <recent name="$PROJECT_DIR$/scripts" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/objects/agents" />
     </key>
   </component>
   <component name="RunManager" selected="Python.run">
@@ -537,10 +532,16 @@
       <option name="project" value="LOCAL" />
       <updated>1421694743294</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Agents re-structured. Units can be created without instance.&#10;&#10;Attacking own location is not possible.">
+      <created>1421704406575</created>
+      <option name="number" value="00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1421704406575</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
-  <component name="TodoView" selected-index="0">
+  <component name="TodoView" selected-index="4">
     <todo-panel id="selected-file">
       <are-packages-shown value="false" />
       <are-modules-shown value="false" />
@@ -566,19 +567,19 @@
     <layout>
       <window_info id="Documentation" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" x="100" y="100" width="1160" height="539" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32943144" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32833335" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32833335" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39833334" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5003734" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1493652" sideWeight="0.5183246" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1553398" sideWeight="0.3846154" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32833335" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1553398" sideWeight="0.62041885" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32833335" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1553398" sideWeight="0.61538464" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1493652" sideWeight="0.4816754" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1493652" sideWeight="0.7591623" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.49962658" order="13" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.36333334" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.36333334" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -609,93 +610,24 @@
     <MESSAGE value="Fixed issue with renderer.&#10;&#10;Solution: add renderer.activateAllLayers(map)" />
     <MESSAGE value="Added Universe." />
     <MESSAGE value="Added distinction between Tactic and Strategic.&#10;&#10;Now Agents will be re-structured (units and buildings)." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added distinction between Tactic and Strategic.&#10;&#10;Now Agents will be re-structured (units and buildings)." />
+    <MESSAGE value="Agents re-structured. Units can be created without instance.&#10;&#10;Attacking own location is not possible." />
+    <MESSAGE value="Lets proper creation of buildings." />
+    <option name="LAST_COMMIT_MESSAGE" value="Lets proper creation of buildings." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="47" />
+      <breakpoints>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/scripts/agents/building.py</url>
+          <line>150</line>
+          <option name="timeStamp" value="53" />
+        </line-breakpoint>
+      </breakpoints>
+      <option name="time" value="54" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file:///usr/lib/python2.7/dist-packages/pyatspi/deviceevent.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2131" max-vertical-offset="4554">
-          <caret line="142" column="21" selection-start-line="142" selection-start-column="21" selection-end-line="142" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../engine/python/fife/fife.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="46866" max-vertical-offset="292500">
-          <caret line="2614" column="8" selection-start-line="2614" selection-start-column="8" selection-end-line="2614" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/lib/python2.7/dist-packages/fife/extensions/pychan/fife_pychansettings.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1081" max-vertical-offset="5058">
-          <caret line="75" column="8" selection-start-line="75" selection-start-column="8" selection-end-line="75" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/lib/python2.7/dist-packages/pyatspi/deviceevent.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2131" max-vertical-offset="4554">
-          <caret line="142" column="21" selection-start-line="142" selection-start-column="21" selection-end-line="142" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/gui/icons/boy.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydev_monkey_qt.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334" vertical-offset="1221" max-vertical-offset="3060">
-          <caret line="74" column="0" selection-start-line="74" selection-start-column="0" selection-end-line="74" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../engine/python/fife/fifechan.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.30017453" vertical-offset="242" max-vertical-offset="12636">
-          <caret line="23" column="29" selection-start-line="23" selection-start-column="27" selection-end-line="23" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/package.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="108">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/lib/python2.7/dist-packages/fife/extensions/pychan/fife_pychansettings.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1140" max-vertical-offset="5058">
-          <caret line="74" column="29" selection-start-line="74" selection-start-column="29" selection-end-line="74" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/agents/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="573">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/lib/python2.7/dist-packages/fife/extensions/fife_settings.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="979" max-vertical-offset="10368">
-          <caret line="52" column="8" selection-start-line="52" selection-start-column="8" selection-end-line="52" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scripts/agents/hero.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="324" max-vertical-offset="1584">
@@ -823,14 +755,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/maps/shrine2.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="90495" max-vertical-offset="95790">
-          <caret line="6033" column="25" selection-start-line="6033" selection-start-column="18" selection-end-line="6033" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scripts/agents/beekeeper.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="419" max-vertical-offset="810">
@@ -844,7 +768,7 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="258" max-vertical-offset="1125">
           <caret line="43" column="25" selection-start-line="43" selection-start-column="25" selection-end-line="43" selection-end-column="25" />
           <folding>
-            <element signature="e#92#103#0" expanded="true" />
+            <element signature="e#92#103#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -897,16 +821,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/gui/huds.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.263158" vertical-offset="621" max-vertical-offset="1320">
-          <caret line="69" column="10" selection-start-line="69" selection-start-column="10" selection-end-line="69" selection-end-column="10" />
-          <folding>
-            <element signature="e#21#30#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/maps/shrine.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-3.5263157" vertical-offset="90639" max-vertical-offset="91155">
@@ -920,26 +834,6 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="112444" max-vertical-offset="245790">
           <caret line="7455" column="6" selection-start-line="7455" selection-start-column="6" selection-end-line="7455" selection-end-column="6" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/strategic_world.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.7368422" vertical-offset="1641" max-vertical-offset="9795">
-          <caret line="116" column="0" selection-start-line="116" selection-start-column="0" selection-end-line="116" selection-end-column="0" />
-          <folding>
-            <element signature="e#1006#1027#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/universe.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="155" max-vertical-offset="750">
-          <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
-          <folding>
-            <element signature="e#21#57#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -959,37 +853,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/agents/agent.py">
+    <entry file="file://$PROJECT_DIR$/scripts/gui/huds.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="797" max-vertical-offset="1620">
-          <caret line="65" column="43" selection-start-line="65" selection-start-column="33" selection-end-line="65" selection-end-column="43" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/tactic_world.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.6140351" vertical-offset="5203" max-vertical-offset="10530">
-          <caret line="353" column="0" selection-start-line="353" selection-start-column="0" selection-end-line="353" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="767" max-vertical-offset="1320">
+          <caret line="67" column="53" selection-start-line="67" selection-start-column="53" selection-end-line="67" selection-end-column="53" />
           <folding>
-            <element signature="e#1006#1027#0" expanded="true" />
+            <element signature="e#21#30#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../engine/python/fife/fife.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="65019" max-vertical-offset="245460">
-          <caret line="4323" column="0" selection-start-line="4323" selection-start-column="0" selection-end-line="4323" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/agents/unit.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.6140351" vertical-offset="2428" max-vertical-offset="3825">
-          <caret line="171" column="29" selection-start-line="171" selection-start-column="29" selection-end-line="171" selection-end-column="29" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1001,21 +871,157 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/strategic_scene.py">
+    <entry file="file://$PROJECT_DIR$/objects/items1.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2507" max-vertical-offset="3315">
-          <caret line="191" column="0" selection-start-line="191" selection-start-column="0" selection-end-line="199" selection-end-column="25" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="6345">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/objects/ground2.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-3.169014" vertical-offset="1125" max-vertical-offset="1815">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/objects/items2.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-3.6760564" vertical-offset="1305" max-vertical-offset="1695">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/scripts/tactic_scene.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.8169014" vertical-offset="1620" max-vertical-offset="4140">
-          <caret line="151" column="52" selection-start-line="151" selection-start-column="52" selection-end-line="151" selection-end-column="52" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="3227" max-vertical-offset="4140">
+          <caret line="217" column="8" selection-start-line="217" selection-start-column="8" selection-end-line="217" selection-end-column="8" />
           <folding>
             <element signature="e#22#43#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/objects/agents/girl/object.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1020">
+          <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/objects/ground1.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-4.112676" vertical-offset="1460" max-vertical-offset="1815">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/objects/ground2.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/objects/ground1.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/objects/nature.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/maps/shrine2.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33221477" vertical-offset="48711" max-vertical-offset="95895">
+          <caret line="3252" column="18" selection-start-line="3252" selection-start-column="18" selection-end-line="3252" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/agents/unit.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2355" max-vertical-offset="4035">
+          <caret line="167" column="0" selection-start-line="167" selection-start-column="0" selection-end-line="167" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/universe.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="155" max-vertical-offset="750">
+          <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+          <folding>
+            <element signature="e#21#57#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/agents/agent.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="926" max-vertical-offset="1650">
+          <caret line="74" column="0" selection-start-line="74" selection-start-column="0" selection-end-line="74" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/objects/buildings.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/objects/buildings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="525">
+          <caret line="10" column="87" selection-start-line="10" selection-start-column="87" selection-end-line="10" selection-end-column="87" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/strategic_scene.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="3065" max-vertical-offset="3420">
+          <caret line="234" column="31" selection-start-line="234" selection-start-column="31" selection-end-line="234" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/agents/building.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2177" max-vertical-offset="3885">
+          <caret line="156" column="39" selection-start-line="156" selection-start-column="39" selection-end-line="156" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../engine/python/fife/fife.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="722" max-vertical-offset="245505">
+          <caret line="56" column="0" selection-start-line="56" selection-start-column="0" selection-end-line="56" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/strategic_world.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="9947" max-vertical-offset="10545">
+          <caret line="680" column="25" selection-start-line="680" selection-start-column="25" selection-end-line="680" selection-end-column="25" />
+          <folding>
+            <element signature="e#1006#1027#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/tactic_world.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.45212767" vertical-offset="5290" max-vertical-offset="10410">
+          <caret line="382" column="10" selection-start-line="382" selection-start-column="10" selection-end-line="382" selection-end-column="10" />
+          <folding />
         </state>
       </provider>
     </entry>

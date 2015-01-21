@@ -65,7 +65,7 @@ class StrategicHUD(object):
 
         # self._widget.position = (0, 0)
         self._widget.mapEvents({
-                # 'nextTurnButton' : self._world.onSkipTurnPress,
+                'nextTurnButton' : self._world.testBuilding,
                 # 'attackLightButton' : self._world.onAttackButtonPressed
         })
 

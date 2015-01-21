@@ -226,3 +226,10 @@ class StrategicScene(object):
         saveMapFile(filename, self.engine, self.map)
 
 
+    def addBuilding(self, building):
+        '''
+        Adds the building to the map.
+        :param building:
+        :return:
+        '''
+        building.setFootprint()

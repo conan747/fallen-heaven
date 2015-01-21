@@ -52,9 +52,10 @@ class Agent(fife.InstanceActionListener):
         '''
         object = self.world.model.getObject(self.unitName, self.nameSpace)
         point = location.getLayerCoordinates()
-        self.agent = self.world.scene.activeLayer.createInstance(object, point)
+        self.agent = self.world.scene.agentLayer.createInstance(object, point)
 
         self.agent.addActionListener(self)
+
 
 
     def selectInstance(self, instanceName):
@@ -68,9 +69,10 @@ class Agent(fife.InstanceActionListener):
 
         if self.agent:
             self.agent.addActionListener(self)
-            return True
-        else:
-            return False
+            # return True
+        # else:
+        #     return False
+
 
 
     def onInstanceActionFinished(self, instance, action):

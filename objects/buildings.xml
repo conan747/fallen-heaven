@@ -8,8 +8,8 @@
 	<image source="priest_hut/270.png" xpos="544" ypos="288" width="256" height="240"/>
 </atlas>
 
-<object id="beach_bar" namespace="http://www.fifengine.net/xml/rio_de_hola" blocking="1" static="1">
-	<image source="beach_bar/000.png" direction="0" />
+<object id="beach_bar" namespace="http://www.fifengine.net/xml/rio_de_hola" blocking="0" static="1">
+	<image source="beach_bar/000.png" direction="0" x_offset="0" y_offset="-110"/>
 	<image source="beach_bar/000.png" direction="45" />
 	<image source="beach_bar/090.png" direction="90" />
 	<image source="beach_bar/090.png" direction="135" />

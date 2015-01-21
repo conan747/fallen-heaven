@@ -33,6 +33,7 @@ from agents.hero import Hero
 from agents.girl import Girl
 from agents.cloud import Cloud
 from agents.unit import *
+from agents.building import *
 from agents.beekeeper import Beekeeper
 from agents.agent import create_anonymous_agents
 from fife.extensions.fife_settings import Setting
@@ -42,7 +43,7 @@ from combat import Trajectory
 from scripts.strategic_scene import StrategicScene
 
 TDS = Setting(app_name="rio_de_hola")
-_MODE_DEFAULT, _MODE_ATTACK, _MODE_DROPSHIP = xrange(3)
+_MODE_DEFAULT, _MODE_BUILD = xrange(2)
 
 
 class StrategicListener(fife.IKeyListener, fife.IMouseListener):
@@ -106,6 +107,19 @@ class StrategicListener(fife.IKeyListener, fife.IMouseListener):
         if self._world.activeUnit:
             self._world.scene.instance_to_agent[self._world.activeUnit].teleport(self._world.getLocationAt(clickpoint))
 
+    def clickBuild(self, clickpoint):
+        '''
+        Locate the building at clickpoint.
+        '''
+        # We don't need to do anything since the instance should be here already.
+        location = self._world.getLocationAt(clickpoint)
+        construction = self._world.construction
+        if construction.teleport(location):
+            self._world.scene.addBuilding(self._world.construction)
+            self._world.construction = None
+            self._world.cursorHandler.setCursor(_CUR_DEFAULT)
+            self._world.setMode(_MODE_DEFAULT)
+
 
     def mousePressed(self, evt):
         if evt.isConsumedByWidgets():
@@ -115,16 +129,21 @@ class StrategicListener(fife.IKeyListener, fife.IMouseListener):
         if (evt.getButton() == fife.MouseEvent.LEFT):
             if self._world.mode == _MODE_DEFAULT:
                 self.clickDefault(clickpoint)
-            elif self._world.mode == _MODE_ATTACK:
-                self.clickAttack(clickpoint)
+            elif self._world.mode == _MODE_BUILD:
+                self.clickBuild(clickpoint)
 
         if (evt.getButton() == fife.MouseEvent.RIGHT):
-            self._world.setMode(_MODE_DEFAULT)
-            instances = self._world.getInstancesAt(clickpoint)
-            print "selected instances on agent layer: ", [i.getObject().getId() for i in instances]
-            if instances:
-                print "Instance menu should've been shown "
-                # self.show_instancemenu(clickpoint, instances[0])
+            if self._world.mode == _MODE_BUILD:
+                # Distroy the construction first!
+                if self._world.construction:
+                    # self._world.construction.remove()
+                    self._world.scene.agentLayer.deleteInstance(self._world.construction.agent)
+                    self._world.construction.__del__()
+                    self._world.construction = None
+                    self._world.selectUnit(None)
+
+                self._world.setMode(_MODE_DEFAULT)
+                self._world.cursorHandler.setCursor(_CUR_DEFAULT)
             else:
                 self._world.selectUnit(None)
 
@@ -137,27 +156,35 @@ class StrategicListener(fife.IKeyListener, fife.IMouseListener):
         self._world.mousePos = (evt.getX(), evt.getY())
         ## TODO: Add cell highliting .
 
+        if self._world.mode == _MODE_DEFAULT:
+            if not self._cellSelectionRenderer:
+                if self._world.cameras:
+                    camera = self._world.cameras['main']
+                    self._cellSelectionRenderer = fife.CellSelectionRenderer.getInstance(camera)
+                    self._cellSelectionRenderer.setEnabled(True)
+                    self._cellSelectionRenderer.activateAllLayers(self._world.scene.map)
 
-        if not self._cellSelectionRenderer:
-            if self._world.cameras:
-                camera = self._world.cameras['main']
-                self._cellSelectionRenderer = fife.CellSelectionRenderer.getInstance(camera)
-                self._cellSelectionRenderer.setEnabled(True)
-                self._cellSelectionRenderer.activateAllLayers(self._world.scene.map)
+            if self._cellSelectionRenderer:
+                mousePoint = fife.ScreenPoint(evt.getX(), evt.getY())
+                self._cellSelectionRenderer.reset()
+                location = self._world.getLocationAt(mousePoint)
+                self._cellSelectionRenderer.selectLocation(location)
 
-        if self._cellSelectionRenderer:
+        elif self._world.mode == _MODE_BUILD:
+            construction = self._world.construction
+            if not construction:
+                return
             mousePoint = fife.ScreenPoint(evt.getX(), evt.getY())
-            self._cellSelectionRenderer.reset()
             location = self._world.getLocationAt(mousePoint)
-            self._cellSelectionRenderer.selectLocation(location)
-        # renderer = fife.InstanceRenderer.getInstance(self.cameras['main'])
-        # renderer.removeAllOutlines()
+            if not construction.agent:
+                ## Initialize instance
+                construction.createInstance(location)
 
-        # pt = fife.ScreenPoint(evt.getX(), evt.getY())
-        # instances = self.getInstancesAt(pt);
-        # for i in instances:
-        #     if i.getObject().getId() in ('girl', 'beekeeper'):
-        #         renderer.addOutlined(i, 173, 255, 47, 2)
+            if construction.teleport(location):
+                self._world.cursorHandler.setCursor(_CUR_DEFAULT)
+            else:
+                self._world.cursorHandler.setCursor(_CUR_CANNOT)
+
 
     def mouseEntered(self, event):
         pass
@@ -368,6 +395,14 @@ class StrategicWorld(object):
         self.reset()
 
         self.scene.load(filename)
+
+
+        self.cellRenderer = fife.CellRenderer.getInstance(self.cameras['main'])
+        self.cellRenderer.addActiveLayer(self.scene.agentLayer)
+        # self.cellRenderer.activateAllLayers(self.scene.map)
+        self.cellRenderer.setEnabledBlocking(True)
+        self.cellRenderer.setEnabled(True)
+
 
         # self.initAgents()
         # self.initCameras()
@@ -614,8 +649,10 @@ class StrategicWorld(object):
         Changes the cursor according to the mode.
         :return:
         '''
-        if self.mode == _MODE_ATTACK:
-            if not self.activeUnit:
+        pass
+        '''
+        if self.mode == _MODE_BUILD:
+            if not self.construction:
                 return
 
             mousepoint = fife.ScreenPoint(self.mousePos[0], self.mousePos[1])
@@ -630,6 +667,7 @@ class StrategicWorld(object):
 
         else:
             self.cursorHandler.setCursor(_CUR_DEFAULT)
+        '''
 
     def setMode(self, mode):
         '''
@@ -639,9 +677,22 @@ class StrategicWorld(object):
         '''
 
         self.mode = mode
+        if mode == _MODE_BUILD:
+            self.listener._cellSelectionRenderer.setEnabled(False)
         # Change cursor type
         # dictionary containing {mode:cursor}
         # cursor = self.engine.getCursor()
         # cursorfile = self.settings.get("rio", "CursorAttack")
         # cursorImage = cursor.getImage()
 
+
+    def testBuilding(self):
+        '''
+        Test function for buildings.
+        :return:
+        '''
+
+        print "Testing building"
+        self.construction = Barracks(self)
+        self.setMode(_MODE_BUILD)
+        # self.scene.build()

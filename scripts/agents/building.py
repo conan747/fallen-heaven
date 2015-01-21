@@ -31,14 +31,11 @@ from weapon import *
 
 _STATE_NONE, _STATE_IDLE, _STATE_RUN, _STATE_KICK, _STATE_TALK = xrange(5)
 
-_WALK, _LAND, _AIR = xrange(3)
-_INFANTRY, _GROUND, _HOOVER = xrange(3)
 _LWEAPON, _HWEAPON = xrange(2)
+_INFANTRY, _GROUND, _HOOVER = xrange(3)
 
 
-## TODO: When unit is moving, prevent from selecting new position.
-
-class UnitProperties(object):
+class BuildingProperties(object):
 
     _maxHealth = None
     health = None
@@ -48,6 +45,10 @@ class UnitProperties(object):
     AP = None
     _faction = None
     _unitName = None # common name of the unit
+    _sizeX = 1
+    _sizeY = 1
+    _energyConsump = 0
+    _storageSize = 0
 
     # namespaceId #included in Model
 
@@ -61,21 +62,23 @@ class UnitProperties(object):
     #     self._cost = cost
 
 
-class Unit(Agent):
+class Building(Agent):
 
-    instance = None
+    agent = None
 
     movement = None
     lightWeapon = None
     heavyWeapon = None
-    properties = UnitProperties()
+    properties = BuildingProperties()
 
 
     def __init__(self, unitName, world):
-        self.nameSpace = "Unit"
-        super(Unit, self).__init__(unitName, self.nameSpace, world)
+        # self.nameSpace = "Building"
+        super(Building, self).__init__(unitName, self.nameSpace, world)
         # self.agent = layer.getInstance(agentName)
         self._renderer = None
+        self._SelectRenderer = None
+        self.cellCache = None
 
 
     # def onInstanceActionFinished(self, instance, action):
@@ -124,62 +127,34 @@ class Unit(Agent):
         layercoords = fife.DoublePoint3D(int(exactcoords.x), int(exactcoords.y), int(exactcoords.z) )
         location.setExactLayerCoordinates(layercoords)
 
-        if not self.world.scene.getInstacesInTile(location):
-            self.agent.setLocation(location)
+        if location == self.agent.getLocation():
+            return True
 
-    def run(self, location):
+        # unblocked = True
+        for x in range( self.properties._sizeX):
+            for y in range( self.properties._sizeY):
+                # if (x or y) == 0:
+                #     continue
+                # loc = self.agent.getLocation()
+                cellPos = location.getLayerCoordinates()
+                cellPos.x += x
+                cellPos.y -= y
 
-        if not self._renderer:
-            self._renderer = fife.CellSelectionRenderer.getInstance(self.world.cameras['main'])
+                layer = self.agent.getLocation().getLayer()
+                if not self.cellCache:
+                    self.cellCache = layer.getCellCache()
+                cell = self.cellCache.getCell(cellPos)
+                if cell.getCellType() != fife.CTYPE_NO_BLOCKER:
+                    return False
 
-        self._renderer.setEnabled(False)
-        self.state = _STATE_RUN
-        movesLeft = self.properties.AP / 10
-
-        iPather = fife.RoutePather()
-        route = iPather.createRoute(self.agent.getLocation(),location, True)
-        route.cutPath(movesLeft) ## Cut the path short if too long
-        self.properties.AP -= route.getPathLength() *10
-        print "Path length:", route.getPathLength()
-
-        ## Test
-
-        '''
-        # TODO: use this instead
-         cellrenderer = fife.CellRenderer.getInstance(self._camera)
-        cellrenderer.addActiveLayer(self._actorlayer)
-        cellrenderer.setEnabledBlocking(True)
-        cellrenderer.setEnabledPathVisual(True)
-        cellrenderer.addPathVisual(self._player)
-        '''
-
-        '''
-        self._renderer.reset()
-        self._renderer.setColor(0,0,255)
-        locationList = route.getPath()
-        while locationList.__len__()>0:
-            location = locationList.pop()
-            self._renderer.selectLocation(location)
-
-        self._renderer.setEnabled(True)
-        '''
-
-        self.agent.move('run', route.getEndNode(), 2)
-
-
-
-    def kick(self, target):
-        self.state = _STATE_KICK
-        self.agent.actOnce('kick', target)
-
-
-    def talk(self, target):
-        self.state = _STATE_TALK
-        self.agent.actOnce('talk', target)
+        # ## Check if the location is empty:
+        # if not self.world.scene.getInstacesInTile(location):
+        self.agent.setLocation(location)
+        return True
 
 
     def die(self):
-        print "This unit is dead!"
+        print "This unit is destroyed!"
         self.world.scene.unitDied(self.agent.getFifeId())
         # self.layer.deleteInstance(self.agent)
 
@@ -199,68 +174,83 @@ class Unit(Agent):
             self.die()
 
     def onInstanceActionFinished(self, instance, action):
-        if self._renderer:
-            # self._renderer.setEnabled(False) ## instead do self._renderer.reset()
-            # self._renderer.reset()
-            self.idle()
-
-# class Movement(object):
-#     ''' Describes the type of movement
-#     '''
-#
-#     type = None
-#     _Walk = 0
-#     _Land = 1
-#     _Hoover = 2
-#     #self._Swim = 3
-#     #self._Jump = 4
-#
-#     def __init__(self, type):
-#         self.type = type
+        pass
 
 
-class GroundUnit(Unit):
+    def createInstance(self, location):
+        super(Building,self).createInstance(location)
+        print "Instance Created!"
 
-    def __init__(self, unitName, world):
-        super(GroundUnit, self).__init__(unitName, world)
-        self.movement = _LAND
-        self.properties._unitType = _GROUND
+        '''
+                ## Test:
+        self.areaCache = self.world.scene.agentLayer.getCellCache()
+        currentPos = self.agent.getLocation().getLayerCoordinates()
+        print "Current position", currentPos
+        rect = fife.Rect(x=currentPos.x, y=currentPos.y, width=4, height=4)
+        cellVector = self.areaCache.getCellsInRect(rect)
+        # areaName = str(self.agent.getFifeId())+"area"
+        # self.areaCache.addCellsToArea(areaName, cellVector)
+        # self.agent.getObject().setArea(areaName)
+        if not self._SelectRenderer:
+            self._SelectRenderer = fife.CellSelectionRenderer.getInstance(self.world.cameras['main'])
+            # self._SelectRenderer.setEnabled(True)
+            # self._SelectRenderer.activateAllLayers(self.world.scene.map)
+        self._SelectRenderer.reset()
+        self._SelectRenderer.setColor(0,0,255)
+
+        print "Number of cells selected:" , cellVector.__len__()
+        for cell in cellVector:
+            coords = cell.getLayerCoordinates()
+            print "Selecting coordinates:", coords
+            loc = fife.Location(self.world.scene.agentLayer)
+            loc.setLayerCoordinates(coords)
+
+            self._SelectRenderer.selectLocation(loc)
+        '''
+
+    def setFootprint(self):
+        '''
+        Sets the cells under this instance as blocking.
+        :return:
+        '''
+        for x in range( self.properties._sizeX):
+            for y in range( self.properties._sizeY):
+                location = self.agent.getLocation()
+                cellPos = location.getLayerCoordinates()
+                cellPos.x += x
+                cellPos.y -= y
+
+                layer = location.getLayer()
+                cellCache = layer.getCellCache()
+                cell = cellCache.getCell(cellPos)
+                cell.setCellType(fife.CTYPE_STATIC_BLOCKER)
 
 
-class HooverUnit(Unit):
-
-    def __init__(self, unitName, world):
-        super(HooverUnit, self).__init__(unitName, world)
-        self.movement = _AIR
-        self.properties._unitType = _HOOVER
 
 
-class InfantryUnit(Unit):
-
-    def __init__(self, unitName, world):
-        super(InfantryUnit, self).__init__(unitName, world)
-        self.movement = _WALK
-        self.properties._unitType = _INFANTRY
-
-
-class HumanSquad(InfantryUnit):
+class Barracks(Building):
 
     def __init__(self, world):
 
-        self.unitName = "HumanSquad"
-        super(HumanSquad, self).__init__(self.unitName, world)
+        # self.unitName = "Barracks"
+        self.unitName = "beach_bar"
+        self.nameSpace = "http://www.fifengine.net/xml/rio_de_hola"
+        super(Barracks, self).__init__(self.unitName, world)
 
 
-        self.properties._cost = 20
-        self.properties._maxAP = 70
-        self.properties._maxHealth = 10
+        self.properties._cost = 200
+        self.properties._maxAP = 0
+        self.properties._maxHealth = 150
         self.properties._upkeep = 1
         self.properties._faction = "Human"
         # self.properties._unitName = "Squad"
 
+        self.properties._sizeX = 4
+        self.properties._sizeY = 4
+        self.properties._energyConsump = 5
+        self.properties._storageSize = 8
+
+
         self.properties.initialize()
 
-        self.lightWeapon = Gun(self.world,fireRate= 20, damageContact=10, range = 5)
-
-
-
+        # self.lightWeapon = Gun(self.world,fireRate= 20, damageContact=10, range = 5)

@@ -379,6 +379,16 @@ class TacticWorld(object):
 
         self.scene.load(filename)
 
+                #TEST
+        # TODO: add a listener to add new instances to the renderer.
+        self.cellRenderer = fife.CellRenderer.getInstance(self.cameras['main'])
+        self.cellRenderer.addActiveLayer(self.scene.agentLayer)
+        # self.cellRenderer.activateAllLayers(self.scene.map)
+        self.cellRenderer.setEnabledBlocking(True)
+        self.cellRenderer.setEnabledPathVisual(True)
+        [self.cellRenderer.addPathVisual(instance.agent) for instance in self.scene.instance_to_agent.values()]
+        self.cellRenderer.setEnabled(True)
+
         # self.initAgents()
         # self.initCameras()
 
