@@ -8,8 +8,7 @@ from agents.hero import Hero
 from agents.girl import Girl
 from agents.cloud import Cloud
 from agents.unit import *
-from agents.beekeeper import Beekeeper
-from agents.agent import create_anonymous_agents
+from agents.building import *
 from fife.extensions.fife_settings import Setting
 
 from gui.huds import TacticalHUD
@@ -188,16 +187,36 @@ class StrategicScene(object):
 
         self.agentLayer = self.map.getLayer('TechdemoMapGroundObjectLayer')
 
+        id_to_class = {"PC": HumanSquad,
+                    "NPC" : HumanSquad,
+                    "beach_bar": Barracks}
 
-        self.hero = HumanSquad(self._world)
-        self.hero.selectInstance("PC")
-        self.instance_to_agent[self.hero.agent.getFifeId()] = self.hero
-        self.hero.start()
+        allInstances = self.agentLayer.getInstances()
 
-        self.girl = HumanSquad(self._world)
-        self.girl.selectInstance('NPC:girl')
-        self.instance_to_agent[self.girl.agent.getFifeId()] = self.girl
-        self.girl.start()
+        for instance in allInstances:
+            id = instance.getId()
+            unitType = id.split(":")[0]
+
+            if unitType in id_to_class.keys():
+                newUnit = id_to_class[unitType](self._world)
+                newUnit.selectInstance(id)
+                self.instance_to_agent[newUnit.agent.getFifeId()] = newUnit
+                newUnit.start()
+                print id , "loaded!"
+
+
+                if isinstance(newUnit,Building):
+                    newUnit.setFootprint()
+
+        # self.hero = HumanSquad(self._world)
+        # self.hero.selectInstance("PC")
+        # self.instance_to_agent[self.hero.agent.getFifeId()] = self.hero
+        # self.hero.start()
+        #
+        # self.girl = HumanSquad(self._world)
+        # self.girl.selectInstance('NPC')
+        # self.instance_to_agent[self.girl.agent.getFifeId()] = self.girl
+        # self.girl.start()
 
 
         ## Spawn additional units:
@@ -223,6 +242,7 @@ class StrategicScene(object):
         #     cloud.start(0.1, 0.05)
 
     def save(self, filename):
+        print "Saving map..."
         saveMapFile(filename, self.engine, self.map)
 
 

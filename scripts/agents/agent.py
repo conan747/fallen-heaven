@@ -53,6 +53,14 @@ class Agent(fife.InstanceActionListener):
         object = self.world.model.getObject(self.unitName, self.nameSpace)
         point = location.getLayerCoordinates()
         self.agent = self.world.scene.agentLayer.createInstance(object, point)
+        self.agent.setCellStackPosition(0)
+
+        if self.unitName:
+            fifeID = self.agent.getFifeId()
+            self.agentName = self.unitName + ":" + str(fifeID)
+
+            self.agent.setId(self.agentName)
+            print self.agent.getId()
 
         self.agent.addActionListener(self)
 
@@ -66,12 +74,14 @@ class Agent(fife.InstanceActionListener):
         '''
         layer = self.world.scene.agentLayer
         self.agent = layer.getInstance(instanceName)
+        object = self.agent.getObject()
 
         if self.agent:
+            self.agentName = instanceName
             self.agent.addActionListener(self)
-            # return True
-        # else:
-        #     return False
+            return True
+        else:
+            return False
 
 
 
@@ -89,17 +99,3 @@ class Agent(fife.InstanceActionListener):
 
     # def resetAP(self):
     #     pass
-
-
-def create_anonymous_agents(settings, model, objectName, layer, world, agentClass):
-    agents = []
-    instances = [a for a in layer.getInstances() if a.getObject().getId() == objectName]
-    i = 0
-    for a in instances:
-        agentName = '%s:i:%d' % (objectName, i)
-        i += 1
-        agent = agentClass(settings, model, agentName, layer, world, False)
-        agent.agent = a
-        a.addActionListener(agent)
-        agents.append(agent)
-    return agents

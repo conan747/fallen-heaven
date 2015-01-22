@@ -50,7 +50,7 @@ class TacticalHUD(object):
 class StrategicHUD(object):
     def __init__(self, world):
         self._world = world
-        self._widget = pychan.loadXML('gui/tactical_hud.xml')
+        self._widget = pychan.loadXML('gui/strategic_hud.xml')
 
         # self._image = world.engine.getImageManager().load("./gui/HUDs/combat_botton.png")
         # self._guiImage = fife.GuiImage(self._image)
@@ -65,7 +65,7 @@ class StrategicHUD(object):
 
         # self._widget.position = (0, 0)
         self._widget.mapEvents({
-                'nextTurnButton' : self._world.testBuilding,
+                'toUniverseButton' : self._world.testBuilding,
                 # 'attackLightButton' : self._world.onAttackButtonPressed
         })
 

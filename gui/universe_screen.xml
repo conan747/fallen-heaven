@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ascii"?>
+
+    <VBox hexpand="1">
+        <Label text="Here should go the credit info etc. "/>
+        <HBox vexpand="1">
+            <VBox margins="0,0" hexpand="2">
+                <Button name="toPlanet" text="Enter Planet Strategic"/>
+                <Button name="toWar" text="Enter Planet Tactical"/>
+            </VBox>
+            <ScrollArea>
+                <Label name="dummy" text="Planet info"/>
+                <ListBox name="InfoList"/>
+            </ScrollArea>
+
+        </HBox>
+        <HBox>
+            <Label name="otherButtons" text="Other Buttons"/>
+            <Button name="endTurn" text="End Turn"/>
+        </HBox>
+    </VBox>

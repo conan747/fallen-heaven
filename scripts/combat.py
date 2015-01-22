@@ -1,22 +1,8 @@
 __author__ = 'cos'
 
 
-from fife import fife
-import math, random
-from fife.extensions import pychan
-from fife.extensions.pychan import widgets
-from fife.extensions.pychan.internal import get_manager
 
-from scripts.common.eventlistenerbase import EventListenerBase
-from fife.extensions.savers import saveMapFile
-from fife.extensions.soundmanager import SoundManager
-from agents.hero import Hero
-from agents.girl import Girl
-from agents.cloud import Cloud
 from agents.unit import *
-from agents.beekeeper import Beekeeper
-from agents.agent import create_anonymous_agents
-from fife.extensions.fife_settings import Setting
 
 
 _HEAVY, _LIGHT = xrange(2)

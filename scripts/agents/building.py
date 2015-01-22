@@ -70,6 +70,7 @@ class Building(Agent):
     lightWeapon = None
     heavyWeapon = None
     properties = BuildingProperties()
+    landed = False
 
 
     def __init__(self, unitName, world):
@@ -90,7 +91,7 @@ class Building(Agent):
 
 
     def start(self):
-        self.idle()
+        pass
 
 
     def idle(self):
@@ -123,6 +124,10 @@ class Building(Agent):
         self.properties.AP = self.properties._maxAP
 
     def teleport(self, location):
+        if self.landed:
+            print "Can't teleport! Already constructed here!"
+            return False
+
         exactcoords = location.getLayerCoordinates()
         layercoords = fife.DoublePoint3D(int(exactcoords.x), int(exactcoords.y), int(exactcoords.z) )
         location.setExactLayerCoordinates(layercoords)
@@ -224,6 +229,8 @@ class Building(Agent):
                 cellCache = layer.getCellCache()
                 cell = cellCache.getCell(cellPos)
                 cell.setCellType(fife.CTYPE_STATIC_BLOCKER)
+
+        self.landed = True
 
 
 

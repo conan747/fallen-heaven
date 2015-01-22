@@ -34,8 +34,6 @@ from agents.girl import Girl
 from agents.cloud import Cloud
 from agents.unit import *
 from agents.building import *
-from agents.beekeeper import Beekeeper
-from agents.agent import create_anonymous_agents
 from fife.extensions.fife_settings import Setting
 
 from gui.huds import StrategicHUD
@@ -230,7 +228,7 @@ class StrategicListener(fife.IKeyListener, fife.IMouseListener):
             c.setEnabled(not c.isEnabled())
         elif keystr == 'r':
             self._world.model.deleteMaps()
-            self._world.load(self.filename)
+            self._world.scene.load(self.filename)
         elif keystr == 'f':
             renderer = fife.CellRenderer.getInstance(self._world.cameras['main'])
             renderer.setEnabledFogOfWar(not renderer.isEnabledFogOfWar())
@@ -392,6 +390,7 @@ class StrategicWorld(object):
         """
         Load a xml map and setup agents and cameras.
         """
+        self.filename = filename
         self.reset()
 
         self.scene.load(filename)

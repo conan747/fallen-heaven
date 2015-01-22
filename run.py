@@ -129,10 +129,11 @@ class IslandDemo(PychanApplicationBase):
 
     def _pump(self):
         if self.listener.quit:
-            self.breakRequested = True
+
 
             # get the correct directory to save the map file to
-            mapSaveDir = getUserDataDirectory("fife", "rio_de_hola") + "/maps"
+            # mapSaveDir = getUserDataDirectory("fife", "fallen") + "/maps"
+            mapSaveDir = "maps"
 
             # create the directory structure if it does not exist
             if not os.path.isdir(mapSaveDir):
@@ -140,6 +141,7 @@ class IslandDemo(PychanApplicationBase):
 
             # save map file to directory
             self.universe.world.scene.save(mapSaveDir + "/savefile.xml")
+            self.breakRequested = True
         else:
             self.universe.pump()
 

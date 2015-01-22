@@ -33,8 +33,6 @@ from agents.hero import Hero
 from agents.girl import Girl
 from agents.cloud import Cloud
 from agents.unit import *
-from agents.beekeeper import Beekeeper
-from agents.agent import create_anonymous_agents
 from fife.extensions.fife_settings import Setting
 
 from gui.huds import TacticalHUD
