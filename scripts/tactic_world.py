@@ -184,7 +184,8 @@ class TacticWorld(World):
         # cursorImage = cursor.getImage()
 
     def onAttackButtonPressed(self):
-        self.setMode(_MODE_ATTACK)
+        if self.activeUnit:
+            self.setMode(_MODE_ATTACK)
 
     '''
     def collectGarbage(self):

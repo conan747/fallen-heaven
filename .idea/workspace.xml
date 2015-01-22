@@ -2,14 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6d93f8ad-0f1a-42b5-a9ec-dedf6b7757a8" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/scripts/scene.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/scripts/world.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/maps/shrine2.xml" afterPath="$PROJECT_DIR$/maps/shrine2.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/strategic_scene.py" afterPath="$PROJECT_DIR$/scripts/strategic_scene.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/strategic_world.py" afterPath="$PROJECT_DIR$/scripts/strategic_world.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/tactic_scene.py" afterPath="$PROJECT_DIR$/scripts/tactic_scene.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/tactic_world.py" afterPath="$PROJECT_DIR$/scripts/tactic_world.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/agents/unit.py" afterPath="$PROJECT_DIR$/scripts/agents/unit.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/world.py" afterPath="$PROJECT_DIR$/scripts/world.py" />
     </list>
     <ignored path="rio_de_hola.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -36,42 +34,28 @@
       <file leaf-file-name="run.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/run.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1128" max-vertical-offset="3615">
-              <caret line="88" column="36" selection-start-line="88" selection-start-column="36" selection-end-line="88" selection-end-column="36" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="2950" max-vertical-offset="3615">
+              <caret line="204" column="0" selection-start-line="204" selection-start-column="0" selection-end-line="204" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="universe.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scripts/universe.py">
+      <file leaf-file-name="basicapplication.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../../engine/python/fife/extensions/basicapplication.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2445">
-              <caret line="58" column="8" selection-start-line="58" selection-start-column="8" selection-end-line="58" selection-end-column="8" />
-              <folding>
-                <element signature="e#21#57#0" expanded="true" />
-              </folding>
+            <state vertical-scroll-proportion="0.0" vertical-offset="3160" max-vertical-offset="3930">
+              <caret line="220" column="0" selection-start-line="220" selection-start-column="0" selection-end-line="220" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="strategic_world.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scripts/strategic_world.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-2.9649122" vertical-offset="716" max-vertical-offset="3540">
-              <caret line="59" column="42" selection-start-line="59" selection-start-column="42" selection-end-line="59" selection-end-column="42" />
-              <folding>
-                <element signature="e#1006#1027#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="tactic_world.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="tactic_world.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scripts/tactic_world.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="2.8895185" vertical-offset="0" max-vertical-offset="3240">
-              <caret line="68" column="42" selection-start-line="68" selection-start-column="42" selection-end-line="68" selection-end-column="42" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="1641" max-vertical-offset="3255">
+              <caret line="122" column="6" selection-start-line="122" selection-start-column="6" selection-end-line="122" selection-end-column="6" />
               <folding>
                 <element signature="e#1006#1027#0" expanded="true" />
               </folding>
@@ -79,23 +63,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="strategic_scene.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scripts/strategic_scene.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1215">
-              <caret line="44" column="24" selection-start-line="44" selection-start-column="24" selection-end-line="44" selection-end-column="24" />
-              <folding>
-                <element signature="e#22#43#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="tactic_scene.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="tactic_scene.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/scripts/tactic_scene.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1203" max-vertical-offset="1665">
-              <caret line="98" column="8" selection-start-line="98" selection-start-column="8" selection-end-line="98" selection-end-column="8" />
+            <state vertical-scroll-proportion="0.8753541" vertical-offset="1086" max-vertical-offset="1725">
+              <caret line="93" column="64" selection-start-line="93" selection-start-column="64" selection-end-line="93" selection-end-column="64" />
               <folding>
                 <element signature="e#22#43#0" expanded="true" />
               </folding>
@@ -106,8 +78,8 @@
       <file leaf-file-name="world.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scripts/world.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.9298246" vertical-offset="3292" max-vertical-offset="9015">
-              <caret line="239" column="0" selection-start-line="239" selection-start-column="0" selection-end-line="239" selection-end-column="50" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="4731" max-vertical-offset="9015">
+              <caret line="352" column="26" selection-start-line="352" selection-start-column="14" selection-end-line="352" selection-end-column="26" />
               <folding />
             </state>
           </provider>
@@ -116,19 +88,31 @@
       <file leaf-file-name="unit.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scripts/agents/unit.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="2628" max-vertical-offset="4035">
-              <caret line="182" column="30" selection-start-line="182" selection-start-column="30" selection-end-line="182" selection-end-column="30" />
+            <state vertical-scroll-proportion="-1.7192982" vertical-offset="2197" max-vertical-offset="4035">
+              <caret line="156" column="22" selection-start-line="156" selection-start-column="13" selection-end-line="156" selection-end-column="22" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="weapon.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scripts/agents/weapon.py">
+      <file leaf-file-name="agent.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/scripts/agents/agent.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="438" max-vertical-offset="1110">
-              <caret line="43" column="30" selection-start-line="43" selection-start-column="30" selection-end-line="43" selection-end-column="30" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="978" max-vertical-offset="1590">
+              <caret line="80" column="46" selection-start-line="80" selection-start-column="46" selection-end-line="80" selection-end-column="46" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="universe.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/scripts/universe.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="1330" max-vertical-offset="2445">
+              <caret line="96" column="0" selection-start-line="96" selection-start-column="0" selection-end-line="96" selection-end-column="0" />
+              <folding>
+                <element signature="e#21#57#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -136,8 +120,8 @@
       <file leaf-file-name="scene.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scripts/scene.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="798" max-vertical-offset="2670">
-              <caret line="55" column="8" selection-start-line="55" selection-start-column="8" selection-end-line="55" selection-end-column="8" />
+            <state vertical-scroll-proportion="-7.368421" vertical-offset="1575" max-vertical-offset="2670">
+              <caret line="133" column="61" selection-start-line="133" selection-start-column="59" selection-end-line="133" selection-end-column="61" />
               <folding>
                 <element signature="e#22#43#0" expanded="true" />
               </folding>
@@ -179,7 +163,6 @@
         <option value="$PROJECT_DIR$/scripts/strateic_scene.py" />
         <option value="$PROJECT_DIR$/gui/dialogs/next_turn.xml" />
         <option value="$PROJECT_DIR$/objects/agents/girl/object.xml" />
-        <option value="$PROJECT_DIR$/scripts/agents/unit.py" />
         <option value="$PROJECT_DIR$/objects/buildings.xml" />
         <option value="$PROJECT_DIR$/../../engine/python/fife/extensions/serializers/xmlmapsaver.py" />
         <option value="$PROJECT_DIR$/scripts/combat.py" />
@@ -194,10 +177,11 @@
         <option value="$PROJECT_DIR$/maps/shrine2.xml" />
         <option value="$PROJECT_DIR$/scripts/strategic_scene.py" />
         <option value="$PROJECT_DIR$/scripts/strategic_world.py" />
-        <option value="$PROJECT_DIR$/scripts/world.py" />
         <option value="$PROJECT_DIR$/scripts/scene.py" />
-        <option value="$PROJECT_DIR$/scripts/tactic_scene.py" />
         <option value="$PROJECT_DIR$/scripts/tactic_world.py" />
+        <option value="$PROJECT_DIR$/scripts/world.py" />
+        <option value="$PROJECT_DIR$/scripts/agents/unit.py" />
+        <option value="$PROJECT_DIR$/scripts/tactic_scene.py" />
       </list>
     </option>
   </component>
@@ -547,7 +531,13 @@
       <option name="project" value="LOCAL" />
       <updated>1421897179428</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Added parent classes Scene and World in order to modularise the program.">
+      <created>1421903546666</created>
+      <option name="number" value="00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1421903546666</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -624,28 +614,24 @@
     <MESSAGE value="Added a simple &quot;univers&quot; screen. I should add a startup menu like the shooter example." />
     <MESSAGE value="Startup menu added." />
     <MESSAGE value="Fixed some issues with main menu." />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed some issues with main menu." />
+    <MESSAGE value="Added parent classes Scene and World in order to modularise the program." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added parent classes Scene and World in order to modularise the program." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/scripts/agents/building.py</url>
-          <line>155</line>
-          <option name="timeStamp" value="53" />
+          <url>file://$PROJECT_DIR$/scripts/agents/unit.py</url>
+          <line>142</line>
+          <option name="timeStamp" value="58" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/scripts/universe.py</url>
-          <line>98</line>
-          <option name="timeStamp" value="56" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/scripts/universe.py</url>
-          <line>43</line>
-          <option name="timeStamp" value="57" />
+          <url>file://$PROJECT_DIR$/scripts/world.py</url>
+          <line>352</line>
+          <option name="timeStamp" value="60" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="58" />
+      <option name="time" value="61" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -794,14 +780,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../engine/python/fife/extensions/basicapplication.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="3294" max-vertical-offset="3930">
-          <caret line="229" column="0" selection-start-line="229" selection-start-column="0" selection-end-line="229" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/lib/python2.7/dist-packages/fife/extensions/savers.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="453" max-vertical-offset="1050">
@@ -853,30 +831,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../engine/python/fife/fife.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="722" max-vertical-offset="245505">
-          <caret line="56" column="0" selection-start-line="56" selection-start-column="0" selection-end-line="56" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/agents/agent.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="211" max-vertical-offset="1590">
-          <caret line="26" column="32" selection-start-line="26" selection-start-column="32" selection-end-line="26" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/lib/python2.7/dist-packages/fife/fife.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="114741" max-vertical-offset="245460">
-          <caret line="7631" column="25" selection-start-line="7631" selection-start-column="25" selection-end-line="7631" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/gui/strategic_hud.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="510">
@@ -890,16 +844,6 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="330">
           <caret line="12" column="74" selection-start-line="12" selection-start-column="74" selection-end-line="12" selection-end-column="74" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/gui/huds.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="168" max-vertical-offset="1320">
-          <caret line="18" column="50" selection-start-line="18" selection-start-column="50" selection-end-line="18" selection-end-column="50" />
-          <folding>
-            <element signature="e#21#30#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -951,14 +895,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/run.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1128" max-vertical-offset="3615">
-          <caret line="88" column="36" selection-start-line="88" selection-start-column="36" selection-end-line="88" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/maps/shrine2.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.44759208" vertical-offset="90847" max-vertical-offset="91335">
@@ -977,16 +913,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/universe.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="753" max-vertical-offset="2445">
-          <caret line="58" column="8" selection-start-line="58" selection-start-column="8" selection-end-line="58" selection-end-column="8" />
-          <folding>
-            <element signature="e#21#57#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scripts/strategic_world.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-2.9649122" vertical-offset="716" max-vertical-offset="3540">
@@ -994,14 +920,6 @@
           <folding>
             <element signature="e#1006#1027#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/world.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.9298246" vertical-offset="3292" max-vertical-offset="9015">
-          <caret line="239" column="0" selection-start-line="239" selection-start-column="0" selection-end-line="239" selection-end-column="50" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1013,28 +931,78 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/scene.py">
+    <entry file="file://$PROJECT_DIR$/scripts/gui/huds.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="798" max-vertical-offset="2670">
-          <caret line="55" column="8" selection-start-line="55" selection-start-column="8" selection-end-line="55" selection-end-column="8" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="348" max-vertical-offset="1320">
+          <caret line="34" column="56" selection-start-line="34" selection-start-column="56" selection-end-line="34" selection-end-column="56" />
           <folding>
-            <element signature="e#22#43#0" expanded="true" />
+            <element signature="e#21#30#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../engine/python/fife/fife.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="33295" max-vertical-offset="245460">
+          <caret line="2209" column="0" selection-start-line="2209" selection-start-column="0" selection-end-line="2209" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/universe.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1330" max-vertical-offset="2445">
+          <caret line="96" column="0" selection-start-line="96" selection-start-column="0" selection-end-line="96" selection-end-column="0" />
+          <folding>
+            <element signature="e#21#57#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/run.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2950" max-vertical-offset="3615">
+          <caret line="204" column="0" selection-start-line="204" selection-start-column="0" selection-end-line="204" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../engine/python/fife/extensions/basicapplication.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="3160" max-vertical-offset="3930">
+          <caret line="220" column="0" selection-start-line="220" selection-start-column="0" selection-end-line="220" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/lib/python2.7/dist-packages/fife/fife.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.015817223" vertical-offset="218466" max-vertical-offset="245460">
+          <caret line="14469" column="17" selection-start-line="14469" selection-start-column="17" selection-end-line="14469" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/agents/agent.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="888" max-vertical-offset="1590">
+          <caret line="80" column="46" selection-start-line="80" selection-start-column="46" selection-end-line="80" selection-end-column="46" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/scripts/agents/unit.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2628" max-vertical-offset="4035">
-          <caret line="182" column="30" selection-start-line="182" selection-start-column="30" selection-end-line="182" selection-end-column="30" />
+        <state vertical-scroll-proportion="-1.7192982" vertical-offset="2197" max-vertical-offset="4035">
+          <caret line="156" column="22" selection-start-line="156" selection-start-column="13" selection-end-line="156" selection-end-column="22" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/tactic_scene.py">
+    <entry file="file://$PROJECT_DIR$/scripts/scene.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1203" max-vertical-offset="1665">
-          <caret line="98" column="8" selection-start-line="98" selection-start-column="8" selection-end-line="98" selection-end-column="8" />
+        <state vertical-scroll-proportion="-7.368421" vertical-offset="1575" max-vertical-offset="2670">
+          <caret line="133" column="61" selection-start-line="133" selection-start-column="59" selection-end-line="133" selection-end-column="61" />
           <folding>
             <element signature="e#22#43#0" expanded="true" />
           </folding>
@@ -1043,10 +1011,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/scripts/tactic_world.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="2.8895185" vertical-offset="0" max-vertical-offset="3240">
-          <caret line="68" column="42" selection-start-line="68" selection-start-column="42" selection-end-line="68" selection-end-column="42" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="1641" max-vertical-offset="3255">
+          <caret line="122" column="6" selection-start-line="122" selection-start-column="6" selection-end-line="122" selection-end-column="6" />
           <folding>
             <element signature="e#1006#1027#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/world.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="4731" max-vertical-offset="9015">
+          <caret line="352" column="26" selection-start-line="352" selection-start-column="14" selection-end-line="352" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/tactic_scene.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.8753541" vertical-offset="1086" max-vertical-offset="1725">
+          <caret line="93" column="64" selection-start-line="93" selection-start-column="64" selection-end-line="93" selection-end-column="64" />
+          <folding>
+            <element signature="e#22#43#0" expanded="true" />
           </folding>
         </state>
       </provider>

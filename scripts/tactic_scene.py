@@ -88,9 +88,13 @@ class TacticScene(Scene):
         '''
 
         if unitID in self.instance_to_agent.keys():
-            obj = self.instance_to_agent[unitID]
+            unit = self.instance_to_agent[unitID]
             self.instance_to_agent.__delitem__(unitID)
-            self.agentLayer.deleteInstance(obj.agent)
+            unit.agent.removeActionListener(unit)
+            self._world.cellRenderer.removePathVisual(unit.agent)
+
+            self.agentLayer.deleteInstance(unit.agent)
+            unit.agent = None
         for player in range(2):
             if unitID in self.factionUnits[player]:
                 self.factionUnits[player].remove(unitID)

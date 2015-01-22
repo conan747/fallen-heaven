@@ -578,6 +578,7 @@ class World(object):
         """
 
         # self.collectGarbage()
+        # print "Start pumping world"
 
         engineSettings = self.engine.getSettings()
         ## Could be optimized by using engine.getCursor() and checking the cursor position.
@@ -607,6 +608,4 @@ class World(object):
 
         self.scene.pump()
 
-
-    def onAttackButtonPressed(self):
-        self.setMode(_MODE_ATTACK)
+        # print "End pumping world"

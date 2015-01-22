@@ -75,7 +75,7 @@ class Unit(Agent):
         self.nameSpace = "Unit"
         super(Unit, self).__init__(unitName, self.nameSpace, world)
         # self.agent = layer.getInstance(agentName)
-        self._renderer = None
+        # self._renderer = None
 
 
     # def onInstanceActionFinished(self, instance, action):
@@ -129,10 +129,10 @@ class Unit(Agent):
 
     def run(self, location):
 
-        if not self._renderer:
-            self._renderer = fife.CellSelectionRenderer.getInstance(self.world.cameras['main'])
+        # if not self._renderer:
+        #     self._renderer = fife.CellSelectionRenderer.getInstance(self.world.cameras['main'])
 
-        self._renderer.setEnabled(False)
+        # self._renderer.setEnabled(False)
         self.state = _STATE_RUN
         movesLeft = self.properties.AP / 10
 
@@ -199,10 +199,10 @@ class Unit(Agent):
             self.die()
 
     def onInstanceActionFinished(self, instance, action):
-        if self._renderer:
+        # if self._renderer:
             # self._renderer.setEnabled(False) ## instead do self._renderer.reset()
             # self._renderer.reset()
-            self.idle()
+        self.idle()
 
 # class Movement(object):
 #     ''' Describes the type of movement
