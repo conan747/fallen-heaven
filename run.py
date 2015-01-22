@@ -34,7 +34,7 @@ from fife import fife
 print "Using the FIFE python module found here: ", os.path.dirname(fife.__file__)
 
 from fife.extensions import *
-from scripts.universe import Universe
+from scripts.universe import *
 from scripts.common import eventlistenerbase
 from fife.extensions import pychan
 from fife.extensions.pychan.pychanbasicapplication import PychanApplicationBase
@@ -47,24 +47,72 @@ from fife.extensions.fife_utils import getUserDataDirectory
 TDS = FifePychanSettings(app_name="fallen")
 
 class ApplicationListener(eventlistenerbase.EventListenerBase):
-    def __init__(self, engine):
+    def __init__(self, engine, universe, settings):
         super(ApplicationListener, self).__init__(engine,regKeys=True,regCmd=True, regMouse=False, regConsole=True, regWidget=True)
         self.engine = engine
+        self.universe = universe
+        self._setting = settings
+        self._widget = pychan.loadXML('gui/mainmenu.xml')
         # self.world = world
         engine.getEventManager().setNonConsumableKeys([
                 fife.Key.ESCAPE,])
 
         self.quit = False
-        self.aboutWindow = None
+        # self.aboutWindow = None
 
-        self.rootpanel = pychan.loadXML('gui/rootpanel.xml')
-        self.rootpanel.mapEvents({
-                'quitButton' : self.onQuitButtonPress,
-                'aboutButton' : self.onAboutButtonPress,
-                'optionsButton' : TDS.showSettingsDialog
-        })
-        #self.rootpanel.position = (0, 5)
-        self.rootpanel.show()
+        self._continue = self._widget.findChild(name="continue")
+        self._newgame = self._widget.findChild(name="new_game")
+        # self._credits = self._widget.findChild(name="credits")
+        # self._highscores = self._widget.findChild(name="high_scores")
+        self._quit = self._widget.findChild(name="quit")
+
+        self._widget.position = (0, 0)
+
+        eventMap = {
+            'continue': self.onContinuePressed,
+            'new_game': self.onNewGamePressed,
+            'settings': self._setting.showSettingsDialog,
+            # 'credits': self._world.showCredits,
+            # 'high_scores': self._world.showHighScores,
+            'quit': self.onQuitButtonPress,
+        }
+
+        self._widget.mapEvents(eventMap)
+        self._continueMinWidth = self._continue.min_width
+        self._continueMinHeight = self._continue.min_height
+        self._continueMaxWidth = self._continue.max_width
+        self._continueMaxHeight = self._continue.max_height
+
+    def onContinuePressed(self):
+        self.hide()
+        self.universe.continueGame
+
+    def onNewGamePressed(self):
+        self.hide()
+        self.universe.newGame
+
+    def show(self, cont=False):
+        if cont:
+            self._continue.min_width = self._continueMinWidth
+            self._continue.min_height = self._continueMinHeight
+            self._continue.max_width = self._continueMaxWidth
+            self._continue.max_height = self._continueMaxHeight
+
+        else:
+            self._continue.min_width = 0
+            self._continue.min_height = 0
+            self._continue.max_width = 0
+            self._continue.max_height = 0
+
+        self._continue.adaptLayout()
+        self._widget.show()
+
+
+    def hide(self):
+        self._widget.hide()
+
+    def isVisible(self):
+        return self._widget.isVisible()
 
     def keyPressed(self, evt):
         print evt
@@ -72,14 +120,16 @@ class ApplicationListener(eventlistenerbase.EventListenerBase):
         keystr = evt.getKey().getAsString().lower()
         consumed = False
         if keyval == fife.Key.ESCAPE:
-            self.quit = True
+            self.universe.pauseGame()
+            self.show()
+            # self.quit = True
             evt.consume()
         elif keyval == fife.Key.F10:
             get_manager().getConsole().toggleShowHide()
             evt.consume()
-        elif keystr == 'p':
-            self.engine.getRenderBackend().captureScreen('screenshot.png')
-            evt.consume()
+        # elif keystr == 'p':
+        #     self.engine.getRenderBackend().captureScreen('screenshot.png')
+        #     evt.consume()
 
     def onCommand(self, command):
         if command.getCommandType() == fife.CMD_QUIT_GAME:
@@ -106,41 +156,47 @@ class ApplicationListener(eventlistenerbase.EventListenerBase):
         return result
 
     def onQuitButtonPress(self):
+        self.quit = True
         cmd = fife.Command()
         cmd.setSource(None)
         cmd.setCommandType(fife.CMD_QUIT_GAME)
         self.engine.getEventManager().dispatchCommand(cmd)
 
-    def onAboutButtonPress(self):
-        if not self.aboutWindow:
-            self.aboutWindow = pychan.loadXML('gui/help.xml')
-            self.aboutWindow.mapEvents({ 'closeButton' : self.aboutWindow.hide })
-            self.aboutWindow.distributeData({ 'helpText' : open("misc/infotext.txt").read() })
-        self.aboutWindow.show()
+    # def onAboutButtonPress(self):
+    #     if not self.aboutWindow:
+    #         self.aboutWindow = pychan.loadXML('gui/help.xml')
+    #         self.aboutWindow.mapEvents({ 'closeButton' : self.aboutWindow.hide })
+    #         self.aboutWindow.distributeData({ 'helpText' : open("misc/infotext.txt").read() })
+    #     self.aboutWindow.show()
+
+
 
 class IslandDemo(PychanApplicationBase):
     def __init__(self):
         super(IslandDemo,self).__init__(TDS)
-        self.listener = ApplicationListener(self.engine)
         self.universe = Universe(self.engine, TDS)
+        self.listener = ApplicationListener(self.engine, self.universe, TDS)
+        self.listener.show()
+        # self.mainMenu = MainMenu(self.universe, TDS)
+        # self.mainMenu.show()
 
     def createListener(self):
         pass # already created in constructor
 
     def _pump(self):
         if self.listener.quit:
+            if self.universe.world:
 
+                # get the correct directory to save the map file to
+                # mapSaveDir = getUserDataDirectory("fife", "fallen") + "/maps"
+                mapSaveDir = "maps"
 
-            # get the correct directory to save the map file to
-            # mapSaveDir = getUserDataDirectory("fife", "fallen") + "/maps"
-            mapSaveDir = "maps"
+                # create the directory structure if it does not exist
+                if not os.path.isdir(mapSaveDir):
+                    os.makedirs(mapSaveDir)
 
-            # create the directory structure if it does not exist
-            if not os.path.isdir(mapSaveDir):
-                os.makedirs(mapSaveDir)
-
-            # save map file to directory
-            self.universe.world.scene.save(mapSaveDir + "/savefile.xml")
+                # save map file to directory
+                self.universe.world.scene.save(mapSaveDir + "/savefile.xml")
             self.breakRequested = True
         else:
             self.universe.pump()

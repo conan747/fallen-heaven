@@ -13,6 +13,8 @@ class Universe(object):
     This will hold the overall campaign information
     '''
 
+    pause = True
+
     def __init__(self, engine, settings):
 
         self._engine = engine
@@ -38,6 +40,24 @@ class Universe(object):
 
         # self.startTactic(str(self._settings.get("rio", "MapFile")))
         # self.startStrategic(str(self._settings.get("rio", "MapFile")))
+
+    def newGame(self):
+        '''
+        Restarts the game.
+        :return:
+        '''
+        if self.world:
+            self.world.__destroy__()
+
+        engine = self._engine
+        settings = self._settings
+        self.__init__(engine, settings)
+
+    def pauseGame(self):
+        self.pause = True
+
+    def continueGame(self):
+        self.pause = False
 
     def toWarClicked(self):
         print "Going to war!"
@@ -71,5 +91,68 @@ class Universe(object):
 
 
     def pump(self):
+        if self.pause:
+            return
         if self.world:
             self.world.pump()
+
+    # def quit(self):
+    #     self._applictaion.requestQuit()
+
+
+'''
+
+class MainMenu(object):
+    def __init__(self, world, setting):
+        self._world = world
+        self._setting = setting
+        self._widget = pychan.loadXML('gui/mainmenu.xml')
+
+        self._continue = self._widget.findChild(name="continue")
+        self._newgame = self._widget.findChild(name="new_game")
+        # self._credits = self._widget.findChild(name="credits")
+        # self._highscores = self._widget.findChild(name="high_scores")
+        self._quit = self._widget.findChild(name="quit")
+
+        self._widget.position = (0, 0)
+
+        eventMap = {
+            'continue': self._world.continueGame,
+            'new_game': self.hide,
+            'settings': self._setting.showSettingsDialog,
+            # 'credits': self._world.showCredits,
+            # 'high_scores': self._world.showHighScores,
+            'quit': self._world.quit,
+        }
+
+        self._widget.mapEvents(eventMap)
+
+        self._continueMinWidth = self._continue.min_width
+        self._continueMinHeight = self._continue.min_height
+        self._continueMaxWidth = self._continue.max_width
+        self._continueMaxHeight = self._continue.max_height
+
+
+    def show(self, cont=False):
+        if cont:
+            self._continue.min_width = self._continueMinWidth
+            self._continue.min_height = self._continueMinHeight
+            self._continue.max_width = self._continueMaxWidth
+            self._continue.max_height = self._continueMaxHeight
+
+        else:
+            self._continue.min_width = 0
+            self._continue.min_height = 0
+            self._continue.max_width = 0
+            self._continue.max_height = 0
+
+        self._continue.adaptLayout()
+        self._widget.show()
+
+    def hide(self):
+        self._widget.hide()
+
+    def isVisible(self):
+        return self._widget.isVisible()
+
+'''
