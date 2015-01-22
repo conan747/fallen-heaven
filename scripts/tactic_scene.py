@@ -44,6 +44,19 @@ class TacticScene(Scene):
         self.currentTurn = True
         self._objectsToDelete = list()
 
+    def load(self, filename):
+        super(TacticScene, self).load(filename)
+
+        ## Start cellRenderer to show instance paths:
+        self.cellRenderer = fife.CellRenderer.getInstance(self._world.cameras['main'])
+        self.cellRenderer.addActiveLayer(self.agentLayer)
+        # self.cellRenderer.activateAllLayers(self.map)
+        self.cellRenderer.setEnabledBlocking(True)
+        self.cellRenderer.setEnabledPathVisual(True)
+        [self.cellRenderer.addPathVisual(instance.agent) for instance in self.instance_to_agent.values()]
+        self.cellRenderer.setEnabled(True)
+
+
     def resetAPs(self):
         '''
         Resets the AP points of all the units to its maximum.
@@ -91,7 +104,7 @@ class TacticScene(Scene):
             unit = self.instance_to_agent[unitID]
             self.instance_to_agent.__delitem__(unitID)
             unit.agent.removeActionListener(unit)
-            self._world.cellRenderer.removePathVisual(unit.agent)
+            self.cellRenderer.removePathVisual(unit.agent)
 
             self.agentLayer.deleteInstance(unit.agent)
             unit.agent = None

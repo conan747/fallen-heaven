@@ -125,7 +125,6 @@ class Scene(object):
         self.engine.getRenderBackend().setBackgroundColor(80,80,255)
 
 
-
     def initAgents(self):
         """
         Setup agents.

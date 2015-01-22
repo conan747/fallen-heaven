@@ -54,6 +54,8 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
 	the main menu is visible).  It is NOT attached by default.
 	"""
 
+    ## TODO: Handle selection by cell not by image. (In order to select ocluded instances.) What about the case of buildings?
+
     def __init__(self, world):
         self._engine = world.engine
         self._world = world
@@ -218,25 +220,6 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
             self.ctrldown = False
 
 
-
-class MapListener(fife.MapChangeListener):
-    def __init__(self, map):
-        fife.MapChangeListener.__init__(self)
-        map.addChangeListener(self)
-
-    def onMapChanged(self, map, changedLayers):
-        return
-        print "Changes on map ", map.getId()
-        for layer in map.getLayers():
-            print layer.getId()
-            print "    ", ["%s, %x" % (i.getObject().getId(), i.getChangeInfo()) for i in layer.getChangedInstances()]
-
-    def onLayerCreate(self, map, layer):
-        pass
-
-    def onLayerDelete(self, map, layer):
-        pass
-
 _CUR_DEFAULT, _CUR_ATTACK, _CUR_CANNOT = xrange(3)
 
 
@@ -340,23 +323,9 @@ class World(object):
         Load a xml map and setup agents and cameras.
         """
         self.reset()
-
         self.scene.load(filename)
 
-                #TEST
-        # TODO: add a listener to add new instances to the renderer.
-        self.cellRenderer = fife.CellRenderer.getInstance(self.cameras['main'])
-        self.cellRenderer.addActiveLayer(self.scene.agentLayer)
-        # self.cellRenderer.activateAllLayers(self.scene.map)
-        self.cellRenderer.setEnabledBlocking(True)
-        self.cellRenderer.setEnabledPathVisual(True)
-        [self.cellRenderer.addPathVisual(instance.agent) for instance in self.scene.instance_to_agent.values()]
-        self.cellRenderer.setEnabled(True)
-
-        # self.initAgents()
-        # self.initCameras()
-
-        if int(TDS.get("FIFE", "PlaySounds")):
+        if int(self.settings.get("FIFE", "PlaySounds")):
             # play track as background music
             self.music = self.soundmanager.createSoundEmitter('music/rio_de_hola.ogg')
             self.music.looping = True
@@ -609,3 +578,25 @@ class World(object):
         self.scene.pump()
 
         # print "End pumping world"
+
+'''
+
+class MapListener(fife.MapChangeListener):
+    def __init__(self, map):
+        fife.MapChangeListener.__init__(self)
+        map.addChangeListener(self)
+
+    def onMapChanged(self, map, changedLayers):
+        return
+        print "Changes on map ", map.getId()
+        for layer in map.getLayers():
+            print layer.getId()
+            print "    ", ["%s, %x" % (i.getObject().getId(), i.getChangeInfo()) for i in layer.getChangedInstances()]
+
+    def onLayerCreate(self, map, layer):
+        pass
+
+    def onLayerDelete(self, map, layer):
+        pass
+
+ '''
