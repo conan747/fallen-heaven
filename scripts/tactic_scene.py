@@ -8,6 +8,7 @@ from agents.hero import Hero
 from agents.girl import Girl
 from agents.cloud import Cloud
 from agents.unit import *
+from scene import Scene
 from fife.extensions.fife_settings import Setting
 
 from gui.huds import TacticalHUD
@@ -20,7 +21,7 @@ from fife.extensions.savers import saveMapFile
 _MODE_DEFAULT, _MODE_ATTACK, _MODE_DROPSHIP = xrange(3)
 
 
-class TacticScene(object):
+class TacticScene(Scene):
     """
     Master game scene.  Keeps track of all game objects.
 
@@ -37,56 +38,11 @@ class TacticScene(object):
         @param objectLayer: The layer that all objects exist on
         @type objectLayer: L{fife.Layer}
         """
-        self.engine = engine
-        self._world = world
-        self._model = engine.getModel()
-        self.agentLayer = None
-
-        self._objectstodelete = list()
-
-        self._time = 0
-        self._timedelta = 0
-        self._lasttime = 0
-
-        self._music = None
-
+        super(TacticScene, self).__init__(world, engine)
 
         ## Added by Jon:
-        self.factionUnits = {}      ## This will hold the units for each faction.
         self.currentTurn = True
-        self._player1 = True
-        self._player2 = False
         self._objectsToDelete = list()
-
-
-    def destroyScene(self):
-        """
-        Removes all objects from the scene and deletes them from the layer.
-        """
-        pass
-
-
-
-    def getUnitsInTile(self, tileLocation):
-        '''
-        Returns a list of unit IDs that are located in the specified tile position
-        :param tileLocation: Location object.
-        :return: List of IDs
-        '''
-
-        tilePos = tileLocation.getLayerCoordinates()
-        unitIDs = []
-        for id in self.instance_to_agent.keys():
-            unitLocation = self.instance_to_agent[id].agent.getLocation().getLayerCoordinates()
-            if tilePos == unitLocation:
-                unitIDs.append(id)
-
-        print "Found ", unitIDs.__len__(), " units on this tile."
-        return unitIDs
-
-    def pump(self):
-        pass
-
 
     def resetAPs(self):
         '''
@@ -112,19 +68,6 @@ class TacticScene(object):
         #     instance.runTurn()
 
 
-    def getInstance(self, id):
-        '''
-        ##!!!! See if we can get rid of this by replacing it with instance_to_agent .agent
-        :param id: FIFEID of the agent you want to obtain
-        :return: Instance
-        '''
-        ids = self.agentLayer.getInstances()
-        instance = [i for i in ids if i.getFifeId() == id]
-        if instance:
-            return instance[0]
-
-
-
     def applyDamage(self, location, damage):
         '''
         Deals damage to a specific location (and all the units within).
@@ -132,10 +75,10 @@ class TacticScene(object):
         :param damage: Ammount of damage dealt
         :return:
         '''
-        targetIDs = self.getUnitsInTile(location)
+        targetIDs = self.getInstacesInTile(location)
         for unitID in targetIDs:
-            self.instance_to_agent[unitID].getDamage(damage)
-            print "Unit ", unitID, "recieved damage!"
+            if unitID in self.instance_to_agent.keys():
+                self.instance_to_agent[unitID].getDamage(damage)
 
     def unitDied(self, unitID):
         '''
@@ -151,118 +94,12 @@ class TacticScene(object):
         for player in range(2):
             if unitID in self.factionUnits[player]:
                 self.factionUnits[player].remove(unitID)
-        else:
-            print "Could not delete instance: " , unitID
+                return
+
+        print "Could not delete instance: " , unitID
 
 
     def reset(self):
         ### TODO This should be fixed!!!
         self.instance_to_agent = {}
-
-
-    def initScene(self, mapobj):
-        """
-		Initializess the scene and scene graph.  This creates game objects for
-		FIFE instances that exist in the map.
-
-		"""
-
-        #initialize our scene array to some arbitrary size
-
-        self.map, self.agentLayer = None, None
-        self.cameras = {}
-        self.cur_cam2_x, self.initial_cam2_x, self.cam2_scrolling_right = 0, 0, True
-        self.target_rotation = 0
-        self.instance_to_agent = {}
-        # self.startCamera()
-
-    # def musicHasFinished(self):
-    #     """
-		# Sound callback example that gets fired after the music has finished playing.
-		# """
-    #     print
-    #     self._music.name + " has finished playing.  Starting it again...\n"
-
-
-    # def endScene(self):
-    #     # self._soundmanager.stopClip(self._music)
-    #     self._world.endLevel()
-
-
-
-    def load(self, filename):
-        """
-        Load a xml map and setup agents and cameras.
-        """
-        self.filename = filename
-        self.reset()
-        loader = fife.MapLoader(self.engine.getModel(),
-                                self.engine.getVFS(),
-                                self.engine.getImageManager(),
-                                self.engine.getRenderBackend())
-
-        if loader.isLoadable(filename):
-            self.map = loader.load(filename)
-
-        self._world.initCameras()
-        self.initAgents()
-        # self.initCameras()
-
-        #Set background color
-        self.engine.getRenderBackend().setBackgroundColor(80,80,255)
-
-
-
-    def initAgents(self):
-        """
-        Setup agents.
-
-        For this techdemo we have a very simple 'active things on the map' model,
-        which is called agents. All rio maps will have a separate layer for them.
-
-        Note that we keep a mapping from map instances (C++ model of stuff on the map)
-        to the python agents for later reference.
-        """
-        self.agentLayer = self.map.getLayer('TechdemoMapGroundObjectLayer')
-
-        self.hero = HumanSquad(self._world)
-        self.hero.selectInstance("PC")
-        self.instance_to_agent[self.hero.agent.getFifeId()] = self.hero
-        self.hero.start()
-
-        self.girl = HumanSquad(self._world)
-        self.girl.selectInstance('NPC')
-        self.instance_to_agent[self.girl.agent.getFifeId()] = self.girl
-        self.girl.start()
-
-        # Add them to factions
-        self.factionUnits[self._player1] = [self.hero.agent.getFifeId()]
-        self.factionUnits[self._player2] = [self.girl.agent.getFifeId()]
-
-
-        ## Spawn additional units:
-
-
-
-        # Fog of War stuff
-        #self.hero.agent.setVisitor(True)
-        #self.hero.agent.setVisitorRadius(2)
-        #self.girl.agent.setVisitor(True)
-        #self.girl.agent.setVisitorRadius(1)
-
-        # self.beekeepers = create_anonymous_agents(TDS, self.model, 'beekeeper', self.agentLayer, self , Beekeeper)
-        # for beekeeper in self.beekeepers:
-        #     self.instance_to_agent[beekeeper.agent.getFifeId()] = beekeeper
-        #     self.factionUnits[self._player2].append(beekeeper.agent.getFifeId())
-        #     beekeeper.start()
-
-        # # Clouds are currently defunct.
-        # cloudlayer = self.map.getLayer('TechdemoMapTileLayer')
-        # self.clouds = create_anonymous_agents(TDS, self.model, 'Cloud', cloudlayer, Cloud, self)
-        # for cloud in self.clouds:
-        #     cloud.start(0.1, 0.05)
-
-    def save(self, filename):
-        saveMapFile(filename, self.engine, self.map)
-
 
