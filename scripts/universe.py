@@ -51,7 +51,7 @@ class Universe(object):
 
         engine = self._engine
         settings = self._settings
-        self.__init__(engine, settings)
+        self.continueGame()
 
     def pauseGame(self):
         self.pause = True

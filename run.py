@@ -65,6 +65,7 @@ class ApplicationListener(eventlistenerbase.EventListenerBase):
         # self._credits = self._widget.findChild(name="credits")
         # self._highscores = self._widget.findChild(name="high_scores")
         self._quit = self._widget.findChild(name="quit")
+        self.cont = False
 
         self._widget.position = (0, 0)
 
@@ -85,14 +86,16 @@ class ApplicationListener(eventlistenerbase.EventListenerBase):
 
     def onContinuePressed(self):
         self.hide()
-        self.universe.continueGame
+        self.universe.continueGame()
 
     def onNewGamePressed(self):
         self.hide()
-        self.universe.newGame
+        self.universe.newGame()
+        self.cont = True
 
-    def show(self, cont=False):
-        if cont:
+
+    def show(self):
+        if self.cont:
             self._continue.min_width = self._continueMinWidth
             self._continue.min_height = self._continueMinHeight
             self._continue.max_width = self._continueMaxWidth

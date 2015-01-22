@@ -613,6 +613,7 @@ class StrategicWorld(object):
         """
 
         # self.collectGarbage()
+        # print "PUMPING!!!"
 
         engineSettings = self.engine.getSettings()
         ## Could be optimized by using engine.getCursor() and checking the cursor position.
