@@ -18,6 +18,140 @@ from fife.extensions.savers import saveMapFile
 _MODE_DEFAULT, _MODE_ATTACK, _MODE_DROPSHIP = xrange(3)
 
 
+
+
+class UnitLoader(object):
+    '''
+    Reads the unit text files and generates unit property objects.
+    '''
+
+
+
+    def parseFile(self, filename):
+        returnDict = {}
+        fil = open(filename)
+        wholeText = fil.readlines()
+        fil.close()
+        # remove the lines starting with ";" and "\n"
+        wholeText = [text for text in wholeText if text[0] != ";" if text != "\n"]
+
+        # Get indexes of the beginning of units (marked by "[]".
+        IDCells = [text for text in wholeText if text[0] == "["]
+
+        for IDCell in IDCells:
+            ID = IDCell.split("]")[0].split("[")[1]
+            propertyObj = {}
+
+            propertyText = []
+            for i in range(wholeText.index(IDCell)+1, wholeText.__len__()):
+                if wholeText[i][0] == "[":
+                    break # We parsed all the object and found the next object.
+
+                propertyText.append(wholeText[i])
+
+            # Now we have to parse this propertyText.
+            for line in propertyText:
+                if not "=" in line:
+                    continue
+                name, value = line.split("=")
+                value = value.split("\n")[0]
+                numvalue = None
+
+                try:
+                    numvalue = int(value) + 0
+                except:
+                    numvalue = value
+
+                propertyObj[name] = numvalue
+
+            returnDict[ID] = propertyObj
+
+        return returnDict
+
+
+    def parseUnitFile(self, filename, faction):
+        unitDict = self.parseFile(filename)
+        for unit in unitDict.keys():
+            unitDict[unit]["unitName"] = unit
+            unitDict[unit]["faction"] = faction
+        self.unitProps.update(unitDict)
+
+
+    def parseWeaponFile(self, filename, faction):
+        weaponDict = self.parseFile(filename)
+        for weapon in weaponDict.keys():
+            weaponDict[weapon]["weaponName"] = weapon
+            weaponDict[weapon]["faction"] = faction
+        self.weaponProps.update(weaponDict)
+
+
+    def parseBuildingFile(self, filename, faction):
+        buildingDict = self.parseFile(filename)
+        for building in buildingDict.keys():
+            buildingDict[building]["buildingName"] = building
+            buildingDict[building]["faction"] = faction
+        self.buildingProps.update(buildingDict)
+
+
+    def createBuilding(self, buildingName):
+
+        if buildingName not in self.buildingProps.keys():
+            return "Found no building with that buildingName!"
+        buildingProps = self.buildingProps[buildingName]
+        newBuilding = Building(buildingName, self.world)
+        newBuilding.properties = buildingProps
+        return newBuilding
+
+
+    def createUnit(self, unitName):
+        if unitName not in self.unitProps.keys():
+            return "Found no unit with that unitName!"
+
+        unitProps = self.unitProps[unitName]
+        lWeapon = Weapon(self.world)
+        weaponName = unitProps["LightWeapon"]
+        lWeapon.properties = self.weaponProps[weaponName]
+        hWeapon = Weapon(self.world)
+        weaponName = unitProps["HeavyWeapon"]
+        hWeapon.properties = self.weaponProps[weaponName]
+
+        newUnit = Unit(self.world, unitProps)
+        newUnit.lightWeapon = lWeapon
+        newUnit.heavyWeapon = hWeapon
+
+        return newUnit
+
+
+    def isUnit(self, id):
+        if id in self.unitProps.keys():
+            return True
+        else:
+            return False
+
+    def isBuilding(self, id):
+        if id in self.buildingProps.keys():
+            return True
+        else:
+            return False
+
+    def __init__(self, world, settings):
+
+        self.unitProps = {}
+        self.weaponProps = {}
+        self.buildingProps = {}
+
+        self.world = world
+        self.settings = settings
+
+        self.parseUnitFile ("objects/agents/alien.units", "Tauran")
+        self.parseWeaponFile("objects/agents/alien.weapons", "Tauran")
+        self.parseBuildingFile("objects/agents/alien.buildings", "Tauran")
+        self.parseUnitFile("objects/agents/human.units", "Human")
+        self.parseWeaponFile("objects/agents/human.weapons", "Human")
+        self.parseBuildingFile("objects/agents/human.buildings", "Human")
+
+
+
 class Scene(object):
     """
     Master game scene.  Keeps track of all game objects.
@@ -46,6 +180,7 @@ class Scene(object):
         self._player1 = True
         self._player2 = False
 
+        self.unitLoader = UnitLoader(self._world, self._world.settings)
 
     def destroyScene(self):
         """
@@ -70,6 +205,12 @@ class Scene(object):
 
         print "Found ", unitIDs.__len__(), " units on this tile."
         print unitIDs
+
+        # Temp
+        for id in unitIDs:
+            unit = self.instance_to_agent[id]
+            unit.printProperties()
+
         return unitIDs
 
 
@@ -124,6 +265,13 @@ class Scene(object):
         #Set background color
         self.engine.getRenderBackend().setBackgroundColor(80,80,255)
 
+        ## Start cellRenderer to show instance paths:
+        self.cellRenderer = fife.CellRenderer.getInstance(self._world.cameras['main'])
+        self.cellRenderer.addActiveLayer(self.agentLayer)
+        # self.cellRenderer.activateAllLayers(self.map)
+        self.cellRenderer.setEnabledBlocking(True)
+        self.cellRenderer.setEnabled(True)
+
 
     def initAgents(self):
         """
@@ -138,24 +286,33 @@ class Scene(object):
 
         self.agentLayer = self.map.getLayer('TechdemoMapGroundObjectLayer')
 
-        id_to_class = {"PC": HumanSquad,
-                    "NPC" : HumanSquad,
-                    "beach_bar": Barracks}
+        id_to_class = {"PC": "Squad",
+                    "NPC" : "Squad",
+                    "beach_bar": "Barrack"}
 
         allInstances = self.agentLayer.getInstances()
 
         for instance in allInstances:
             id = instance.getId()
-            unitType = id.split(":")[0]
+            agentFound = id.split(":")[0]
+            if agentFound in id_to_class.keys():
+                agentName = id_to_class[agentFound]
 
-            if unitType in id_to_class.keys():
-                newUnit = id_to_class[unitType](self._world)
+                if self.unitLoader.isUnit(agentName):
+                    newUnit = self.unitLoader.createUnit(agentName)
+                elif self.unitLoader.isBuilding(agentName):
+                    newUnit = self.unitLoader.createBuilding(agentName)
+                else:
+                    continue
+
                 newUnit.selectInstance(id)
                 self.instance_to_agent[newUnit.agent.getFifeId()] = newUnit
                 newUnit.start()
                 print id , "loaded!"
 
-                if isinstance(newUnit,Building):
+                # if isinstance(newUnit,Building):
+                #     newUnit.setFootprint()
+                if newUnit.nameSpace == "Building":
                     newUnit.setFootprint()
 
                 ## FIXME: A fix to test the loading of units

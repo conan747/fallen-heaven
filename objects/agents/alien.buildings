@@ -1,0 +1,294 @@
+;Name
+;Hit points (> 0)
+;Cost
+;Size (x)
+;Size (y)
+;Picture ID
+;Is Starship (0 == No)
+;Built where ("NOWHERE", "B-ROAD", "B-WALL", "ANYWHERE")
+;Production type (0 == No prod)
+;Storage type
+;Cash production
+;Research production
+;Energy production
+;Cash consummation
+;Energy consummation
+;Storage size
+;Structure Category { "HQ", "FACTORY", "ENERGY", "LAB", "HOUSE", "AIRPORT", "STARPORT", 
+;                     "SHIELD", "MINING", "WALL", "FORCEFIELD", "TOWER", "SCANNER", 
+;					 "ROAD", "SHIP" };
+;Embedded unit type name (or NUL)
+
+[Wall]
+Hp=20
+Cost=10
+SizeX=1
+SizeY=1
+PictureID=wall
+IsStarship=0
+BuiltWhere=NOWHERE
+ProductionType=NONE
+StorageType=NONE
+ProductionCash=0
+ProductionResearch=0
+ProductionEnergy=0
+ConsummationCash=0
+ConsummationEnergy=0
+StorageSize=0
+StructureCategory=WALL
+EmbeddedUnitType=NUL
+EncyclopediaImg=NUL
+EncyclopediaTxt=NUL
+
+[Refinery]
+Hp=200
+Cost=75
+SizeX=3
+SizeY=3
+PictureID=amin
+IsStarship=0
+BuiltWhere=B-ROAD
+ProductionType=NONE
+StorageType=NONE
+ProductionCash=100
+ProductionResearch=0
+ProductionEnergy=0
+ConsummationCash=0
+ConsummationEnergy=10
+StorageSize=0
+StructureCategory=MINING
+EmbeddedUnitType=NUL
+EncyclopediaImg=e-amin8
+EncyclopediaTxt=Produces credits!income to build units!and structures.
+
+[Energy Center]
+Hp=75
+Cost=40
+SizeX=2
+SizeY=2
+PictureID=aeny
+IsStarship=0
+BuiltWhere=B-ROAD
+ProductionType=NONE
+StorageType=NONE
+ProductionCash=0
+ProductionResearch=0
+ProductionEnergy=100
+ConsummationCash=0
+ConsummationEnergy=0
+StorageSize=0
+StructureCategory=ENERGY
+EmbeddedUnitType=NUL
+EncyclopediaImg=e-aeny8
+EncyclopediaTxt=Produces energy to!maintain buildings.
+
+[Nest Center]
+Hp=110
+Cost=150
+SizeX=2
+SizeY=2
+PictureID=abar
+IsStarship=0
+BuiltWhere=B-ROAD
+ProductionType=TROOP
+StorageType=TROOP
+ProductionCash=0
+ProductionResearch=0
+ProductionEnergy=0
+ConsummationCash=0
+ConsummationEnergy=5
+StorageSize=8
+StructureCategory=Barracks
+EmbeddedUnitType=NUL
+EncyclopediaImg=e-abar8
+EncyclopediaTxt=Allows construction!of squad units.
+
+[Production Center]
+Hp=200
+Cost=225
+SizeX=3
+SizeY=3
+PictureID=afac
+IsStarship=0
+BuiltWhere=B-ROAD
+ProductionType=FACTORY
+StorageType=FACTORY
+ProductionCash=0
+ProductionResearch=0
+ProductionEnergy=0
+ConsummationCash=0
+ConsummationEnergy=50
+StorageSize=12
+StructureCategory=FACTORY
+EmbeddedUnitType=NUL
+EncyclopediaImg=e-afac8
+EncyclopediaTxt=Allows construction!of ground units.
+
+[Hover Pads]
+Hp=200
+Cost=225
+SizeX=4
+SizeY=3
+PictureID=aair
+IsStarship=0
+BuiltWhere=B-ROAD
+ProductionType=HOVER
+StorageType=HOVER
+ProductionCash=0
+ProductionResearch=0
+ProductionEnergy=0
+ConsummationCash=0
+ConsummationEnergy=50
+StorageSize=12
+StructureCategory=AIRPORT
+EmbeddedUnitType=NUL
+EncyclopediaImg=e-aair8
+EncyclopediaTxt=Allows construction!of hover units.
+
+[Research Center]
+Hp=40
+Cost=300
+SizeX=2
+SizeY=2
+PictureID=alab
+IsStarship=0
+BuiltWhere=B-ROAD
+ProductionType=NONE
+StorageType=NONE
+ProductionCash=0
+ProductionResearch=100
+ProductionEnergy=0
+ConsummationCash=0
+ConsummationEnergy=10
+StorageSize=0
+StructureCategory=LAB
+EmbeddedUnitType=NUL
+EncyclopediaImg=e-alab8
+EncyclopediaTxt=Produces research!points to improve the!Tech Level in six!Research Fields. 
+
+[Landing Site]
+Hp=20000
+Cost=225
+SizeX=4
+SizeY=3
+PictureID=abay
+IsStarship=0
+BuiltWhere=B-ROAD
+ProductionType=DROPSHIP
+StorageType=DROPSHIP
+ProductionCash=0
+ProductionResearch=0
+ProductionEnergy=0
+ConsummationCash=0
+ConsummationEnergy=50
+StorageSize=0
+StructureCategory=STARPORT
+EmbeddedUnitType=NUL
+CanBuild=FALSE
+EncyclopediaImg=e-abay8
+EncyclopediaTxt=The only building!that allows!construction of!dropships.
+
+[Anti-Missile]
+Hp=150
+Cost=300
+SizeX=2
+SizeY=2
+PictureID=adef
+IsStarship=0
+BuiltWhere=B-ROAD
+ProductionType=NONE
+StorageType=NONE
+ProductionCash=0
+ProductionResearch=0
+ProductionEnergy=0
+ConsummationCash=0
+ConsummationEnergy=50
+StorageSize=0
+StructureCategory=AntiMissile
+EmbeddedUnitType=NUL
+EncyclopediaImg=e-adef8
+EncyclopediaTxt=Defense against!incoming missiles.
+
+[Scanning Device]
+Hp=25
+Cost=150
+SizeX=2
+SizeY=2
+PictureID=arad
+IsStarship=0
+BuiltWhere=B-ROAD
+ProductionType=NONE
+StorageType=NONE
+ProductionCash=0
+ProductionResearch=0
+ProductionEnergy=0
+ConsummationCash=0
+ConsummationEnergy=30
+StorageSize=0
+StructureCategory=Scanner
+EmbeddedUnitType=NUL
+EncyclopediaImg=e-arad8
+EncyclopediaTxt=Gives information on!adjacent provinces,!improves Nuclear!attack and defense. 
+
+[Nuclear Launcher]
+Hp=150
+Cost=600
+SizeX=2
+SizeY=2
+PictureID=asil
+IsStarship=0
+BuiltWhere=B-ROAD
+ProductionType=NONE
+StorageType=NONE
+ProductionCash=0
+ProductionResearch=0
+ProductionEnergy=0
+ConsummationCash=0
+ConsummationEnergy=50
+StorageSize=0
+StructureCategory=Missile
+EmbeddedUnitType=NUL
+EncyclopediaImg=e-asil8
+EncyclopediaTxt=Allows construction!of nuclear missiles.
+
+[Fusion Tower]
+Hp=40
+Cost=75
+SizeX=1
+SizeY=1
+PictureID=atur
+IsStarship=0
+BuiltWhere=B-WALL
+ProductionType=NONE
+StorageType=NONE
+ProductionCash=0
+ProductionResearch=0
+ProductionEnergy=0
+ConsummationCash=0
+ConsummationEnergy=25
+StorageSize=0
+StructureCategory=TOWER
+EmbeddedUnitType=Fusion Tower
+EncyclopediaImg=NUL
+EncyclopediaTxt=NUL
+
+[Crystal Generator]
+Hp=1150
+Cost=75
+SizeX=3
+SizeY=3
+PictureID=THQ
+BuiltWhere=B-WALL
+ProductionType=NONE
+StorageType=NONE
+ProductionCash=0
+ProductionResearch=0
+ProductionEnergy=0
+ConsummationCash=0
+ConsummationEnergy=25
+StorageSize=0
+StructureCategory=MegaTower
+EmbeddedUnitType=Crystal Generator
+CanBuild=FALSE
+EncyclopediaImg=NUL
+EncyclopediaTxt=NUL

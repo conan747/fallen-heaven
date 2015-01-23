@@ -34,7 +34,7 @@ _STATE_NONE, _STATE_IDLE, _STATE_RUN, _STATE_KICK, _STATE_TALK = xrange(5)
 _LWEAPON, _HWEAPON = xrange(2)
 _INFANTRY, _GROUND, _HOOVER = xrange(3)
 
-
+'''
 class BuildingProperties(object):
 
     _maxHealth = None
@@ -60,7 +60,7 @@ class BuildingProperties(object):
     #     self._unitType = unitType
     #     self._health = maxHealth
     #     self._cost = cost
-
+'''
 
 class Building(Agent):
 
@@ -69,12 +69,12 @@ class Building(Agent):
     movement = None
     lightWeapon = None
     heavyWeapon = None
-    properties = BuildingProperties()
+    properties = None
     landed = False
 
 
     def __init__(self, unitName, world):
-        # self.nameSpace = "Building"
+        self.nameSpace = "Building"
         super(Building, self).__init__(unitName, self.nameSpace, world)
         # self.agent = layer.getInstance(agentName)
         self._renderer = None
@@ -218,8 +218,8 @@ class Building(Agent):
         Sets the cells under this instance as blocking.
         :return:
         '''
-        for x in range( self.properties._sizeX):
-            for y in range( self.properties._sizeY):
+        for x in range( self.properties["SizeX"]):
+            for y in range( self.properties["SizeY"]):
                 location = self.agent.getLocation()
                 cellPos = location.getLayerCoordinates()
                 cellPos.x += x

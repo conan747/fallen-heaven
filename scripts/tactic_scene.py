@@ -48,13 +48,7 @@ class TacticScene(Scene):
         super(TacticScene, self).load(filename)
 
         ## Start cellRenderer to show instance paths:
-        self.cellRenderer = fife.CellRenderer.getInstance(self._world.cameras['main'])
-        self.cellRenderer.addActiveLayer(self.agentLayer)
-        # self.cellRenderer.activateAllLayers(self.map)
-        self.cellRenderer.setEnabledBlocking(True)
-        self.cellRenderer.setEnabledPathVisual(True)
         [self.cellRenderer.addPathVisual(instance.agent) for instance in self.instance_to_agent.values()]
-        self.cellRenderer.setEnabled(True)
 
 
     def resetAPs(self):

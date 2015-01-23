@@ -1,0 +1,296 @@
+;Name
+;Hit points (> 0)
+;Cost
+;Size (x)
+;Size (y)
+;Picture ID
+;Is Starship (0 == No)
+;Built where ("NOWHERE", "B-ROAD", "B-WALL", "ANYWHERE")
+;Production type ("NONE", "TROOP", "FACTORY", "HOVER", "MISSILE", "DROPSHIP")
+;Storage type ("NONE", "TROOP", "FACTORY", "HOVER", "MISSILE", "DROPSHIP")
+;	NOTE: for Production and Storage type, there can be more than one type, separated by a space
+;Cash production
+;Research production
+;Energy production
+;Cash consummation
+;Energy consummation
+;Storage size (may be Zero)
+;Structure Category { "HQ", "FACTORY", "ENERGY", "LAB", "HOUSE", "AIRPORT", "STARPORT", 
+;                     "SHIELD", "MINING", "WALL", "FORCEFIELD", "TOWER", "SCANNER", 
+;					  "ROAD", "SHIP" };
+;Embedded unit type name (or NUL)
+
+
+[Wall]
+Hp=20
+Cost=10
+SizeX=1
+SizeY=1
+PictureID=wall
+IsStarship=0
+BuiltWhere=NOWHERE
+ProductionType=NONE
+StorageType=NONE
+ProductionCash=0
+ProductionResearch=0
+ProductionEnergy=0
+ConsummationCash=0
+ConsummationEnergy=0
+StorageSize=0
+StructureCategory=WALL
+EmbeddedUnitType=NUL
+EncyclopediaImg=NUL
+EncyclopediaTxt=NUL
+
+[Mining Facility]
+Hp=250
+Cost=100
+SizeX=3
+SizeY=3
+PictureID=hmin
+IsStarship=0
+BuiltWhere=B-ROAD
+ProductionType=NONE
+StorageType=NONE
+ProductionCash=100
+ProductionResearch=0
+ProductionEnergy=0
+ConsummationCash=0
+ConsummationEnergy=10
+StorageSize=0
+StructureCategory=MINING
+EmbeddedUnitType=NUL
+EncyclopediaImg=e-hmin8
+EncyclopediaTxt=Produces credits!income to build units!and structures.
+
+[Power Plant]
+Hp=100
+Cost=50
+SizeX=2
+SizeY=2
+PictureID=heny
+IsStarship=0
+BuiltWhere=B-ROAD
+ProductionType=NONE
+StorageType=NONE
+ProductionCash=0
+ProductionResearch=0
+ProductionEnergy=100
+ConsummationCash=0
+ConsummationEnergy=0
+StorageSize=0
+StructureCategory=ENERGY
+EmbeddedUnitType=NUL
+EncyclopediaImg=e-heny8
+EncyclopediaTxt=Produces energy to!maintain buildings.
+
+[Barrack]
+Hp=150
+Cost=200
+SizeX=2
+SizeY=2
+PictureID=hbar
+IsStarship=0
+BuiltWhere=B-ROAD
+ProductionType=TROOP
+StorageType=TROOP
+ProductionCash=0
+ProductionResearch=0
+ProductionEnergy=0
+ConsummationCash=0
+ConsummationEnergy=5
+StorageSize=8
+StructureCategory=Barracks
+EmbeddedUnitType=NUL
+EncyclopediaImg=e-hbar8
+EncyclopediaTxt=Allows construction!of squad units.
+
+[Factory]
+Hp=250
+Cost=300
+SizeX=3
+SizeY=3
+PictureID=hfac
+IsStarship=0
+BuiltWhere=B-ROAD
+ProductionType=FACTORY
+StorageType=FACTORY
+ProductionCash=0
+ProductionResearch=0
+ProductionEnergy=0
+ConsummationCash=0
+ConsummationEnergy=50
+StorageSize=12
+StructureCategory=FACTORY
+EmbeddedUnitType=NUL
+EncyclopediaImg=e-hfac8
+EncyclopediaTxt=Allows construction!of ground units.
+
+[Gravport]
+Hp=250
+Cost=300
+SizeX=4
+SizeY=3
+PictureID=hair
+IsStarship=0
+BuiltWhere=B-ROAD
+ProductionType=HOVER
+StorageType=HOVER
+ProductionCash=0
+ProductionResearch=0
+ProductionEnergy=0
+ConsummationCash=0
+ConsummationEnergy=50
+StorageSize=12
+StructureCategory=AIRPORT
+EmbeddedUnitType=NUL
+EncyclopediaImg=e-hair8
+EncyclopediaTxt=Allows construction!of hover units.
+
+[Laboratory]
+Hp=50
+Cost=400
+SizeX=2
+SizeY=2
+PictureID=hlab
+IsStarship=0
+BuiltWhere=B-ROAD
+ProductionType=NONE
+StorageType=NONE
+ProductionCash=0
+ProductionResearch=100
+ProductionEnergy=0
+ConsummationCash=0
+ConsummationEnergy=10
+StorageSize=0
+StructureCategory=LAB
+EmbeddedUnitType=NUL
+EncyclopediaImg=e-hlab8
+EncyclopediaTxt=Produces research!points to improve the!Tech Level in six!Research Fields. 
+
+[Shipyard]
+Hp=20000
+Cost=300
+SizeX=4
+SizeY=3
+PictureID=hbay
+IsStarship=0
+BuiltWhere=B-ROAD
+ProductionType=DROPSHIP
+StorageType=NONE
+ProductionCash=0
+ProductionResearch=0
+ProductionEnergy=0
+ConsummationCash=0
+ConsummationEnergy=50
+StorageSize=0
+StructureCategory=STARPORT
+EmbeddedUnitType=NUL
+CanBuild=FALSE
+EncyclopediaImg=e-hbay8
+EncyclopediaTxt=The only building!that allows!construction of!dropships.
+
+[Anti-Missile]
+Hp=200
+Cost=400
+SizeX=2
+SizeY=2
+PictureID=hdef
+IsStarship=0
+BuiltWhere=B-ROAD
+ProductionType=NONE
+StorageType=NONE
+ProductionCash=0
+ProductionResearch=0
+ProductionEnergy=0
+ConsummationCash=0
+ConsummationEnergy=50
+StorageSize=0
+StructureCategory=AntiMissile
+EmbeddedUnitType=NUL
+EncyclopediaImg=e-hdef8
+EncyclopediaTxt=Defense against!incoming missiles.
+
+[Radar]
+Hp=30
+Cost=200
+SizeX=2
+SizeY=2
+PictureID=hrad
+IsStarship=0
+BuiltWhere=B-ROAD
+ProductionType=NONE
+StorageType=NONE
+ProductionCash=0
+ProductionResearch=0
+ProductionEnergy=0
+ConsummationCash=0
+ConsummationEnergy=30
+StorageSize=0
+StructureCategory=Scanner
+EmbeddedUnitType=NUL
+EncyclopediaImg=e-hrad8
+EncyclopediaTxt=Gives information on!adjacent provinces,!improves Nuclear!attack and defense. 
+
+[Nuclear Silo]
+Hp=200
+Cost=800
+SizeX=2
+SizeY=2
+PictureID=hsil
+IsStarship=0
+BuiltWhere=B-ROAD
+ProductionType=NONE
+StorageType=NONE
+ProductionCash=0
+ProductionResearch=0
+ProductionEnergy=0
+ConsummationCash=0
+ConsummationEnergy=50
+StorageSize=0
+StructureCategory=Missile
+EmbeddedUnitType=NUL
+EncyclopediaImg=e-hsil8
+EncyclopediaTxt=Allows construction!of nuclear missiles.
+
+[Laser Tower]
+Hp=50
+Cost=100
+SizeX=1
+SizeY=1
+PictureID=htur
+IsStarship=0
+BuiltWhere=B-WALL
+ProductionType=NONE
+StorageType=NONE
+ProductionCash=0
+ProductionResearch=0
+ProductionEnergy=0
+ConsummationCash=0
+ConsummationEnergy=25
+StorageSize=0
+StructureCategory=TOWER
+EmbeddedUnitType=Laser Tower
+EncyclopediaImg=NUL
+EncyclopediaTxt=NUL
+
+[MegaTower]
+Hp=1100
+Cost=75
+SizeX=3
+SizeY=3
+PictureID=HHQ
+BuiltWhere=B-WALL
+ProductionType=NONE
+StorageType=NONE
+ProductionCash=0
+ProductionResearch=0
+ProductionEnergy=0
+ConsummationCash=0
+ConsummationEnergy=25
+StorageSize=0
+StructureCategory=MegaTower
+EmbeddedUnitType=MegaTower
+CanBuild=FALSE
+EncyclopediaImg=NUL
+EncyclopediaTxt=NUL

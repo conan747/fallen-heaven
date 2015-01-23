@@ -290,6 +290,7 @@ class World(object):
         # self._objectsToDelete = list()
         self.mode = _MODE_DEFAULT
 
+
         self.cursorHandler = CursorHandler(self.engine.getImageManager(), self.engine.getCursor())
 
 
