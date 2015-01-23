@@ -24,7 +24,6 @@
 from fife import fife
 from agent import Agent
 from fife.extensions.fife_settings import Setting
-from weapon import *
 from building import Building
 
 
@@ -38,29 +37,6 @@ _LWEAPON, _HWEAPON = xrange(2)
 
 
 ## TODO: When unit is moving, prevent from selecting new position.
-
-class UnitProperties(object):
-
-    _maxHealth = None
-    health = None
-    _unitType = None
-    _cost = None
-    _maxAP = None
-    AP = None
-    _faction = None
-    _unitName = None # common name of the unit
-
-    # namespaceId #included in Model
-
-    def initialize(self):
-        self.health = self._maxHealth
-        self.AP = self._maxAP
-    # def __init__(self, maxHealth, unitType, cost):
-    #     self._maxHealth = maxHealth
-    #     self._unitType = unitType
-    #     self._health = maxHealth
-    #     self._cost = cost
-
 
 class Unit(Agent):
     '''
@@ -98,10 +74,6 @@ class Unit(Agent):
 
         self.health = self.properties["Hp"]
         self.AP = self.properties["TimeUnits"]
-
-
-    # def onInstanceActionFinished(self, instance, action):
-    #     pass
 
 
     def onInstanceActionCancelled(self, instance, action):
@@ -164,28 +136,6 @@ class Unit(Agent):
         self.AP -= route.getPathLength() *10
         print "Path length:", route.getPathLength()
 
-        ## Test
-
-        '''
-        # TODO: use this instead
-         cellrenderer = fife.CellRenderer.getInstance(self._camera)
-        cellrenderer.addActiveLayer(self._actorlayer)
-        cellrenderer.setEnabledBlocking(True)
-        cellrenderer.setEnabledPathVisual(True)
-        cellrenderer.addPathVisual(self._player)
-        '''
-
-        '''
-        self._renderer.reset()
-        self._renderer.setColor(0,0,255)
-        locationList = route.getPath()
-        while locationList.__len__()>0:
-            location = locationList.pop()
-            self._renderer.selectLocation(location)
-
-        self._renderer.setEnabled(True)
-        '''
-
         self.agent.move('run', route.getEndNode(), 2)
 
 
@@ -228,25 +178,27 @@ class Unit(Agent):
 
     def printProperties(self):
         print self.properties
-#
-#
-# class HumanSquad(InfantryUnit):
-#
-#     def __init__(self, world):
-#
-#         self.unitName = "HumanSquad"
-#         super(HumanSquad, self).__init__(self.unitName, world)
-#
-#
-#         self.properties["Cost"] = 20
-#         self.properties["TimeUnits"] = 70
-#         self.properties["Hp"] = 10
-#         self.properties["Upkeep"] = 1
-#         self.properties[faction] = "Human"
-#         # self.properties._unitName = "Squad"
-#
-#         # self.properties.initialize()
-#
-#         self.lightWeapon = Gun(self.world,fireRate= 20, damageContact=10, range = 5)
-#
-#
+
+
+
+class Weapon(object):
+    """
+	Weapon
+
+	This class is a super class and is meant to be inherited and
+	not used directly.  You should implement fire() in the sub-
+	class.
+	        """
+
+    def __init__(self, world):
+        self._world = world
+        self.properties = {}
+
+
+
+    def fire(self, location):
+        """
+        Fires the weapon in the specified direction.
+        To be rewritten
+        """
+        self._world.scene.applyDamage(location, self.properties["DamageContact"])

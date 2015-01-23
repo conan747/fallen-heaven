@@ -49,6 +49,8 @@ class TacticScene(Scene):
 
         ## Start cellRenderer to show instance paths:
         [self.cellRenderer.addPathVisual(instance.agent) for instance in self.instance_to_agent.values()]
+        self.cellRenderer.setEnabledPathVisual(True)
+        self.cellRenderer.setEnabled(True)
 
 
     def resetAPs(self):

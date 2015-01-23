@@ -23,6 +23,7 @@ _MODE_DEFAULT, _MODE_ATTACK, _MODE_DROPSHIP = xrange(3)
 class UnitLoader(object):
     '''
     Reads the unit text files and generates unit property objects.
+    It can be used to obtain unit and building objects (without attached instances).
     '''
 
 
@@ -156,8 +157,7 @@ class Scene(object):
     """
     Master game scene.  Keeps track of all game objects.
 
-    This is the meat and potatoes of the game.  This class takes care of the scene graph,
-    updating objects, destroying objects, collision detection, etc etc.
+    This is the meat and potatoes of the game.  This class takes care of all the units.
     """
 
     def __init__(self, world, engine):
@@ -270,6 +270,7 @@ class Scene(object):
         self.cellRenderer.addActiveLayer(self.agentLayer)
         # self.cellRenderer.activateAllLayers(self.map)
         self.cellRenderer.setEnabledBlocking(True)
+        self.cellRenderer.setPathColor(0,0,255)
         self.cellRenderer.setEnabled(True)
 
 

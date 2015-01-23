@@ -24,7 +24,6 @@
 from fife import fife
 from agent import Agent
 from fife.extensions.fife_settings import Setting
-from weapon import *
 
 
 
@@ -34,33 +33,7 @@ _STATE_NONE, _STATE_IDLE, _STATE_RUN, _STATE_KICK, _STATE_TALK = xrange(5)
 _LWEAPON, _HWEAPON = xrange(2)
 _INFANTRY, _GROUND, _HOOVER = xrange(3)
 
-'''
-class BuildingProperties(object):
-
-    _maxHealth = None
-    health = None
-    _unitType = None
-    _cost = None
-    _maxAP = None
-    AP = None
-    _faction = None
-    _unitName = None # common name of the unit
-    _sizeX = 1
-    _sizeY = 1
-    _energyConsump = 0
-    _storageSize = 0
-
-    # namespaceId #included in Model
-
-    def initialize(self):
-        self.health = self._maxHealth
-        self.AP = self._maxAP
-    # def __init__(self, maxHealth, unitType, cost):
-    #     self._maxHealth = maxHealth
-    #     self._unitType = unitType
-    #     self._health = maxHealth
-    #     self._cost = cost
-'''
+## TODO: Perhaps I could encapsulate common methods with the Unit class? This should be added to the Agent class I guess.
 
 class Building(Agent):
 
@@ -186,32 +159,6 @@ class Building(Agent):
         super(Building,self).createInstance(location)
         print "Instance Created!"
 
-        '''
-                ## Test:
-        self.areaCache = self.world.scene.agentLayer.getCellCache()
-        currentPos = self.agent.getLocation().getLayerCoordinates()
-        print "Current position", currentPos
-        rect = fife.Rect(x=currentPos.x, y=currentPos.y, width=4, height=4)
-        cellVector = self.areaCache.getCellsInRect(rect)
-        # areaName = str(self.agent.getFifeId())+"area"
-        # self.areaCache.addCellsToArea(areaName, cellVector)
-        # self.agent.getObject().setArea(areaName)
-        if not self._SelectRenderer:
-            self._SelectRenderer = fife.CellSelectionRenderer.getInstance(self.world.cameras['main'])
-            # self._SelectRenderer.setEnabled(True)
-            # self._SelectRenderer.activateAllLayers(self.world.scene.map)
-        self._SelectRenderer.reset()
-        self._SelectRenderer.setColor(0,0,255)
-
-        print "Number of cells selected:" , cellVector.__len__()
-        for cell in cellVector:
-            coords = cell.getLayerCoordinates()
-            print "Selecting coordinates:", coords
-            loc = fife.Location(self.world.scene.agentLayer)
-            loc.setLayerCoordinates(coords)
-
-            self._SelectRenderer.selectLocation(loc)
-        '''
 
     def setFootprint(self):
         '''
@@ -231,33 +178,3 @@ class Building(Agent):
                 cell.setCellType(fife.CTYPE_STATIC_BLOCKER)
 
         self.landed = True
-
-
-
-
-class Barracks(Building):
-
-    def __init__(self, world):
-
-        # self.unitName = "Barracks"
-        self.unitName = "beach_bar"
-        self.nameSpace = "http://www.fifengine.net/xml/rio_de_hola"
-        super(Barracks, self).__init__(self.unitName, world)
-
-
-        self.properties._cost = 200
-        self.properties._maxAP = 0
-        self.properties._maxHealth = 150
-        self.properties._upkeep = 1
-        self.properties._faction = "Human"
-        # self.properties._unitName = "Squad"
-
-        self.properties._sizeX = 4
-        self.properties._sizeY = 4
-        self.properties._energyConsump = 5
-        self.properties._storageSize = 8
-
-
-        self.properties.initialize()
-
-        # self.lightWeapon = Gun(self.world,fireRate= 20, damageContact=10, range = 5)
