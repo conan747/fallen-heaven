@@ -10,7 +10,11 @@ from fife.extensions import pychan
 
 class Universe(object):
     '''
-    This will hold the overall campaign information
+    This will hold the overall campaign information.
+    It also takes care of the main GUI where the player can choose the planet and end turn.
+    So far it just creates two buttons:
+    Start Strategic turn: Generates a strategic_world instance. It's the overall "building" mode.
+    Start Tactical turn: Generates a tactic_world instance. It's the combat mode.
     '''
 
     pause = True

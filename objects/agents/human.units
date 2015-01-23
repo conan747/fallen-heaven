@@ -1,0 +1,230 @@
+;Unit Type name
+;Facing ID (BMP file)
+;Name of light weapon section or NO WEAPON
+;Name of heavy weapon section 
+;Type of movement "NOMOVE", "GROUND", "HOVER"
+;Cash to produce
+;Type of industry producing it "NONE", "TROOP", "FACTORY", "HOVER", "MISSILE", "DROPSHIP"
+;Action Points
+;Armor
+;Upkeep cost
+;Unit Type Category Squad, SuperSquad, Buggy, LtGrav, LtTank, Tank, HeavyGrav, 
+;                   LongRange, LongRangeHover, MegaTank, TowerGun, 
+;					Dropship, NuclearMissile
+;MoveSound (Troop, Wheeled, Tracked, Hovering)
+;Embedded --> Only used for Towers, optionnal field --> TRUE / FALSE
+;EncyclopediaImg	--> Image to display in the encyclopedia
+
+[Squad]
+PictureID=hsqu
+LightWeapon=WEAPON_SQUADL
+HeavyWeapon=WEAPON_SQUADH
+Movement=GROUND
+Cost=20
+ProductionType=TROOP
+TimeUnits=70
+Initiative=1
+Hp=10
+Upkeep=1
+UnitCategory=SQUAD
+MoveSound=Troop
+DestructionAnimation=SQUADEXPLODESHUM
+EncyclopediaImg=e-hsqd8
+EncyclopediaTxt=NUL
+
+[Ranger]
+PictureID=hran
+LightWeapon=WEAPON_RANGERL
+HeavyWeapon=WEAPON_RANGERH
+Movement=GROUND
+Cost=40
+ProductionType=TROOP
+TimeUnits=80
+Initiative=1
+Hp=15
+Upkeep=2
+UnitCategory=SUPERSQUAD
+MoveSound=Troop
+DestructionAnimation=SQUADEXPLODESHUM
+EncyclopediaImg=e-hcom8
+EncyclopediaTxt=
+
+[ZenMaster]
+PictureID=hzen
+LightWeapon=WEAPON_ZENL
+HeavyWeapon=WEAPON_ZENH
+Movement=HOVER
+Cost=1000
+ProductionType=TROOP
+TimeUnits=300
+Initiative=1
+Hp=100
+Upkeep=500
+UnitCategory=WEIRD
+MoveSound=Troop
+DestructionAnimation=SQUADEXPLODESHUM
+EncyclopediaImg=NUL
+EncyclopediaTxt=
+
+[L.A.V.]
+PictureID=hatv
+LightWeapon=WEAPON_LAVL
+HeavyWeapon=WEAPON_LAVH
+Movement=GROUND
+Cost=100
+ProductionType=FACTORY
+TimeUnits=140
+Initiative=1
+Hp=20
+Upkeep=5
+UnitCategory=LtTank
+MoveSound=Wheeled
+DestructionAnimation=UNITEXPLODES
+EncyclopediaImg=e-hatv8
+EncyclopediaTxt=
+
+[Artillery]
+PictureID=hart
+LightWeapon=WEAPON_ARTL
+HeavyWeapon=WEAPON_ARTH
+Movement=GROUND
+Cost=600
+ProductionType=FACTORY
+TimeUnits=60
+Initiative=1
+Hp=20
+Upkeep=30
+UnitCategory=LongRange
+MoveSound=Tracked
+DestructionAnimation=UNITEXPLODES
+EncyclopediaImg=e-hart8
+EncyclopediaTxt=
+
+[Buggy]
+PictureID=hbug
+LightWeapon=WEAPON_BUGGYL
+HeavyWeapon=WEAPON_BUGGYH
+Movement=GROUND
+Cost=100
+ProductionType=FACTORY
+TimeUnits=300
+Initiative=1
+Hp=15
+Upkeep=5
+UnitCategory=Buggy
+MoveSound=Wheeled
+DestructionAnimation=UNITEXPLODES
+EncyclopediaImg=e-hbug8
+EncyclopediaTxt=
+
+[Tank]
+PictureID=htnk
+LightWeapon=WEAPON_TANKL
+HeavyWeapon=WEAPON_TANKH
+Movement=GROUND
+Cost=200
+ProductionType=FACTORY
+TimeUnits=100
+Initiative=1
+Hp=65
+Upkeep=10
+UnitCategory=Tank
+MoveSound=Tracked
+DestructionAnimation=UNITEXPLODES
+EncyclopediaImg=e-htnk8
+EncyclopediaTxt=
+
+[Speeder]
+PictureID=hspe
+LightWeapon=WEAPON_SPEEDERL
+HeavyWeapon=WEAPON_SPEEDERH
+Movement=HOVER
+Cost=200
+ProductionType=HOVER
+TimeUnits=180
+Initiative=1
+Hp=20
+Upkeep=10
+UnitCategory=LtGrav
+MoveSound=Hovering
+DestructionAnimation=UNITEXPLODES
+EncyclopediaImg=e-hspd8
+EncyclopediaTxt=
+
+[Grav Tank]
+PictureID=hgrv
+LightWeapon=WEAPON_GRAVTANKL
+HeavyWeapon=WEAPON_GRAVTANKH
+Movement=HOVER
+Cost=200
+ProductionType=HOVER
+TimeUnits=140
+Initiative=1
+Hp=55
+Upkeep=10
+UnitCategory=HeavyGrav
+MoveSound=Hovering
+DestructionAnimation=UNITEXPLODES
+EncyclopediaImg=e-hgrv8
+EncyclopediaTxt=
+
+[GunShip]
+PictureID=hgun
+LightWeapon=WEAPON_GUNSHIPL
+HeavyWeapon=WEAPON_GUNSHIPH
+Movement=HOVER
+Cost=900
+ProductionType=HOVER
+TimeUnits=120
+Initiative=1
+Hp=75
+Upkeep=50
+UnitCategory=LongRangeHover
+MoveSound=Hovering
+DestructionAnimation=UNITEXPLODES
+EncyclopediaImg=e-hgun8
+EncyclopediaTxt=
+
+[Laser Tower]
+PictureID=HTUR
+LightWeapon=WEAPON_TOWERH
+HeavyWeapon=WEAPON_TOWERH
+Movement=NOMOVE
+Cost=100
+ProductionType=NONE
+TimeUnits=10
+Initiative=1
+Hp=50
+Upkeep=0
+UnitCategory=TowerGun
+MoveSound=Troop
+Embedded=TRUE
+AcquireExperience=FALSE
+DestructionAnimation=UNITEXPLODES
+EncyclopediaImg=e-htur8
+EncyclopediaTxt=
+
+[MegaTower]
+; the next picture ID MUST be the tile at pos( 0,0 ) 
+; of the embedding structure
+PictureID=HHQ
+; the next line defines only 1 frame for the unit
+; this means that no matter what is the unit's facing, 
+; the image will stay the same
+QtyFacings=1
+LightWeapon=WEAPON_MEGATWER
+HeavyWeapon=WEAPON_MEGATWER
+ProductionType=NONE
+Movement=NOMOVE
+Embedded=TRUE
+AcquireExperience=FALSE
+Cost=75
+TimeUnits=10
+Hp=1100
+Upkeep=0
+UnitCategory=MegaTowerGun
+MoveSound=Troop
+DestructionAnimation=
+EncyclopediaImg=NUL
+EncyclopediaTxt=NUL
+

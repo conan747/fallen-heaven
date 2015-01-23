@@ -24,7 +24,7 @@
 from fife import fife
 from agent import Agent
 from fife.extensions.fife_settings import Setting
-from weapon import *
+from building import Building
 
 
 
@@ -38,48 +38,42 @@ _LWEAPON, _HWEAPON = xrange(2)
 
 ## TODO: When unit is moving, prevent from selecting new position.
 
-class UnitProperties(object):
-
-    _maxHealth = None
-    health = None
-    _unitType = None
-    _cost = None
-    _maxAP = None
-    AP = None
-    _faction = None
-    _unitName = None # common name of the unit
-
-    # namespaceId #included in Model
-
-    def initialize(self):
-        self.health = self._maxHealth
-        self.AP = self._maxAP
-    # def __init__(self, maxHealth, unitType, cost):
-    #     self._maxHealth = maxHealth
-    #     self._unitType = unitType
-    #     self._health = maxHealth
-    #     self._cost = cost
-
-
 class Unit(Agent):
-
+    '''
+    ;Unit Type name
+    ;Facing ID (BMP file)
+    ;Name of light weapon section or NO WEAPON
+    ;Name of heavy weapon section
+    ;Type of movement "NOMOVE", "GROUND", "HOVER"
+    ;Cash to produce
+    ;Type of industry producing it "NONE", "TROOP", "FACTORY", "HOVER", "MISSILE", "DROPSHIP"
+    ;Action Points
+    ;Armor
+    ;Upkeep cost
+    ;Unit Type Category Squad, SuperSquad, Buggy, LtGrav, LtTank, Tank, HeavyGrav,
+    ;                   LongRange, LongRangeHover, MegaTank, TowerGun,
+    ;					Dropship, NuclearMissile
+    ;MoveSound			(Troop, Wheeled, Tracked, Hovering)
+    ;Embedded			--> Only used for Towers, optionnal field --> TRUE / FALSE
+    ;EncyclopediaImg	--> Image to display in the encyclopedia
+'''
     instance = None
 
-    movement = None
+    # movement = None
     lightWeapon = None
     heavyWeapon = None
-    properties = UnitProperties()
+    properties = {}
+    AP = None
+    health = None
 
-
-    def __init__(self, unitName, world):
+    def __init__(self, world, properties, lWeapon = None, HWeapon = None):
         self.nameSpace = "Unit"
+        self.properties = properties
+        unitName = self.properties["unitName"]
         super(Unit, self).__init__(unitName, self.nameSpace, world)
-        # self.agent = layer.getInstance(agentName)
-        # self._renderer = None
 
-
-    # def onInstanceActionFinished(self, instance, action):
-    #     pass
+        self.health = self.properties["Hp"]
+        self.AP = self.properties["TimeUnits"]
 
 
     def onInstanceActionCancelled(self, instance, action):
@@ -117,7 +111,7 @@ class Unit(Agent):
 
 
     def resetAP(self):
-        self.properties.AP = self.properties._maxAP
+        self.AP = self.properties["TimeUnits"]
 
     def teleport(self, location):
         exactcoords = location.getLayerCoordinates()
@@ -134,35 +128,13 @@ class Unit(Agent):
 
         # self._renderer.setEnabled(False)
         self.state = _STATE_RUN
-        movesLeft = self.properties.AP / 10
+        movesLeft = self.AP / 10
 
         iPather = fife.RoutePather()
         route = iPather.createRoute(self.agent.getLocation(),location, True)
         route.cutPath(movesLeft) ## Cut the path short if too long
-        self.properties.AP -= route.getPathLength() *10
+        self.AP -= route.getPathLength() *10
         print "Path length:", route.getPathLength()
-
-        ## Test
-
-        '''
-        # TODO: use this instead
-         cellrenderer = fife.CellRenderer.getInstance(self._camera)
-        cellrenderer.addActiveLayer(self._actorlayer)
-        cellrenderer.setEnabledBlocking(True)
-        cellrenderer.setEnabledPathVisual(True)
-        cellrenderer.addPathVisual(self._player)
-        '''
-
-        '''
-        self._renderer.reset()
-        self._renderer.setColor(0,0,255)
-        locationList = route.getPath()
-        while locationList.__len__()>0:
-            location = locationList.pop()
-            self._renderer.selectLocation(location)
-
-        self._renderer.setEnabled(True)
-        '''
 
         self.agent.move('run', route.getEndNode(), 2)
 
@@ -192,10 +164,10 @@ class Unit(Agent):
 
 
     def getDamage(self, dmg):
-        print "Previous health: " , self.properties.health
+        print "Previous health: " , self.health
         print "Dealing ", dmg, " damage!"
-        self.properties.health -= dmg
-        if self.properties.health <= 0:
+        self.health -= dmg
+        if self.health <= 0:
             self.die()
 
     def onInstanceActionFinished(self, instance, action):
@@ -204,63 +176,29 @@ class Unit(Agent):
             # self._renderer.reset()
         self.idle()
 
-# class Movement(object):
-#     ''' Describes the type of movement
-#     '''
-#
-#     type = None
-#     _Walk = 0
-#     _Land = 1
-#     _Hoover = 2
-#     #self._Swim = 3
-#     #self._Jump = 4
-#
-#     def __init__(self, type):
-#         self.type = type
+    def printProperties(self):
+        print self.properties
 
 
-class GroundUnit(Unit):
 
-    def __init__(self, unitName, world):
-        super(GroundUnit, self).__init__(unitName, world)
-        self.movement = _LAND
-        self.properties._unitType = _GROUND
+class Weapon(object):
+    """
+	Weapon
 
-
-class HooverUnit(Unit):
-
-    def __init__(self, unitName, world):
-        super(HooverUnit, self).__init__(unitName, world)
-        self.movement = _AIR
-        self.properties._unitType = _HOOVER
-
-
-class InfantryUnit(Unit):
-
-    def __init__(self, unitName, world):
-        super(InfantryUnit, self).__init__(unitName, world)
-        self.movement = _WALK
-        self.properties._unitType = _INFANTRY
-
-
-class HumanSquad(InfantryUnit):
+	This class is a super class and is meant to be inherited and
+	not used directly.  You should implement fire() in the sub-
+	class.
+	        """
 
     def __init__(self, world):
-
-        self.unitName = "HumanSquad"
-        super(HumanSquad, self).__init__(self.unitName, world)
-
-
-        self.properties._cost = 20
-        self.properties._maxAP = 70
-        self.properties._maxHealth = 10
-        self.properties._upkeep = 1
-        self.properties._faction = "Human"
-        # self.properties._unitName = "Squad"
-
-        self.properties.initialize()
-
-        self.lightWeapon = Gun(self.world,fireRate= 20, damageContact=10, range = 5)
+        self._world = world
+        self.properties = {}
 
 
 
+    def fire(self, location):
+        """
+        Fires the weapon in the specified direction.
+        To be rewritten
+        """
+        self._world.scene.applyDamage(location, self.properties["DamageContact"])

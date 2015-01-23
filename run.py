@@ -175,6 +175,10 @@ class ApplicationListener(eventlistenerbase.EventListenerBase):
 
 
 class IslandDemo(PychanApplicationBase):
+    '''
+    Start here! This class basically creates the universe. It passes the pump call to it too.
+    It also creates the Main Menu which is saved in self.listener.
+    '''
     def __init__(self):
         super(IslandDemo,self).__init__(TDS)
         self.universe = Universe(self.engine, TDS)

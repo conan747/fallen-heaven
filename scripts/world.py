@@ -261,7 +261,7 @@ class World(object):
 
     This class handles:
       setup of map view (cameras ...)
-      loading the map
+      loading the scene
 
     That's obviously too much, and should get factored out.
     """
@@ -289,6 +289,7 @@ class World(object):
         # self._player2 = False
         # self._objectsToDelete = list()
         self.mode = _MODE_DEFAULT
+
 
         self.cursorHandler = CursorHandler(self.engine.getImageManager(), self.engine.getCursor())
 
@@ -578,25 +579,3 @@ class World(object):
         self.scene.pump()
 
         # print "End pumping world"
-
-'''
-
-class MapListener(fife.MapChangeListener):
-    def __init__(self, map):
-        fife.MapChangeListener.__init__(self)
-        map.addChangeListener(self)
-
-    def onMapChanged(self, map, changedLayers):
-        return
-        print "Changes on map ", map.getId()
-        for layer in map.getLayers():
-            print layer.getId()
-            print "    ", ["%s, %x" % (i.getObject().getId(), i.getChangeInfo()) for i in layer.getChangedInstances()]
-
-    def onLayerCreate(self, map, layer):
-        pass
-
-    def onLayerDelete(self, map, layer):
-        pass
-
- '''
