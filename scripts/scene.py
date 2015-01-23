@@ -289,11 +289,13 @@ class Scene(object):
 
         id_to_class = {"PC": "Squad",
                     "NPC" : "Squad",
-                    "beach_bar": "Barrack"}
+                    "beach_bar": "Barrack",
+                    "Energy_Center": "Energy Center"}
 
         allInstances = self.agentLayer.getInstances()
 
         for instance in allInstances:
+            print "Loading ", instance.getId()
             id = instance.getId()
             agentFound = id.split(":")[0]
             if agentFound in id_to_class.keys():
