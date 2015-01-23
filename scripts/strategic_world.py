@@ -226,6 +226,6 @@ class StrategicWorld(World):
         '''
 
         print "Testing building"
-        self.construction = Barracks(self)
+        self.construction = self.scene.unitLoader.createBuilding("Barrack")
         self.setMode(_MODE_BUILD)
         # self.scene.build()

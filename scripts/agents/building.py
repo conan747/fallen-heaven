@@ -109,8 +109,8 @@ class Building(Agent):
             return True
 
         # unblocked = True
-        for x in range( self.properties._sizeX):
-            for y in range( self.properties._sizeY):
+        for x in range( self.properties["SizeX"]):
+            for y in range( self.properties["SizeY"]):
                 # if (x or y) == 0:
                 #     continue
                 # loc = self.agent.getLocation()

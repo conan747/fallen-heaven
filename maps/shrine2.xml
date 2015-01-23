@@ -13,6 +13,7 @@
 	<import file="../objects/agents/hippie_priest/object.xml"></import>
 	<import file="../objects/agents/boy/object.xml"></import>
 	<import file="../objects/agents/girl/object.xml"></import>
+	<import file="../objects/agents/buildings/Barrack/object.xml"></import>
 	<layer id="TechdemoMapTileLayer" grid_type="square" z_offset="0.0" x_offset="0.0" pathing="cell_edges_and_diagonals" transparency="0" y_scale="1.0" rotation="0.0" layer_type="interact" x_scale="1.0" y_offset="0.0" layer_type_id="TechdemoMapGroundObjectLayer">
 		<instances>
 			<i y="1.0" r="0" x="-1.0" z="0.0" stackpos="0" o="sands:01" ns="http://www.fifengine.net/xml/rio_de_hola"></i>
@@ -6065,7 +6066,7 @@
 			<i id="PC" y="17.0" r="0" x="7.0" z="0.0" stackpos="0" o="boy"></i>
 			<i id="NPC" y="16.0" r="0" x="3.0" z="0.0" stackpos="0" o="girl"></i>
 			<i y="2.0" r="180" x="-19.0" z="0.0" stackpos="0" o="beach_bar"></i>
-			<i id="beach_bar:33868" y="13.0" r="0" x="4.0" z="0.0" stackpos="0" o="beach_bar"></i>
+			<i id="beach_bar:33868" y="13.0" r="0" x="4.0" z="0.0" stackpos="0" o="Barrack"></i>
 			<i id="beach_bar:33869" y="13.0" r="0" x="13.0" z="0.0" stackpos="0" o="beach_bar"></i>
 		</instances>
 		<lights>

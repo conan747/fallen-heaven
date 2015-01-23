@@ -50,6 +50,8 @@ class Agent(fife.InstanceActionListener):
         :param location: Location where the instance will be.
         :return:
         '''
+        #FIXME: fix this namespace.
+        self.nameSpace = "http://www.fifengine.net/xml/rio_de_hola"
         object = self.world.model.getObject(self.unitName, self.nameSpace)
         point = location.getLayerCoordinates()
         self.agent = self.world.scene.agentLayer.createInstance(object, point)
