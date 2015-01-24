@@ -51,6 +51,12 @@ class StrategicHUD(object):
     def __init__(self, world):
         self._world = world
         self._widget = pychan.loadXML('gui/strategic_hud.xml')
+        self.buildingWidget = pychan.loadXML('gui/construction_pannel.xml')
+        self.buildingWidget.hide()
+
+        self.buildingList = [] # List containing all the property dictionaries for the buildings
+        self.buildingIndex = None   #Index of the selected building in the List.
+        self.selectedBuilding = None    #Name of the selected building.
 
         # self._image = world.engine.getImageManager().load("./gui/HUDs/combat_botton.png")
         # self._guiImage = fife.GuiImage(self._image)
@@ -65,8 +71,13 @@ class StrategicHUD(object):
 
         # self._widget.position = (0, 0)
         self._widget.mapEvents({
-                'toUniverseButton' : self._world.testBuilding,
+                'build' : self.onBuildPressed, #self._world.testBuilding
                 # 'attackLightButton' : self._world.onAttackButtonPressed
+        })
+
+        self.buildingWidget.mapEvents({
+                'buttonPrevious' : self.onPreviousPressed,
+                'buttonNext' : self.onNextPressed
         })
 
 
@@ -76,7 +87,72 @@ class StrategicHUD(object):
     def hide(self):
         self._widget.hide()
 
-    # def setFPSText(self, text):
-    #     self._fpstext.text = text
+    def loadBuildingList(self):
+        '''
+        Will load the information about the buildings (what to display) form the UnitLoader.
+        :return:
+        '''
+        allBuildingProps = self._world.scene.unitLoader.buildingProps
+        for buildingProps in allBuildingProps.values():
+            if buildingProps["faction"] == "Human": ## FIXME: make this variable
+                self.buildingList.append(buildingProps)
 
+        self.buildingIndex = 0
+
+
+    def onBuildPressed(self):
+        if not self.buildingList:
+            self.loadBuildingList()
+
+        if not self.buildingWidget.isVisible():
+            self.buildingWidget.show()
+            self._world.startBuilding()
+            self.onNextPressed()
+        else:
+            self.buildingWidget.hide()
+            self._world.stopBuilding()
+
+    def onPreviousPressed(self):
+        '''
+        Select the previous unit.
+        :return:
+        '''
+        if self.buildingIndex == 0:
+            self.buildingIndex = self.buildingList.__len__() -1
+        else:
+            self.buildingIndex -= 1
+
+        self.selectedBuilding = self.buildingList[self.buildingIndex]["buildingName"]
+        self.updateUI()
+
+    def onNextPressed(self):
+        '''
+        Select the previous unit.
+        :return:
+        '''
+        self.buildingIndex += 1
+
+        if self.buildingIndex == self.buildingList.__len__():
+            self.buildingIndex = 0
+
+        self.selectedBuilding = self.buildingList[self.buildingIndex]["buildingName"]
+        self.updateUI()
+
+
+    def updateUI(self):
+        '''
+        Display the proper information.
+        :return:
+        '''
+        infoDict = {"unitName": "buildingName",
+        "production" : "ProductionType",
+        "energyConsumption" : "ConsummationEnergy",
+        "armor" : "Hp",
+        "Cost" : "Cost"
+        }
+
+        for info in infoDict.keys():
+            label = self.buildingWidget.findChild(name=info)
+            buildingInfo = self.buildingList[self.buildingIndex]
+            label.text = unicode(buildingInfo[infoDict[info]])
 

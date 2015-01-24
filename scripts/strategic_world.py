@@ -104,16 +104,8 @@ class StrategicListener(WorldListener):
 
         if (evt.getButton() == fife.MouseEvent.RIGHT):
             if self._world.mode == _MODE_BUILD:
-                # Distroy the construction first!
-                if self._world.construction:
-                    # self._world.construction.remove()
-                    self._world.scene.agentLayer.deleteInstance(self._world.construction.agent)
-                    self._world.construction.__del__()
-                    self._world.construction = None
-                    self._world.selectUnit(None)
+                self._world.stopBuilding()
 
-                self._world.setMode(_MODE_DEFAULT)
-                self._world.cursorHandler.setCursor(_CUR_DEFAULT)
             else:
                 self._world.selectUnit(None)
 
@@ -176,6 +168,8 @@ class StrategicWorld(World):
         self.HUD = StrategicHUD(self)
         self.HUD.show()
 
+        self.construction = None
+
 
     def handleCursor(self):
         '''
@@ -219,9 +213,9 @@ class StrategicWorld(World):
         # cursorImage = cursor.getImage()
 
 
-    def testBuilding(self):
+    def startBuilding(self):
         '''
-        Test function for buildings.
+        Starts the building mode.
         :return:
         '''
 
@@ -229,3 +223,21 @@ class StrategicWorld(World):
         self.construction = self.scene.unitLoader.createBuilding("Barrack")
         self.setMode(_MODE_BUILD)
         # self.scene.build()
+
+    def stopBuilding(self):
+        '''
+        Handles the transition from contructing to default.
+        :return:
+        '''
+
+        if self.construction:
+            # Destroy the construction first!
+            # self._world.construction.remove()
+            if self.construction.agent:
+                self.scene.agentLayer.deleteInstance(self.construction.agent)
+                self.construction.__del__()
+            self.construction = None
+            self.selectUnit(None)
+
+        self.setMode(_MODE_DEFAULT)
+        self.cursorHandler.setCursor(_CUR_DEFAULT)

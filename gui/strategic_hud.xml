@@ -2,23 +2,8 @@
 
     <Container position="1,667" base_color="255,0,0" border_size="0" background_image="./gui/HUDs/strategic/bottom.png" size="636,76">
 
-	<!--<HBox name="high_score" base_color="188,0,0" opaque="0" min_size="639,82">-->
-            <ImageButton name="toUniverseButton" up_image="./gui/HUDs/strategic/toUniverse.png" position="557,6" size="68,68" border_size="0"/>
-            <!--<ImageButton name="overwatchLightButton" up_image="./gui/HUDs/tactical/overwatchLightButton.png" position="116,7" size="61,69" border_size="0"/>-->
-            <!--<ImageButton name="attackLightButton" up_image="./gui/HUDs/tactical/attackLightButton.png" position="170,7" size="48,68" border_size="0"/>-->
-            <!--<VBox name="unitInfo" base_color="0,0,0" opaque="1" size="183,66" position="228,7"/>-->
-            <!--<ImageButton name="attackHeavyButton" up_image="./gui/HUDs/tactical/attackHeavyButton.png" position="418,7" size="49,69" border_size="0"/>-->
-            <!--<ImageButton name="overwatchHeavyButton" up_image="./gui/HUDs/tactical/overwatchHeavyButton.png" position="458,7" size="64,68" border_size="0"/>-->
-            <!--<ImageButton name="miniMapButton" up_image="./gui/HUDs/tactical/miniMapButton.png" position="513,7" size="61,69" border_size="0"/>-->
-            <!--<ImageButton name="nextTurnButton" up_image="./gui/HUDs/tactical/nextTurnButton.png" position="575,7" size="50,69" border_size="1"/>-->
-            <!--<Button name="attackButton" text="Attack!" min_size="100,100" border_size="1"/>-->
-	<!--</HBox>-->
-</Container>
 
+        <ImageButton name="build" up_image="./gui/HUDs/strategic/build.png" position="46,6" border_size="0"/>
+        <ImageButton name="toUniverseButton" up_image="./gui/HUDs/strategic/toUniverse.png" position="557,6" size="68,68" border_size="0"/>
 
-
-	<!--<HBox name="high_score" position="1,667" base_color="188,0,0" opaque="1">-->
-            <!--<Button name="nextTurnButton" text="Next turn" min_size="100,100" border_size="1"/>-->
-            <!--<Button name="attackButton" text="Attack!" min_size="100,100" border_size="1"/>-->
-	<!--</HBox>-->
-
+    </Container>
