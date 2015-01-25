@@ -1,5 +1,5 @@
 <?fife type="object"?>
-<object id="Research Center" namespace="http://www.fifengine.net/xml/rio_de_hola" blocking="1" static="1"> 
+<object id="Research Center" namespace="http://www.fifengine.net/xml/rio_de_hola" blocking="0" static="1">
 <!--<image source="Research Center.png" direction="0" x_offset="0" y_offset="-58"\>-->
  <image source="barrack.png" direction="0" x_offset="0" y_offset="-58"/> 
  </object>

@@ -47,12 +47,12 @@ _MODE_DEFAULT, _MODE_BUILD = xrange(2)
 
 class StrategicListener(WorldListener):
     """
-	Main game listener.  Listens for Mouse and Keyboard events.
+    Main game listener.  Listens for Mouse and Keyboard events.
 
-	This class also has the ability to attach and detach itself from
-	the event manager in cases where you do not want input processed (i.e. when
-	the main menu is visible).  It is NOT attached by default.
-	"""
+    This class also has the ability to attach and detach itself from
+    the event manager in cases where you do not want input processed (i.e. when
+    the main menu is visible).  It is NOT attached by default.
+    """
 
     def __init__(self, world):
 
@@ -89,6 +89,9 @@ class StrategicListener(WorldListener):
             self._world.construction = None
             self._world.cursorHandler.setCursor(_CUR_DEFAULT)
             self._world.setMode(_MODE_DEFAULT)
+            self._world.stopBuilding()
+            self._world.HUD.buildingWidget.hide()
+        ## TODO: If we are building a wall then don't close the builder widget.
 
 
     def mousePressed(self, evt):
@@ -213,14 +216,17 @@ class StrategicWorld(World):
         # cursorImage = cursor.getImage()
 
 
-    def startBuilding(self):
+    def startBuilding(self, buildingName):
         '''
         Starts the building mode.
         :return:
         '''
 
-        print "Testing building"
-        self.construction = self.scene.unitLoader.createBuilding("Barrack")
+        if self.construction:
+            # get rid of the already loaded instance:
+            self.stopBuilding()
+
+        self.construction = self.scene.unitLoader.createBuilding(buildingName)
         self.setMode(_MODE_BUILD)
         # self.scene.build()
 

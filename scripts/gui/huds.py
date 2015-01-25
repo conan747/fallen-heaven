@@ -106,8 +106,11 @@ class StrategicHUD(object):
 
         if not self.buildingWidget.isVisible():
             self.buildingWidget.show()
-            self._world.startBuilding()
-            self.onNextPressed()
+
+            if not self.selectedBuilding:
+                self.onNextPressed()    # So that it displays some information.
+            else:
+                self._world.startBuilding(self.selectedBuilding)
         else:
             self.buildingWidget.hide()
             self._world.stopBuilding()
@@ -124,6 +127,7 @@ class StrategicHUD(object):
 
         self.selectedBuilding = self.buildingList[self.buildingIndex]["buildingName"]
         self.updateUI()
+        self._world.startBuilding(self.selectedBuilding)
 
     def onNextPressed(self):
         '''
@@ -137,6 +141,7 @@ class StrategicHUD(object):
 
         self.selectedBuilding = self.buildingList[self.buildingIndex]["buildingName"]
         self.updateUI()
+        self._world.startBuilding(self.selectedBuilding)
 
 
     def updateUI(self):
