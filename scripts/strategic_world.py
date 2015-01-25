@@ -47,12 +47,12 @@ _MODE_DEFAULT, _MODE_BUILD = xrange(2)
 
 class StrategicListener(WorldListener):
     """
-	Main game listener.  Listens for Mouse and Keyboard events.
+    Main game listener.  Listens for Mouse and Keyboard events.
 
-	This class also has the ability to attach and detach itself from
-	the event manager in cases where you do not want input processed (i.e. when
-	the main menu is visible).  It is NOT attached by default.
-	"""
+    This class also has the ability to attach and detach itself from
+    the event manager in cases where you do not want input processed (i.e. when
+    the main menu is visible).  It is NOT attached by default.
+    """
 
     def __init__(self, world):
 
@@ -89,6 +89,9 @@ class StrategicListener(WorldListener):
             self._world.construction = None
             self._world.cursorHandler.setCursor(_CUR_DEFAULT)
             self._world.setMode(_MODE_DEFAULT)
+            self._world.stopBuilding()
+            self._world.HUD.buildingWidget.hide()
+        ## TODO: If we are building a wall then don't close the builder widget.
 
 
     def mousePressed(self, evt):
@@ -104,16 +107,8 @@ class StrategicListener(WorldListener):
 
         if (evt.getButton() == fife.MouseEvent.RIGHT):
             if self._world.mode == _MODE_BUILD:
-                # Distroy the construction first!
-                if self._world.construction:
-                    # self._world.construction.remove()
-                    self._world.scene.agentLayer.deleteInstance(self._world.construction.agent)
-                    self._world.construction.__del__()
-                    self._world.construction = None
-                    self._world.selectUnit(None)
+                self._world.stopBuilding()
 
-                self._world.setMode(_MODE_DEFAULT)
-                self._world.cursorHandler.setCursor(_CUR_DEFAULT)
             else:
                 self._world.selectUnit(None)
 
@@ -176,6 +171,8 @@ class StrategicWorld(World):
         self.HUD = StrategicHUD(self)
         self.HUD.show()
 
+        self.construction = None
+
 
     def handleCursor(self):
         '''
@@ -219,13 +216,34 @@ class StrategicWorld(World):
         # cursorImage = cursor.getImage()
 
 
-    def testBuilding(self):
+    def startBuilding(self, buildingName):
         '''
-        Test function for buildings.
+        Starts the building mode.
         :return:
         '''
 
-        print "Testing building"
-        self.construction = self.scene.unitLoader.createBuilding("Barrack")
+        if self.construction:
+            # get rid of the already loaded instance:
+            self.stopBuilding()
+
+        self.construction = self.scene.unitLoader.createBuilding(buildingName)
         self.setMode(_MODE_BUILD)
         # self.scene.build()
+
+    def stopBuilding(self):
+        '''
+        Handles the transition from contructing to default.
+        :return:
+        '''
+
+        if self.construction:
+            # Destroy the construction first!
+            # self._world.construction.remove()
+            if self.construction.agent:
+                self.scene.agentLayer.deleteInstance(self.construction.agent)
+                self.construction.__del__()
+            self.construction = None
+            self.selectUnit(None)
+
+        self.setMode(_MODE_DEFAULT)
+        self.cursorHandler.setCursor(_CUR_DEFAULT)

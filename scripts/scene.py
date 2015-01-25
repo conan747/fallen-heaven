@@ -75,6 +75,7 @@ class UnitLoader(object):
         for unit in unitDict.keys():
             unitDict[unit]["unitName"] = unit
             unitDict[unit]["faction"] = faction
+            unitDict[unit]["type"] = "Unit"
         self.unitProps.update(unitDict)
 
 
@@ -83,6 +84,7 @@ class UnitLoader(object):
         for weapon in weaponDict.keys():
             weaponDict[weapon]["weaponName"] = weapon
             weaponDict[weapon]["faction"] = faction
+            weaponDict[weapon]["type"] = "Weapon"
         self.weaponProps.update(weaponDict)
 
 
@@ -91,6 +93,7 @@ class UnitLoader(object):
         for building in buildingDict.keys():
             buildingDict[building]["buildingName"] = building
             buildingDict[building]["faction"] = faction
+            buildingDict[building]["type"] = "Building"
         self.buildingProps.update(buildingDict)
 
 
@@ -295,7 +298,7 @@ class Scene(object):
         allInstances = self.agentLayer.getInstances()
 
         for instance in allInstances:
-            print "Loading ", instance.getId()
+            # print "Loading ", instance.getId()
             id = instance.getId()
             agentFound = id.split(":")[0]
             if agentFound in id_to_class.keys():

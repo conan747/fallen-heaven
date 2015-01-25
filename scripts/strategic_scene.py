@@ -21,14 +21,13 @@ from fife.extensions.savers import saveMapFile
 
 _MODE_DEFAULT, _MODE_ATTACK, _MODE_DROPSHIP = xrange(3)
 
-##  TODO: Make a Scene class that will be the parent of strategic scene and tactic scene.
 
 class StrategicScene(Scene):
     """
     Master game scene.  Keeps track of all game objects.
 
     This is the meat and potatoes of the game.  This class takes care of the scene graph,
-    updating objects, destroying objects, collision detection, etc etc.
+    updating objects, destroying objects etc etc.
     """
 
     def __init__(self, world, engine):

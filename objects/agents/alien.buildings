@@ -188,7 +188,7 @@ CanBuild=FALSE
 EncyclopediaImg=e-abay8
 EncyclopediaTxt=The only building!that allows!construction of!dropships.
 
-[Anti-Missile]
+[Missile-Shield]
 Hp=150
 Cost=300
 SizeX=2
