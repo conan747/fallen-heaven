@@ -68,14 +68,23 @@ class StrategicListener(WorldListener):
         print "Found " , instances.__len__(), "instances"
 
         if instances:
-            # self.activeUnit = None
             for instance in instances:
                 id = instance.getFifeId()
                 print "Instance: ", id
                 if id in self._world.scene.instance_to_agent.keys():
                     self._world.selectUnit(id)
+                    # If it is a Building, then open the menu.
+                    agent = self._world.scene.instance_to_agent[id]
+                    # print "Namespace:" , instance.nameSpace
+                    print "Namespace: " , agent.nameSpace
+                    if agent.nameSpace == "Building":
+                        self._world.HUD.updateUI()
+                        self._world.HUD.structureWidget.show()
+                    else:
+                        self._world.HUD.structureWidget.hide()
         if self._world.activeUnit:
             self._world.scene.instance_to_agent[self._world.activeUnit].teleport(self._world.getLocationAt(clickpoint))
+
 
     def clickBuild(self, clickpoint):
         '''
@@ -84,6 +93,7 @@ class StrategicListener(WorldListener):
         # We don't need to do anything since the instance should be here already.
         location = self._world.getLocationAt(clickpoint)
         construction = self._world.construction
+        print "Namespace: " , construction.nameSpace
         if construction.teleport(location):
             self._world.scene.addBuilding(self._world.construction)
             self._world.construction = None
@@ -111,6 +121,8 @@ class StrategicListener(WorldListener):
 
             else:
                 self._world.selectUnit(None)
+
+            self._world.HUD.closeExtraWindows()
 
 
     def mouseMoved(self, evt):

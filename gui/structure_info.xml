@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="ascii"?>
+
+
+<HBox position="10,30" base_color="20,20,20" opaque="1" min_size="400,400" hexpand="1">
+    <!--<Container name="building_info">-->
+    <VBox >
+        <VBox vexpand="2" hexpand="1">
+            <!--<VBox hexpand="1">-->
+            <HBox><Label text="Building: "/><Label name="unitName" />  </HBox>
+            <HBox><Label text="Production type: "/><Label name="production" />  </HBox>
+            <HBox><Label text="Energy consumption: "/><Label name="energyConsumption" />  </HBox>
+            <HBox><Label text="Armor: "/><Label name="armor" />  </HBox>
+            <!--<HBox><Label text="Cost: "/><Label name="Cost" />  </HBox>-->
+
+
+            <!--</VBox>-->
+
+            <HBox hexpand="1">
+                <Spacer/>
+                <Icon name="image" image="objects/agents/buildings/barrack.png"/>
+            </HBox>
+
+        </VBox>
+
+        <!--<HBox vexpand="0" max_size="400,20">-->
+        <!--<Label name="errorText"/>-->
+        <!--<Button name="buttonPrevious" text="Previous"/>-->
+        <!--<Button name="buttonNext" text="Next" />-->
+        <!--</HBox>-->
+
+    </VBox>
+
+    <!--</Container>-->
+
+    <!--<Container name="unit_production"  >-->
+
+    <VBox name="constant_pannel" opaque="1" hexpand="1" position="10,430" min_size="400,400" base_color="20,20,20">
+        <Label text="Production"/>
+        <HBox name="available_units">
+            <Icon name="unit1" image="gui/icons/boy.png"/>
+        </HBox>
+        <Button name="all_out" text="All out"/>
+        <HBox name="producing_units">
+            <Icon name="unit1" image="gui/icons/boy.png"/>
+        </HBox>
+        <HBox name="buttons">
+            <Button name="buttonPrevious" text="Previous"/>
+            <Button name="buttonNext" text="Next"/>
+        </HBox>
+    </VBox>
+    <!--</Container>-->
+
+
+</HBox>

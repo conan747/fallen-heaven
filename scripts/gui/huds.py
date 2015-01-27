@@ -13,6 +13,8 @@ from xml.sax.xmlreader import AttributesNSImpl
 # from fife.extensions.pychan.internal import get_manager
 
 
+_MODE_DEFAULT, _MODE_BUILD = xrange(2)
+
 class TacticalHUD(object):
     def __init__(self, world):
         self._world = world
@@ -52,6 +54,8 @@ class StrategicHUD(object):
         self._world = world
         self._widget = pychan.loadXML('gui/strategic_hud.xml')
         self.buildingWidget = pychan.loadXML('gui/construction_pannel.xml')
+        self.structureWidget = pychan.loadXML('gui/structure_info.xml')
+        self.structureWidget.hide()
         self.buildingWidget.hide()
 
         self.buildingList = [] # List containing all the property dictionaries for the buildings
@@ -109,8 +113,8 @@ class StrategicHUD(object):
 
             if not self.selectedBuilding:
                 self.onNextPressed()    # So that it displays some information.
-            else:
-                self._world.startBuilding(self.selectedBuilding)
+
+            self._world.startBuilding(self.selectedBuilding)
         else:
             self.buildingWidget.hide()
             self._world.stopBuilding()
@@ -129,6 +133,7 @@ class StrategicHUD(object):
         self.updateUI()
         self._world.startBuilding(self.selectedBuilding)
 
+
     def onNextPressed(self):
         '''
         Select the previous unit.
@@ -140,8 +145,10 @@ class StrategicHUD(object):
             self.buildingIndex = 0
 
         self.selectedBuilding = self.buildingList[self.buildingIndex]["buildingName"]
+        if self._world.mode == _MODE_BUILD:
+            self._world.startBuilding(self.selectedBuilding)
+
         self.updateUI()
-        self._world.startBuilding(self.selectedBuilding)
 
 
     def updateUI(self):
@@ -156,8 +163,43 @@ class StrategicHUD(object):
         "Cost" : "Cost"
         }
 
+        if not self.buildingList:
+                self.loadBuildingList()
+
+        if not self.selectedBuilding:
+            self.onNextPressed()    # So that it displays some information.
+
+        activeUnitID = self._world.activeUnit
+        if activeUnitID:
+            activeUnit = self._world.scene.instance_to_agent[activeUnitID]
+            activeUnitInfo = activeUnit.properties
+            print activeUnitInfo
+
         for info in infoDict.keys():
+            # For the buildingWidget
             label = self.buildingWidget.findChild(name=info)
             buildingInfo = self.buildingList[self.buildingIndex]
-            label.text = unicode(buildingInfo[infoDict[info]])
+            if label:
+                label.text = unicode(buildingInfo[infoDict[info]])
+
+            if activeUnitID and (activeUnit.nameSpace == "Building"):
+                # For the structureWidget
+                label = self.structureWidget.findChild(name=info)
+                if label:
+                    label.text = unicode(activeUnitInfo[infoDict[info]])
+            else:
+                print "The selected unit is not a Building!"
+
+        if activeUnitID and (activeUnit.nameSpace == "Building"):
+            unitWindow = self.structureWidget.findChild(name="constant_pannel")
+            if activeUnitInfo["ProductionType"] != "NONE":
+                unitWindow.show()
+                print "Showing production window"
+            else:
+                unitWindow.hide()
+                print "Hiding production window!"
+
+    def closeExtraWindows(self):
+        self.buildingWidget.hide()
+        self.structureWidget.hide()
 
