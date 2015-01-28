@@ -14,6 +14,9 @@ from combat import Trajectory
 from fife.extensions.savers import saveMapFile
 
 
+# Temp:
+import os
+
 
 _MODE_DEFAULT, _MODE_ATTACK, _MODE_DROPSHIP = xrange(3)
 
@@ -25,8 +28,6 @@ class UnitLoader(object):
     Reads the unit text files and generates unit property objects.
     It can be used to obtain unit and building objects (without attached instances).
     '''
-
-
 
     def parseFile(self, filename):
         returnDict = {}
@@ -155,6 +156,45 @@ class UnitLoader(object):
         self.parseWeaponFile("objects/agents/human.weapons", "Human")
         self.parseBuildingFile("objects/agents/human.buildings", "Human")
 
+        # self.createFiles()
+
+
+    def createFiles(self):
+        '''
+        Temp! Not for the final game!
+        :return:
+        '''
+
+        os.chdir('/media/cos/Programas/fife/fifengine/demos/fallen/objects/agents/units/')
+        for unit in self.unitProps.keys():
+            file = open(unit+".xml", mode='w')
+            text = '''<?fife type="object"?>\n
+<object blocking="1" id="'''
+            text = text + unit
+            text = text + '''" namespace="http://www.fifengine.net/xml/rio_de_hola" static="0">
+
+
+	<action id="stand">
+		<animation atlas="stand.png" height="96" width="96">
+			<direction delay="2000" dir="0" frames="1"/>
+			<direction delay="2000" dir="45" frames="1"/>
+			<direction delay="2000" dir="90" frames="1"/>
+			<direction delay="2000" dir="135" frames="1"/>
+			<direction delay="2000" dir="180" frames="1"/>
+			<direction delay="2000" dir="225" frames="1"/>
+			<direction delay="2000" dir="270" frames="1"/>
+			<direction delay="2000" dir="315" frames="1"/>
+		</animation>
+	</action>
+
+
+</object>'''
+            file.writelines(text)
+            file.close()
+
+
+
+
 
 
 class Scene(object):
@@ -209,11 +249,6 @@ class Scene(object):
 
         print "Found ", unitIDs.__len__(), " units on this tile."
         print unitIDs
-
-        # Temp
-        for id in unitIDs:
-            unit = self.instance_to_agent[id]
-            unit.printProperties()
 
         return unitIDs
 

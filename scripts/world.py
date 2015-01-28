@@ -42,17 +42,17 @@ from scripts.tactic_scene import TacticScene
 TDS = Setting(app_name="rio_de_hola")
 
 
-_MODE_DEFAULT, _MODE_ATTACK, _MODE_DROPSHIP = xrange(3)
+
 
 
 class WorldListener(fife.IKeyListener, fife.IMouseListener):
     """
-	Main game listener.  Listens for Mouse and Keyboard events.
+    Main game listener.  Listens for Mouse and Keyboard events.
 
-	This class also has the ability to attach and detach itself from
-	the event manager in cases where you do not want input processed (i.e. when
-	the main menu is visible).  It is NOT attached by default.
-	"""
+    This class also has the ability to attach and detach itself from
+    the event manager in cases where you do not want input processed (i.e. when
+    the main menu is visible).  It is NOT attached by default.
+    """
 
     ## TODO: Handle selection by cell not by image. (In order to select ocluded instances.) What about the case of buildings?
 
@@ -109,24 +109,49 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
             self._world.scene.instance_to_agent[self._world.activeUnit].teleport(self._world.getLocationAt(clickpoint))
 
 
+    def clickDeploy(self, clickpoint):
+        '''
+
+        '''
+        unit = self._world.deploying
+        clickLocation = self._world.getLocationAt(clickpoint)
+        if not unit.teleport(clickLocation):
+            # This is supposed to be an ilegal teleport position -> cancel
+            self.cancelDeploy()
+            return
+
+        # Generate an instance for the unit.
+        unit.createInstance(clickLocation)
+        # unit.teleport(clickLocation)
+        self._world.scene.instance_to_agent[unit.agent.getFifeId()] = unit
+        self._world.storage.unitDeployed()
+        self.cancelDeploy()
+
+
+    def cancelDeploy(self):
+        self._world.deploying = None
+        self._world.storage = None
+        self._world.setMode(self._world._MODE_DEFAULT)
+
+
+
     def mousePressed(self, evt):
         if evt.isConsumedByWidgets():
             return
 
         clickpoint = fife.ScreenPoint(evt.getX(), evt.getY())
         if (evt.getButton() == fife.MouseEvent.LEFT):
-            if self._world.mode == _MODE_DEFAULT:
+            if self._world.mode == self._world._MODE_DEFAULT:
                 self.clickDefault(clickpoint)
-            elif self._world.mode == _MODE_ATTACK:
+            elif self._world.mode == self._world._MODE_ATTACK:
                 self.clickAttack(clickpoint)
+            elif self._world.mode == self._world._MODE_DEPLOY:
+                self.clickDeploy(clickpoint)
 
         if (evt.getButton() == fife.MouseEvent.RIGHT):
-            self._world.setMode(_MODE_DEFAULT)
-            instances = self._world.getInstancesAt(clickpoint)
-            print "selected instances on agent layer: ", [i.getObject().getId() for i in instances]
-            if instances:
-                print "Instance menu should've been shown "
-                # self.show_instancemenu(clickpoint, instances[0])
+
+            if self._world.mode == self._world._MODE_BUILD:
+                self._world.stopBuilding()
             else:
                 self._world.selectUnit(None)
 
@@ -265,6 +290,9 @@ class World(object):
 
     That's obviously too much, and should get factored out.
     """
+
+    _MODE_DEFAULT, _MODE_ATTACK, _MODE_DROPSHIP, _MODE_DEPLOY, _MODE_BUILD = xrange(5)
+
     def __init__(self, engine, settings):
         # super(World, self).__init__(engine, regMouse=True, regKeys=True)
         self.engine = engine
@@ -289,7 +317,9 @@ class World(object):
         # self._player1 = True
         # self._player2 = False
         # self._objectsToDelete = list()
-        self.mode = _MODE_DEFAULT
+        self.mode = self._MODE_DEFAULT
+        self.storage = None # Points at the storage object in Deploy mode.
+        self.deploying = None
 
 
         self.cursorHandler = CursorHandler(self.engine.getImageManager(), self.engine.getCursor())
@@ -580,3 +610,20 @@ class World(object):
         self.scene.pump()
 
         # print "End pumping world"
+
+
+    def setMode(self, mode):
+        '''
+        Sets the current runtime tactical mode.
+        :param mode: _MODE_DEFAULT, _MODE_ATTACK, _MODE_DROPSHIP, _MODE_DEPLOY
+        :return:
+        '''
+
+        self.mode = mode
+        if mode == self._MODE_BUILD:
+            self.listener._cellSelectionRenderer.setEnabled(False)
+        # Change cursor type
+        # dictionary containing {mode:cursor}
+        # cursor = self.engine.getCursor()
+        # cursorfile = self.settings.get("rio", "CursorAttack")
+        # cursorImage = cursor.getImage()

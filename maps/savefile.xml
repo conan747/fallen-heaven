@@ -14,6 +14,9 @@
 	<import file="../objects/agents/girl/object.xml"></import>
 	<import file="../objects/agents/buildings/Barrack.xml"></import>
 	<import file="../objects/agents/buildings/Energy_Center.xml"></import>
+	<import file="../objects/agents/units/Squad.xml"></import>
+	<import file="../objects/agents/units/ZenMaster.xml"></import>
+	<import file="../objects/agents/units/Ranger.xml"></import>
 	<layer id="TechdemoMapTileLayer" grid_type="square" z_offset="0.0" x_offset="0.0" pathing="cell_edges_and_diagonals" transparency="0" y_scale="1.0" rotation="0.0" layer_type="interact" x_scale="1.0" y_offset="0.0" layer_type_id="TechdemoMapGroundObjectLayer">
 		<instances>
 			<i y="1.0" r="0" x="-1.0" z="0.0" stackpos="0" o="sands:01" ns="http://www.fifengine.net/xml/rio_de_hola"></i>
@@ -6060,10 +6063,13 @@
 			<i y="-34.0" r="90" x="-41.0" z="0.0" stackpos="0" o="beebox"></i>
 			<i y="-31.0" r="180" x="-40.0" z="0.0" stackpos="0" o="beekeeper"></i>
 			<i y="19.0" r="180" x="43.0" z="0.0" stackpos="0" o="hippie_priest"></i>
-			<i id="PC" y="16.0" r="0" x="12.0" z="0.0" stackpos="0" o="boy"></i>
+			<i id="PC" y="17.0" r="0" x="7.0" z="0.0" stackpos="0" o="boy"></i>
 			<i id="NPC" y="16.0" r="0" x="3.0" z="0.0" stackpos="0" o="girl"></i>
 			<i id="beach_bar:33868" y="13.0" r="0" x="4.0" z="0.0" stackpos="0" o="Barrack"></i>
 			<i id="Energy_Center:33869" y="13.0" r="0" x="13.0" z="0.0" stackpos="0" o="Energy_Center"></i>
+			<i id="Squad:34028" y="-4.0" r="0" x="-7.0" z="0.0" o="Squad"></i>
+			<i id="ZenMaster:34029" y="1.0" r="0" x="-7.0" z="0.0" o="ZenMaster"></i>
+			<i id="Ranger:34030" y="-2.0" r="0" x="-10.0" z="0.0" o="Ranger"></i>
 		</instances>
 		<lights>
 		</lights>

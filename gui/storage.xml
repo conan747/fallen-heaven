@@ -10,6 +10,8 @@
     </HBox>
 
     <Button name="all_out" text="All out"/>
+    <Button name="completeUnits" text="Make units ready"/>
+    <!--Temporary button to test-->
 
     <HBox name="producing_units" vexpand="1">
         <!--<Icon name="producedUnit1" image="gui/icons/boy.png"/>-->

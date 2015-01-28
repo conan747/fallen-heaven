@@ -47,7 +47,7 @@ class Storage(object):
     '''
 
     ableToProduce = []  # Contains the unit names of the units that can be produced in this building
-    unitsReady = {}  # Dictionary containing the unitID and the unit object that are ready to be unloaded.
+    unitsReady = []  # List containing the unitID that are ready to be deployed.
     inProduction = []  # List of names containing the units that have been "bought" but they are in production.
 
     # typeDict = {"NONE" : "None"
@@ -78,7 +78,13 @@ class Storage(object):
 
         # Setup UI:
         self.UI = pychan.loadXML('gui/storage.xml')
+        self.UI.mapEvents({
+            'completeUnits': self.completeUnits
+        })
         self.updateUI()
+
+        self.deployingID = None
+
 
     def updateUI(self):
         # Check if it is already configured:
@@ -139,6 +145,59 @@ class Storage(object):
 
     def getUI(self):
         return self.UI
+
+    def completeUnits(self):
+        '''
+        This command makes units in production be completed.
+        :return:
+        '''
+        print "Running completeConstruction"
+        for unit in self.inProduction:
+            self.unitsReady.append(unit)
+            icon = self.UI.findChild(name=unit)
+            icon.background_color = (0, 255, 0, 200)
+            icon.foreground_color = (0, 255, 0, 200)
+            icon.base_color = (0, 255, 0, 200)
+            print "Background color" , icon.background_color
+            icon.border_size = 2
+            print unit, " completed!"
+
+            # Change icon callback to deployUnit
+            def callback(arg=unit): # Weird way of doing it. Taken from here: http://wiki.wxpython.org/Passing%20Arguments%20to%20Callbacks
+                    self.deployUnit(arg)
+            icon.capture(callback, event_name="mouseClicked")
+
+        self.inProduction = []
+        self.UI.adaptLayout()
+
+    def deployUnit(self, unitID):
+        '''
+        Start deploy mode.
+        :param unitName:
+        :return:
+        '''
+        print "Deploying unit"
+        self.world.setMode(self.world._MODE_DEPLOY)
+        self.world.storage = self
+        unitName = unitID.split(":")[1]
+        unit = self.world.scene.unitLoader.createUnit(unitName)
+        self.world.deploying = unit
+        self.deployingID = unitID
+        print "Deploying unit", unitName
+
+
+    def unitDeployed(self):
+        unitName = self.deployingID
+        icon = self.UI.findChild(name=unitName)
+        if icon:
+            container = self.UI.findChild(name="producing_units")
+            container.removeChild(icon)
+
+            self.unitsReady.remove(unitName)
+            self.producinUnitsWidget.adaptLayout()
+
+        self.deployingID = None
+
 
 
 

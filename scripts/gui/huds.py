@@ -44,6 +44,9 @@ class TacticalHUD(object):
     def hide(self):
         self._widget.hide()
 
+    def closeExtraWindows(self):
+        pass
+
     # def setFPSText(self, text):
     #     self._fpstext.text = text
 
