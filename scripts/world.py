@@ -154,6 +154,7 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
                 self._world.stopBuilding()
             else:
                 self._world.selectUnit(None)
+            self._world.HUD.closeExtraWindows()
 
 
     def mouseReleased(self, event):

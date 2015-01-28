@@ -156,43 +156,44 @@ class UnitLoader(object):
         self.parseWeaponFile("objects/agents/human.weapons", "Human")
         self.parseBuildingFile("objects/agents/human.buildings", "Human")
 
-        # self.createFiles()
-
-
-    def createFiles(self):
-        '''
-        Temp! Not for the final game!
-        :return:
-        '''
-
-        os.chdir('/media/cos/Programas/fife/fifengine/demos/fallen/objects/agents/units/')
-        for unit in self.unitProps.keys():
-            file = open(unit+".xml", mode='w')
-            text = '''<?fife type="object"?>\n
-<object blocking="1" id="'''
-            text = text + unit
-            text = text + '''" namespace="http://www.fifengine.net/xml/rio_de_hola" static="0">
-
-
-	<action id="stand">
-		<animation atlas="stand.png" height="96" width="96">
-			<direction delay="2000" dir="0" frames="1"/>
-			<direction delay="2000" dir="45" frames="1"/>
-			<direction delay="2000" dir="90" frames="1"/>
-			<direction delay="2000" dir="135" frames="1"/>
-			<direction delay="2000" dir="180" frames="1"/>
-			<direction delay="2000" dir="225" frames="1"/>
-			<direction delay="2000" dir="270" frames="1"/>
-			<direction delay="2000" dir="315" frames="1"/>
-		</animation>
-	</action>
-
-
-</object>'''
-            file.writelines(text)
-            file.close()
-
-
+#
+#         # self.createFiles()
+#
+#
+#     def createFiles(self):
+#         '''
+#         Temp! Not for the final game!
+#         :return:
+#         '''
+#
+#         os.chdir('/media/cos/Programas/fife/fifengine/demos/fallen/objects/agents/units/')
+#         for unit in self.unitProps.keys():
+#             file = open(unit+".xml", mode='w')
+#             text = '''<?fife type="object"?>\n
+# <object blocking="1" id="'''
+#             text = text + unit
+#             text = text + '''" namespace="http://www.fifengine.net/xml/rio_de_hola" static="0">
+#
+#
+# 	<action id="stand">
+# 		<animation atlas="stand.png" height="96" width="96">
+# 			<direction delay="2000" dir="0" frames="1"/>
+# 			<direction delay="2000" dir="45" frames="1"/>
+# 			<direction delay="2000" dir="90" frames="1"/>
+# 			<direction delay="2000" dir="135" frames="1"/>
+# 			<direction delay="2000" dir="180" frames="1"/>
+# 			<direction delay="2000" dir="225" frames="1"/>
+# 			<direction delay="2000" dir="270" frames="1"/>
+# 			<direction delay="2000" dir="315" frames="1"/>
+# 		</animation>
+# 	</action>
+#
+#
+# </object>'''
+#             file.writelines(text)
+#             file.close()
+#
+#
 
 
 
