@@ -169,6 +169,7 @@ class StrategicHUD(object):
         if not self.selectedBuilding:
             self.onNextPressed()    # So that it displays some information.
 
+        activeUnit = None
         activeUnitID = self._world.activeUnit
         if activeUnitID:
             activeUnit = self._world.scene.instance_to_agent[activeUnitID]
@@ -190,16 +191,17 @@ class StrategicHUD(object):
             else:
                 print "The selected unit is not a Building!"
 
+
         if activeUnitID and (activeUnit.nameSpace == "Building"):
-            unitWindow = self.structureWidget.findChild(name="constant_pannel")
-            if activeUnitInfo["ProductionType"] != "NONE":
-                unitWindow.show()
+            if activeUnit.storage:
+                self.storageUI = activeUnit.storage.getUI()
+                self.storageUI.show()
                 print "Showing production window"
-            else:
-                unitWindow.hide()
-                print "Hiding production window!"
 
     def closeExtraWindows(self):
-        self.buildingWidget.hide()
-        self.structureWidget.hide()
+        if self.storageUI:
+            self.storageUI.hide()
+            self.storageUI = None
 
+        print "Hiding buildingwidget"
+        self.buildingWidget.hide()

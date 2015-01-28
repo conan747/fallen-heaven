@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ascii"?>
+
+
+<VBox name="constant_pannel" opaque="1" hexpand="1" position="330,10" min_size="400,400" base_color="20,20,20">
+
+    <Label text="Production"/>
+    <HBox name="available_units" >
+        <!--<VBox hexpand="1"><Icon name="unit1Icon" image="gui/icons/boy.png"/> <Label name="unit1Text" text="unit1"/> <Label name="unit1Cost" text="100"/> </VBox>-->
+        <!--<VBox hexpand="1"><Icon name="unit2Icon" image="gui/icons/boy.png"/> <Label name="unit2Text" text="unit2"/> <Label name="unit2Cost" text="100"/> </VBox>-->
+    </HBox>
+
+    <Button name="all_out" text="All out"/>
+
+    <HBox name="producing_units" vexpand="1">
+        <!--<Icon name="producedUnit1" image="gui/icons/boy.png"/>-->
+    </HBox>
+
+    <HBox name="buttons">
+        <Button name="buttonPrevious" text="Previous"/>
+        <Button name="buttonNext" text="Next"/>
+    </HBox>
+
+</VBox>
+

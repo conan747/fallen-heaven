@@ -40,6 +40,8 @@ class Universe(object):
 
         # Finally show the main GUI
         self.gui.show()
+
+        self.faction = "Human" # FIXME
         # '''
 
         # self.startTactic(str(self._settings.get("rio", "MapFile")))

@@ -275,6 +275,7 @@ class World(object):
         self.ctrldown = False
         self.instancemenu = None
         self.dynamic_widgets = {}
+        self.faction = "Human" ## FIXME
 
         self.settings = settings
 
