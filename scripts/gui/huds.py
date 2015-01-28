@@ -57,6 +57,7 @@ class StrategicHUD(object):
         self.structureWidget = pychan.loadXML('gui/structure_info.xml')
         self.structureWidget.hide()
         self.buildingWidget.hide()
+        self.storageUI = None
 
         self.buildingList = [] # List containing all the property dictionaries for the buildings
         self.buildingIndex = None   #Index of the selected building in the List.
@@ -175,6 +176,9 @@ class StrategicHUD(object):
             activeUnit = self._world.scene.instance_to_agent[activeUnitID]
             activeUnitInfo = activeUnit.properties
             print activeUnitInfo
+        else:
+            self.closeExtraWindows()
+            return
 
         for info in infoDict.keys():
             # For the buildingWidget
@@ -188,9 +192,17 @@ class StrategicHUD(object):
                 label = self.structureWidget.findChild(name=info)
                 if label:
                     label.text = unicode(activeUnitInfo[infoDict[info]])
+                self._world.HUD.structureWidget.show()
             else:
                 print "The selected unit is not a Building!"
+                self.closeExtraWindows()
+                return
 
+
+        ## Show storage UI if needed.
+        if self.storageUI:
+                self.storageUI.hide()
+                self.storageUI = None
 
         if activeUnitID and (activeUnit.nameSpace == "Building"):
             if activeUnit.storage:
@@ -202,6 +214,8 @@ class StrategicHUD(object):
         if self.storageUI:
             self.storageUI.hide()
             self.storageUI = None
+
+        self.structureWidget.hide()
 
         print "Hiding buildingwidget"
         self.buildingWidget.hide()

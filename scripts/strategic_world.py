@@ -77,11 +77,8 @@ class StrategicListener(WorldListener):
                     agent = self._world.scene.instance_to_agent[id]
                     # print "Namespace:" , instance.nameSpace
                     print "Namespace: " , agent.nameSpace
-                    if agent.nameSpace == "Building":
-                        self._world.HUD.updateUI()
-                        self._world.HUD.structureWidget.show()
-                    else:
-                        self._world.HUD.structureWidget.hide()
+                    self._world.HUD.updateUI()
+
         if self._world.activeUnit:
             self._world.scene.instance_to_agent[self._world.activeUnit].teleport(self._world.getLocationAt(clickpoint))
 

@@ -6060,7 +6060,7 @@
 			<i y="-34.0" r="90" x="-41.0" z="0.0" stackpos="0" o="beebox"></i>
 			<i y="-31.0" r="180" x="-40.0" z="0.0" stackpos="0" o="beekeeper"></i>
 			<i y="19.0" r="180" x="43.0" z="0.0" stackpos="0" o="hippie_priest"></i>
-			<i id="PC" y="17.0" r="0" x="7.0" z="0.0" stackpos="0" o="boy"></i>
+			<i id="PC" y="16.0" r="0" x="12.0" z="0.0" stackpos="0" o="boy"></i>
 			<i id="NPC" y="16.0" r="0" x="3.0" z="0.0" stackpos="0" o="girl"></i>
 			<i id="beach_bar:33868" y="13.0" r="0" x="4.0" z="0.0" stackpos="0" o="Barrack"></i>
 			<i id="Energy_Center:33869" y="13.0" r="0" x="13.0" z="0.0" stackpos="0" o="Energy_Center"></i>
