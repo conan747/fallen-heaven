@@ -86,6 +86,27 @@ class Storage(object):
         self.deployingID = None
 
 
+    def setStorage(self, infoDict):
+        '''
+        Sets the storage info that was loaded from a pickle.
+        :param infoDict: Dictionary containing two lists: unitsReady and inProduction
+        :return:
+        '''
+        # self.unitsReady = infoDict["unitsReady"]
+        # self.inProduction = infoDict["inProduction"]
+        for unitID in infoDict["unitsReady"]:
+            unitName = unitID.split(":")[1]
+            self.buildUnit(unitName)
+
+        self.completeUnits()
+
+        for unitID in infoDict["inProduction"]:
+            unitName = unitID.split(":")[1]
+            self.buildUnit(unitName)
+
+        self.updateUI()
+
+
     def updateUI(self):
         # Check if it is already configured:
         self.producinUnitsWidget = self.UI.findChild(name="available_units")

@@ -12,6 +12,7 @@ from gui.huds import TacticalHUD
 from combat import Trajectory
 
 from fife.extensions.savers import saveMapFile
+import cPickle as pickle
 
 
 # Temp:
@@ -313,6 +314,16 @@ class Scene(object):
         self.cellRenderer.setPathColor(0,0,255)
         self.cellRenderer.setEnabled(True)
 
+        ## Load storages:
+        storageFile = filename.replace(".xml",".sto")
+        if os.path.isfile(storageFile):
+            pic = pickle.load(open(storageFile, 'rb'))
+            for building in self.instance_to_agent.values():
+                if building.agentName in pic.keys():
+                    info = pic[building.agentName]
+                    print "Setting up", info
+                    building.storage.setStorage(info)
+
 
     def initAgents(self):
         """
@@ -368,4 +379,30 @@ class Scene(object):
 
     def save(self, filename):
         print "Saving map..."
+        # mapFile = saveDir + "/savefile.xml"
         saveMapFile(filename, self.engine, self.map)
+        storageFile = filename.replace(".xml", ".sto")
+        self.saveStorages(storageFile)
+
+    def saveStorages(self, filename):
+        '''
+        Saves building storages (in pickles)
+        :return:
+        '''
+
+        storages = {}
+
+        for agentName in self.instance_to_agent.keys():
+            agent = self.instance_to_agent[agentName]
+            if agent.nameSpace == "Building":
+                if agent.storage:
+                    # Add this to the storages
+                    if agent.storage.inProduction or agent.storage.unitsReady:
+                        thisStorage = {"inProduction" : agent.storage.inProduction,
+                                       "unitsReady" : agent.storage.unitsReady}
+                        storages[agent.agentName] = thisStorage
+
+        print "Saving" , len(storages), "storages"
+        if storages:
+            pickle.dump(storages, open(filename, "wb"))
+

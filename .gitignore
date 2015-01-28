@@ -1,4 +1,5 @@
 .idea
 *.bak
 maps/savefile.xml
+maps/savefile.sto
 *.pyc
