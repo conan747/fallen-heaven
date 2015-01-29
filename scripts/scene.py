@@ -12,7 +12,11 @@ from gui.huds import TacticalHUD
 from combat import Trajectory
 
 from fife.extensions.savers import saveMapFile
+import cPickle as pickle
 
+
+# Temp:
+import os
 
 
 _MODE_DEFAULT, _MODE_ATTACK, _MODE_DROPSHIP = xrange(3)
@@ -25,8 +29,6 @@ class UnitLoader(object):
     Reads the unit text files and generates unit property objects.
     It can be used to obtain unit and building objects (without attached instances).
     '''
-
-
 
     def parseFile(self, filename):
         returnDict = {}
@@ -102,8 +104,9 @@ class UnitLoader(object):
         if buildingName not in self.buildingProps.keys():
             return "Found no building with that buildingName!"
         buildingProps = self.buildingProps[buildingName]
-        newBuilding = Building(buildingName, self.world)
-        newBuilding.properties = buildingProps
+        buildingProps["unitName"] = buildingName
+        newBuilding = Building(self.world, buildingProps)
+        # newBuilding.properties = buildingProps
         return newBuilding
 
 
@@ -153,6 +156,46 @@ class UnitLoader(object):
         self.parseUnitFile("objects/agents/human.units", "Human")
         self.parseWeaponFile("objects/agents/human.weapons", "Human")
         self.parseBuildingFile("objects/agents/human.buildings", "Human")
+
+#
+#         # self.createFiles()
+#
+#
+#     def createFiles(self):
+#         '''
+#         Temp! Not for the final game!
+#         :return:
+#         '''
+#
+#         os.chdir('/media/cos/Programas/fife/fifengine/demos/fallen/objects/agents/units/')
+#         for unit in self.unitProps.keys():
+#             file = open(unit+".xml", mode='w')
+#             text = '''<?fife type="object"?>\n
+# <object blocking="1" id="'''
+#             text = text + unit
+#             text = text + '''" namespace="http://www.fifengine.net/xml/rio_de_hola" static="0">
+#
+#
+# 	<action id="stand">
+# 		<animation atlas="stand.png" height="96" width="96">
+# 			<direction delay="2000" dir="0" frames="1"/>
+# 			<direction delay="2000" dir="45" frames="1"/>
+# 			<direction delay="2000" dir="90" frames="1"/>
+# 			<direction delay="2000" dir="135" frames="1"/>
+# 			<direction delay="2000" dir="180" frames="1"/>
+# 			<direction delay="2000" dir="225" frames="1"/>
+# 			<direction delay="2000" dir="270" frames="1"/>
+# 			<direction delay="2000" dir="315" frames="1"/>
+# 		</animation>
+# 	</action>
+#
+#
+# </object>'''
+#             file.writelines(text)
+#             file.close()
+#
+#
+
 
 
 
@@ -208,11 +251,6 @@ class Scene(object):
 
         print "Found ", unitIDs.__len__(), " units on this tile."
         print unitIDs
-
-        # Temp
-        for id in unitIDs:
-            unit = self.instance_to_agent[id]
-            unit.printProperties()
 
         return unitIDs
 
@@ -276,6 +314,16 @@ class Scene(object):
         self.cellRenderer.setPathColor(0,0,255)
         self.cellRenderer.setEnabled(True)
 
+        ## Load storages:
+        storageFile = filename.replace(".xml",".sto")
+        if os.path.isfile(storageFile):
+            pic = pickle.load(open(storageFile, 'rb'))
+            for building in self.instance_to_agent.values():
+                if building.agentName in pic.keys():
+                    info = pic[building.agentName]
+                    print "Setting up", info
+                    building.storage.setStorage(info)
+
 
     def initAgents(self):
         """
@@ -331,4 +379,30 @@ class Scene(object):
 
     def save(self, filename):
         print "Saving map..."
+        # mapFile = saveDir + "/savefile.xml"
         saveMapFile(filename, self.engine, self.map)
+        storageFile = filename.replace(".xml", ".sto")
+        self.saveStorages(storageFile)
+
+    def saveStorages(self, filename):
+        '''
+        Saves building storages (in pickles)
+        :return:
+        '''
+
+        storages = {}
+
+        for agentName in self.instance_to_agent.keys():
+            agent = self.instance_to_agent[agentName]
+            if agent.nameSpace == "Building":
+                if agent.storage:
+                    # Add this to the storages
+                    if agent.storage.inProduction or agent.storage.unitsReady:
+                        thisStorage = {"inProduction" : agent.storage.inProduction,
+                                       "unitsReady" : agent.storage.unitsReady}
+                        storages[agent.agentName] = thisStorage
+
+        print "Saving" , len(storages), "storages"
+        if storages:
+            pickle.dump(storages, open(filename, "wb"))
+

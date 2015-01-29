@@ -75,7 +75,6 @@ class Unit(Agent):
         self.health = self.properties["Hp"]
         self.AP = self.properties["TimeUnits"]
 
-
     def onInstanceActionCancelled(self, instance, action):
         pass
 
@@ -117,9 +116,13 @@ class Unit(Agent):
         exactcoords = location.getLayerCoordinates()
         layercoords = fife.DoublePoint3D(int(exactcoords.x), int(exactcoords.y), int(exactcoords.z) )
         location.setExactLayerCoordinates(layercoords)
-
+        ## TODO: Handle the teleport looking if the target cell is not occupied and the unit can stand there (e.g. not water).
         if not self.world.scene.getInstacesInTile(location):
-            self.agent.setLocation(location)
+            if self.agent:
+                self.agent.setLocation(location)
+            return True
+        return False
+
 
     def run(self, location):
 

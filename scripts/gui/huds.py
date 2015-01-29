@@ -13,6 +13,8 @@ from xml.sax.xmlreader import AttributesNSImpl
 # from fife.extensions.pychan.internal import get_manager
 
 
+_MODE_DEFAULT, _MODE_BUILD = xrange(2)
+
 class TacticalHUD(object):
     def __init__(self, world):
         self._world = world
@@ -42,6 +44,9 @@ class TacticalHUD(object):
     def hide(self):
         self._widget.hide()
 
+    def closeExtraWindows(self):
+        pass
+
     # def setFPSText(self, text):
     #     self._fpstext.text = text
 
@@ -52,7 +57,10 @@ class StrategicHUD(object):
         self._world = world
         self._widget = pychan.loadXML('gui/strategic_hud.xml')
         self.buildingWidget = pychan.loadXML('gui/construction_pannel.xml')
+        self.structureWidget = pychan.loadXML('gui/structure_info.xml')
+        self.structureWidget.hide()
         self.buildingWidget.hide()
+        self.storageUI = None
 
         self.buildingList = [] # List containing all the property dictionaries for the buildings
         self.buildingIndex = None   #Index of the selected building in the List.
@@ -109,8 +117,8 @@ class StrategicHUD(object):
 
             if not self.selectedBuilding:
                 self.onNextPressed()    # So that it displays some information.
-            else:
-                self._world.startBuilding(self.selectedBuilding)
+
+            self._world.startBuilding(self.selectedBuilding)
         else:
             self.buildingWidget.hide()
             self._world.stopBuilding()
@@ -129,6 +137,7 @@ class StrategicHUD(object):
         self.updateUI()
         self._world.startBuilding(self.selectedBuilding)
 
+
     def onNextPressed(self):
         '''
         Select the previous unit.
@@ -140,8 +149,10 @@ class StrategicHUD(object):
             self.buildingIndex = 0
 
         self.selectedBuilding = self.buildingList[self.buildingIndex]["buildingName"]
+        if self._world.mode == _MODE_BUILD:
+            self._world.startBuilding(self.selectedBuilding)
+
         self.updateUI()
-        self._world.startBuilding(self.selectedBuilding)
 
 
     def updateUI(self):
@@ -156,8 +167,58 @@ class StrategicHUD(object):
         "Cost" : "Cost"
         }
 
+        if not self.buildingList:
+                self.loadBuildingList()
+
+        if not self.selectedBuilding:
+            self.onNextPressed()    # So that it displays some information.
+
+        activeUnit = None
+        activeUnitID = self._world.activeUnit
+        if activeUnitID:
+            activeUnit = self._world.scene.instance_to_agent[activeUnitID]
+            activeUnitInfo = activeUnit.properties
+            print activeUnitInfo
+        else:
+            self.closeExtraWindows()
+            return
+
         for info in infoDict.keys():
+            # For the buildingWidget
             label = self.buildingWidget.findChild(name=info)
             buildingInfo = self.buildingList[self.buildingIndex]
-            label.text = unicode(buildingInfo[infoDict[info]])
+            if label:
+                label.text = unicode(buildingInfo[infoDict[info]])
 
+            if activeUnitID and (activeUnit.nameSpace == "Building"):
+                # For the structureWidget
+                label = self.structureWidget.findChild(name=info)
+                if label:
+                    label.text = unicode(activeUnitInfo[infoDict[info]])
+                self._world.HUD.structureWidget.show()
+            else:
+                print "The selected unit is not a Building!"
+                self.closeExtraWindows()
+                return
+
+
+        ## Show storage UI if needed.
+        if self.storageUI:
+                self.storageUI.hide()
+                self.storageUI = None
+
+        if activeUnitID and (activeUnit.nameSpace == "Building"):
+            if activeUnit.storage:
+                self.storageUI = activeUnit.storage.getUI()
+                self.storageUI.show()
+                print "Showing production window"
+
+    def closeExtraWindows(self):
+        if self.storageUI:
+            self.storageUI.hide()
+            self.storageUI = None
+
+        self.structureWidget.hide()
+
+        print "Hiding buildingwidget"
+        self.buildingWidget.hide()

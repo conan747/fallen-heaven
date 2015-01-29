@@ -43,8 +43,6 @@ from world import *
 TDS = Setting(app_name="rio_de_hola")
 
 
-_MODE_DEFAULT, _MODE_ATTACK, _MODE_DROPSHIP = xrange(3)
-
 
 class TacticListener(WorldListener):
     """
@@ -152,7 +150,7 @@ class TacticWorld(World):
         Changes the cursor according to the mode.
         :return:
         '''
-        if self.mode == _MODE_ATTACK:
+        if self.mode == self._MODE_ATTACK:
             if not self.activeUnit:
                 return
 
@@ -185,7 +183,7 @@ class TacticWorld(World):
 
     def onAttackButtonPressed(self):
         if self.activeUnit:
-            self.setMode(_MODE_ATTACK)
+            self.setMode(self._MODE_ATTACK)
 
     '''
     def collectGarbage(self):

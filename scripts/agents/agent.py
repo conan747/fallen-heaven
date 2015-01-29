@@ -34,6 +34,8 @@ class Agent(fife.InstanceActionListener):
         self.nameSpace = nameSpace
         # self.layer = layer
         self.world = world
+        self.agent = None
+
 
         # if uniqInMap:
         #     self.agent = layer.getInstance(agentName)
@@ -53,6 +55,8 @@ class Agent(fife.InstanceActionListener):
         #FIXME: Fix this namespace.
         self.nameSpace = "http://www.fifengine.net/xml/rio_de_hola"
         object = self.world.model.getObject(self.unitName, self.nameSpace)
+        if not object:
+            print "Error! No ", self.unitName ,"found in the object library"
         point = location.getLayerCoordinates()
         self.agent = self.world.scene.agentLayer.createInstance(object, point)
         self.agent.setCellStackPosition(0)
