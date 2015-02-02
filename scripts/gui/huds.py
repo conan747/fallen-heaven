@@ -119,6 +119,7 @@ class StrategicHUD(object):
                 self.onNextPressed()    # So that it displays some information.
 
             self._world.startBuilding(self.selectedBuilding)
+
         else:
             self.buildingWidget.hide()
             self._world.stopBuilding()
@@ -149,8 +150,8 @@ class StrategicHUD(object):
             self.buildingIndex = 0
 
         self.selectedBuilding = self.buildingList[self.buildingIndex]["buildingName"]
-        if self._world.mode == _MODE_BUILD:
-            self._world.startBuilding(self.selectedBuilding)
+        # if self._world.mode != self._world._MODE_BUILD:
+        self._world.startBuilding(self.selectedBuilding)
 
         self.updateUI()
 
@@ -166,7 +167,7 @@ class StrategicHUD(object):
         "armor" : "Hp",
         "Cost" : "Cost"
         }
-
+        ## TODO: Maybe make this function a bit better by selecting _MODE_BUILDING or not in the beginning.
         if not self.buildingList:
                 self.loadBuildingList()
 
@@ -179,9 +180,12 @@ class StrategicHUD(object):
             activeUnit = self._world.scene.instance_to_agent[activeUnitID]
             activeUnitInfo = activeUnit.properties
             print activeUnitInfo
-        else:
+        elif self._world.mode != self._world._MODE_BUILD:
             self.closeExtraWindows()
             return
+        else:
+            activeUnit = self._world.construction
+            activeUnitInfo = activeUnit.properties
 
         for info in infoDict.keys():
             # For the buildingWidget
@@ -196,7 +200,7 @@ class StrategicHUD(object):
                 if label:
                     label.text = unicode(activeUnitInfo[infoDict[info]])
                 self._world.HUD.structureWidget.show()
-            else:
+            elif self._world.mode != self._world._MODE_BUILD:
                 print "The selected unit is not a Building!"
                 self.closeExtraWindows()
                 return
@@ -221,4 +225,5 @@ class StrategicHUD(object):
         self.structureWidget.hide()
 
         print "Hiding buildingwidget"
-        self.buildingWidget.hide()
+        if self._world.mode != self._world._MODE_BUILD:
+            self.buildingWidget.hide()

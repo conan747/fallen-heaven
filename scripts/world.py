@@ -147,6 +147,8 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
                 self.clickAttack(clickpoint)
             elif self._world.mode == self._world._MODE_DEPLOY:
                 self.clickDeploy(clickpoint)
+            elif self._world.mode == self._world._MODE_BUILD:
+                self.clickBuild(clickpoint)
 
         if (evt.getButton() == fife.MouseEvent.RIGHT):
 
