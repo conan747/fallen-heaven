@@ -6,6 +6,23 @@ from strategic_world import StrategicWorld
 from fife.extensions import pychan
 
 
+class Faction(object):
+    '''
+    Holds the information about a faction i.e. a player and all its units and resources.
+    '''
+    name = None
+    ownedProvinces = []
+    resources = None
+    technology = None
+
+    def __init__(self):
+        pass
+
+    def load(self, filenName):
+        '''
+        Loads the faction info from a pickle.
+        '''
+        pass
 
 
 class Universe(object):
@@ -104,61 +121,3 @@ class Universe(object):
 
     # def quit(self):
     #     self._applictaion.requestQuit()
-
-
-'''
-
-class MainMenu(object):
-    def __init__(self, world, setting):
-        self._world = world
-        self._setting = setting
-        self._widget = pychan.loadXML('gui/mainmenu.xml')
-
-        self._continue = self._widget.findChild(name="continue")
-        self._newgame = self._widget.findChild(name="new_game")
-        # self._credits = self._widget.findChild(name="credits")
-        # self._highscores = self._widget.findChild(name="high_scores")
-        self._quit = self._widget.findChild(name="quit")
-
-        self._widget.position = (0, 0)
-
-        eventMap = {
-            'continue': self._world.continueGame,
-            'new_game': self.hide,
-            'settings': self._setting.showSettingsDialog,
-            # 'credits': self._world.showCredits,
-            # 'high_scores': self._world.showHighScores,
-            'quit': self._world.quit,
-        }
-
-        self._widget.mapEvents(eventMap)
-
-        self._continueMinWidth = self._continue.min_width
-        self._continueMinHeight = self._continue.min_height
-        self._continueMaxWidth = self._continue.max_width
-        self._continueMaxHeight = self._continue.max_height
-
-
-    def show(self, cont=False):
-        if cont:
-            self._continue.min_width = self._continueMinWidth
-            self._continue.min_height = self._continueMinHeight
-            self._continue.max_width = self._continueMaxWidth
-            self._continue.max_height = self._continueMaxHeight
-
-        else:
-            self._continue.min_width = 0
-            self._continue.min_height = 0
-            self._continue.max_width = 0
-            self._continue.max_height = 0
-
-        self._continue.adaptLayout()
-        self._widget.show()
-
-    def hide(self):
-        self._widget.hide()
-
-    def isVisible(self):
-        return self._widget.isVisible()
-
-'''
