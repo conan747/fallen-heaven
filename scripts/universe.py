@@ -4,7 +4,36 @@ __author__ = 'cos'
 from tactic_world import TacticWorld
 from strategic_world import StrategicWorld
 from fife.extensions import pychan
+from progress import Progress
+from planet import Planet
 
+
+class Faction(object):
+    '''
+    Holds the information about a faction i.e. a player and all its units and resources.
+    '''
+    name = None
+    pwnedPlanets = []
+    resources = None
+    technology = None
+
+    # _RES_ENERGY, _RES_CREDITS, _RES_RESEARCH = xrange(3)
+
+    def __init__(self, name= ""):
+        resources = {"Energy": 0,
+                     "Credits" : 0,
+                     "Research" : 0}
+
+        technology = {"Energy" : 1,
+                      "Armor" : 1,
+                      "Movement" : 1,
+                      "Damage" : 1,
+                      "RateOfFire" : 1,
+                      "Rocketry" : 1}
+
+        self.name = name
+
+        self.pwnedPlanets.append("shrine2")
 
 
 
@@ -17,6 +46,9 @@ class Universe(object):
     Start Tactical turn: Generates a tactic_world instance. It's the combat mode.
     '''
 
+    planets = ["shrine2", "savefile"]
+    selectedPlanet = None
+
     pause = True
 
     def __init__(self, engine, settings):
@@ -24,6 +56,7 @@ class Universe(object):
         self._engine = engine
         self._settings = settings
         self.world = None
+        self.turn = 1
 
         # '''
         # Build the main GUI
@@ -41,7 +74,9 @@ class Universe(object):
         # Finally show the main GUI
         self.gui.show()
 
-        self.faction = "Human" # FIXME
+        self.faction = Faction("Human") # FIXME
+        prog = Progress(self)
+        # print dir(self.faction)
         # '''
 
         # self.startTactic(str(self._settings.get("rio", "MapFile")))
@@ -68,32 +103,33 @@ class Universe(object):
     def toWarClicked(self):
         print "Going to war!"
         self.gui.hide()
-        self.startTactic(str(self._settings.get("rio", "MapFile")))
+        self.selectedPlanet = Planet("shrine2")
+        self.startTactic()
 
     def toPlanetClicked(self):
         print "Going to Planet!"
         self.gui.hide()
-        self.startStrategic(str(self._settings.get("rio", "MapFile")))
+        self.selectedPlanet = Planet("shrine2")
+        self.startStrategic()
 
     def endTurn(self):
         pass
 
-    def startTactic(self, mapFile):
+    def startTactic(self):
         '''
         Starts Tactic mode.
-        #TODO: Add parameter to select map.
         :return:
         '''
 
-        self.world = TacticWorld(self._engine, self._settings)
+        self.world = TacticWorld(self._engine, self._settings, self.faction, self.selectedPlanet)
 
-        self.world.load(mapFile)
-        print "Loading map: ", mapFile
+        self.world.load(self.selectedPlanet.getMapPath())
+        print "Loading map: ", self.selectedPlanet.getMapPath()
 
-    def startStrategic(self, mapFile):
-        self.world = StrategicWorld(self._engine, self._settings)
-        self.world.load(mapFile)
-        print "Loading map: ", mapFile
+    def startStrategic(self):
+        self.world = StrategicWorld(self._engine, self._settings, self.faction, self.selectedPlanet)
+        self.world.load(self.selectedPlanet.getMapPath())
+        print "Loading map: ", self.selectedPlanet.getMapPath()
 
 
     def pump(self):
@@ -104,61 +140,3 @@ class Universe(object):
 
     # def quit(self):
     #     self._applictaion.requestQuit()
-
-
-'''
-
-class MainMenu(object):
-    def __init__(self, world, setting):
-        self._world = world
-        self._setting = setting
-        self._widget = pychan.loadXML('gui/mainmenu.xml')
-
-        self._continue = self._widget.findChild(name="continue")
-        self._newgame = self._widget.findChild(name="new_game")
-        # self._credits = self._widget.findChild(name="credits")
-        # self._highscores = self._widget.findChild(name="high_scores")
-        self._quit = self._widget.findChild(name="quit")
-
-        self._widget.position = (0, 0)
-
-        eventMap = {
-            'continue': self._world.continueGame,
-            'new_game': self.hide,
-            'settings': self._setting.showSettingsDialog,
-            # 'credits': self._world.showCredits,
-            # 'high_scores': self._world.showHighScores,
-            'quit': self._world.quit,
-        }
-
-        self._widget.mapEvents(eventMap)
-
-        self._continueMinWidth = self._continue.min_width
-        self._continueMinHeight = self._continue.min_height
-        self._continueMaxWidth = self._continue.max_width
-        self._continueMaxHeight = self._continue.max_height
-
-
-    def show(self, cont=False):
-        if cont:
-            self._continue.min_width = self._continueMinWidth
-            self._continue.min_height = self._continueMinHeight
-            self._continue.max_width = self._continueMaxWidth
-            self._continue.max_height = self._continueMaxHeight
-
-        else:
-            self._continue.min_width = 0
-            self._continue.min_height = 0
-            self._continue.max_width = 0
-            self._continue.max_height = 0
-
-        self._continue.adaptLayout()
-        self._widget.show()
-
-    def hide(self):
-        self._widget.hide()
-
-    def isVisible(self):
-        return self._widget.isVisible()
-
-'''

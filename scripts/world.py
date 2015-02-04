@@ -294,7 +294,7 @@ class World(object):
 
     _MODE_DEFAULT, _MODE_ATTACK, _MODE_DROPSHIP, _MODE_DEPLOY, _MODE_BUILD = xrange(5)
 
-    def __init__(self, engine, settings):
+    def __init__(self, engine, settings, faction, planet):
         # super(World, self).__init__(engine, regMouse=True, regKeys=True)
         self.engine = engine
         self.eventmanager = engine.getEventManager()
@@ -304,7 +304,8 @@ class World(object):
         self.ctrldown = False
         self.instancemenu = None
         self.dynamic_widgets = {}
-        self.faction = "Human" ## FIXME
+        self.faction = faction
+        self.planet = planet
 
         self.settings = settings
 

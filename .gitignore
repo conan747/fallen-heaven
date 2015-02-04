@@ -2,4 +2,6 @@
 *.bak
 maps/savefile.xml
 maps/savefile.sto
+maps/shrine2.plt
+maps/shrine2.sto
 *.pyc

@@ -64,7 +64,6 @@ class Unit(Agent):
     heavyWeapon = None
     properties = {}
     AP = None
-    health = None
 
     def __init__(self, world, properties, lWeapon = None, HWeapon = None):
         self.nameSpace = "Unit"
