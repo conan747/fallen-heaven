@@ -6,36 +6,7 @@ from strategic_world import StrategicWorld
 from fife.extensions import pychan
 from progress import Progress
 from planet import Planet
-
-
-class Faction(object):
-    '''
-    Holds the information about a faction i.e. a player and all its units and resources.
-    '''
-    name = None
-    pwnedPlanets = []
-    resources = None
-    technology = None
-
-    # _RES_ENERGY, _RES_CREDITS, _RES_RESEARCH = xrange(3)
-
-    def __init__(self, name= ""):
-        resources = {"Energy": 0,
-                     "Credits" : 0,
-                     "Research" : 0}
-
-        technology = {"Energy" : 1,
-                      "Armor" : 1,
-                      "Movement" : 1,
-                      "Damage" : 1,
-                      "RateOfFire" : 1,
-                      "Rocketry" : 1}
-
-        self.name = name
-
-        self.pwnedPlanets.append("shrine2")
-
-
+from faction import Faction
 
 class Universe(object):
     '''
@@ -46,7 +17,7 @@ class Universe(object):
     Start Tactical turn: Generates a tactic_world instance. It's the combat mode.
     '''
 
-    planets = ["shrine2", "savefile"]
+    planetNames = ["shrine2", "savefile"]
     selectedPlanet = None
 
     pause = True
@@ -56,10 +27,11 @@ class Universe(object):
         self._engine = engine
         self._settings = settings
         self.world = None
-        self.turn = 1
+        self.year = 1   # Equivalent to "turn" in strategic view.
 
         # '''
         # Build the main GUI
+        # TODO: Probably we would like to separate this into another GUI object.
         self.gui = pychan.loadXML('gui/universe_screen.xml')
         self.gui.min_size = self._engine.getRenderBackend().getScreenWidth(), self._engine.getRenderBackend().getScreenHeight()
 
@@ -70,25 +42,25 @@ class Universe(object):
         }
         self.gui.mapEvents(eventMap)
 
-
         # Finally show the main GUI
         self.gui.show()
 
         self.faction = Faction("Human") # FIXME
         prog = Progress(self)
-        # print dir(self.faction)
-        # '''
 
-        # self.startTactic(str(self._settings.get("rio", "MapFile")))
-        # self.startStrategic(str(self._settings.get("rio", "MapFile")))
 
     def newGame(self):
         '''
         Restarts the game.
         :return:
         '''
+        #FIXME: Look into restarting the program.
         if self.world:
-            self.world.__destroy__()
+            self.world.model.deleteMaps()
+            self.world.model.deleteObjects()
+            self.world = None
+
+        self.gui.show()
 
         engine = self._engine
         settings = self._settings

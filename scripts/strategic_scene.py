@@ -19,8 +19,6 @@ from fife.extensions.savers import saveMapFile
 
 
 
-_MODE_DEFAULT, _MODE_ATTACK, _MODE_DROPSHIP = xrange(3)
-
 
 class StrategicScene(Scene):
     """
@@ -45,24 +43,6 @@ class StrategicScene(Scene):
         self.currentTurn = True
         self.turnCount = 0
 
-
-    def reset(self):
-        ### TODO This should be fixed!!!
-        # self.instance_to_agent = {}
-        pass
-
-    def initAgents(self):
-        """
-        Setup agents.
-
-        For this techdemo we have a very simple 'active things on the map' model,
-        which is called agents. All rio maps will have a separate layer for them.
-
-        Note that we keep a mapping from map instances (C++ model of stuff on the map)
-        to the python agents for later reference.
-        """
-        super(StrategicScene, self).initAgents()
-        ## Add the faction selection part.
 
 
     def addBuilding(self, building):

@@ -174,18 +174,16 @@ class ApplicationListener(eventlistenerbase.EventListenerBase):
 
 
 
-class IslandDemo(PychanApplicationBase):
+class FallenHeaven(PychanApplicationBase):
     '''
     Start here! This class basically creates the universe. It passes the pump call to it too.
     It also creates the Main Menu which is saved in self.listener.
     '''
     def __init__(self):
-        super(IslandDemo,self).__init__(TDS)
+        super(FallenHeaven,self).__init__(TDS)
         self.universe = Universe(self.engine, TDS)
         self.listener = ApplicationListener(self.engine, self.universe, TDS)
         self.listener.show()
-        # self.mainMenu = MainMenu(self.universe, TDS)
-        # self.mainMenu.show()
 
     def createListener(self):
         pass # already created in constructor
@@ -209,24 +207,13 @@ class IslandDemo(PychanApplicationBase):
             self.universe.pump()
 
 def main():
-    app = IslandDemo()
+    app = FallenHeaven()
     app.run()
 
 
 if __name__ == '__main__':
-    if TDS.get("FIFE", "ProfilingOn"):
-        import hotshot, hotshot.stats
-        print "Starting profiler"
-        prof = hotshot.Profile("fife.prof")
-        prof.runcall(main)
-        prof.close()
-        print "analysing profiling results"
-        stats = hotshot.stats.load("fife.prof")
-        stats.strip_dirs()
-        stats.sort_stats('time', 'calls')
-        stats.print_stats(20)
-    else:
-        if TDS.get("FIFE", "UsePsyco"):
+
+    if TDS.get("FIFE", "UsePsyco"):
             # Import Psyco if available
             try:
                 import psyco
@@ -234,6 +221,6 @@ if __name__ == '__main__':
                 print "Psyco acceleration in use"
             except ImportError:
                 print "Psyco acceleration not used"
-        else:
+    else:
             print "Psyco acceleration not used"
-        main()
+    main()

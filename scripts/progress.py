@@ -15,6 +15,11 @@ class Progress(object):
         :return:
         '''
         self.universe = universe
+
+
+
+    def save(self):
+
         faction = self.universe.faction
         print dir(faction)
         factionDict = {}
@@ -24,8 +29,12 @@ class Progress(object):
 
         self.progressDict["Faction"] = factionDict
 
-        for planet in faction.pwnedPlanets:
-            pass
+
+        pickle.dump(self.progressDict, open("savegame", 'wb'))
+
+
+
+
 
 
 

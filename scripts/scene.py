@@ -30,6 +30,24 @@ class UnitLoader(object):
     It can be used to obtain unit and building objects (without attached instances).
     '''
 
+
+    def __init__(self, world, settings):
+
+        self.unitProps = {}
+        self.weaponProps = {}
+        self.buildingProps = {}
+
+        self.world = world
+        self.settings = settings
+
+        self.parseUnitFile ("objects/agents/alien.units", "Tauran")
+        self.parseWeaponFile("objects/agents/alien.weapons", "Tauran")
+        self.parseBuildingFile("objects/agents/alien.buildings", "Tauran")
+        self.parseUnitFile("objects/agents/human.units", "Human")
+        self.parseWeaponFile("objects/agents/human.weapons", "Human")
+        self.parseBuildingFile("objects/agents/human.buildings", "Human")
+
+
     def parseFile(self, filename):
         returnDict = {}
         fil = open(filename)
@@ -140,22 +158,6 @@ class UnitLoader(object):
             return True
         else:
             return False
-
-    def __init__(self, world, settings):
-
-        self.unitProps = {}
-        self.weaponProps = {}
-        self.buildingProps = {}
-
-        self.world = world
-        self.settings = settings
-
-        self.parseUnitFile ("objects/agents/alien.units", "Tauran")
-        self.parseWeaponFile("objects/agents/alien.weapons", "Tauran")
-        self.parseBuildingFile("objects/agents/alien.buildings", "Tauran")
-        self.parseUnitFile("objects/agents/human.units", "Human")
-        self.parseWeaponFile("objects/agents/human.weapons", "Human")
-        self.parseBuildingFile("objects/agents/human.buildings", "Human")
 
 #
 #         # self.createFiles()
@@ -276,10 +278,10 @@ class Scene(object):
 
     def initScene(self, mapobj):
         """
-		Initializess the scene and scene graph.  This creates game objects for
-		FIFE instances that exist in the map.
+        Initializess the scene and scene graph.  This creates game objects for
+        FIFE instances that exist in the map.
 
-		"""
+        """
         self.map, self.agentLayer = None, None
         self.cameras = {}
         self.cur_cam2_x, self.initial_cam2_x, self.cam2_scrolling_right = 0, 0, True

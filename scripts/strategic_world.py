@@ -22,26 +22,12 @@
 # ####################################################################
 
 from fife import fife
-import math, random
-from fife.extensions import pychan
-from fife.extensions.pychan import widgets
-from fife.extensions.pychan.internal import get_manager
-
-from scripts.common.eventlistenerbase import EventListenerBase
-from fife.extensions.soundmanager import SoundManager
-from agents.hero import Hero
-from agents.girl import Girl
-from agents.cloud import Cloud
-from agents.unit import *
-from agents.building import *
-from fife.extensions.fife_settings import Setting
 from world import *
 
 from gui.huds import StrategicHUD
 from combat import Trajectory
 from scripts.strategic_scene import StrategicScene
 
-TDS = Setting(app_name="rio_de_hola")
 
 
 class StrategicListener(WorldListener):
@@ -80,30 +66,12 @@ class StrategicListener(WorldListener):
             self._world.scene.instance_to_agent[self._world.activeUnit].teleport(self._world.getLocationAt(clickpoint))
 
 
-    def clickBuild(self, clickpoint):
-        '''
-        Locate the building at clickpoint.
-        '''
-        # We don't need to do anything since the instance should be here already.
-        location = self._world.getLocationAt(clickpoint)
-        construction = self._world.construction
-        print "Namespace: " , construction.nameSpace
-        if construction.teleport(location):
-            self._world.scene.addBuilding(self._world.construction)
-            self._world.construction = None
-            self._world.cursorHandler.setCursor(_CUR_DEFAULT)
-            self._world.setMode(self._world._MODE_DEFAULT)
-            self._world.stopBuilding()
-            self._world.HUD.buildingWidget.hide()
-        ## TODO: If we are building a wall then don't close the builder widget.
-
-
 
     def mouseMoved(self, evt):
 
         self._world.mousePos = (evt.getX(), evt.getY())
 
-        if self._world.mode == self._world._MODE_DEFAULT:
+        if self._world.mode == self._world.MODE_DEFAULT:
             if not self._cellSelectionRenderer:
                 if self._world.cameras:
                     camera = self._world.cameras['main']
@@ -117,7 +85,7 @@ class StrategicListener(WorldListener):
                 location = self._world.getLocationAt(mousePoint)
                 self._cellSelectionRenderer.selectLocation(location)
 
-        elif self._world.mode == self._world._MODE_BUILD:
+        elif self._world.mode == self._world.MODE_BUILD:
             construction = self._world.construction
             if not construction:
                 return
@@ -128,12 +96,11 @@ class StrategicListener(WorldListener):
                 construction.createInstance(location)
 
             if construction.teleport(location):
-                self._world.cursorHandler.setCursor(_CUR_DEFAULT)
+                self._world.cursorHandler.setCursor(self._world.CUR_DEFAULT)
             else:
-                self._world.cursorHandler.setCursor(_CUR_CANNOT)
+                self._world.cursorHandler.setCursor(self._world.CUR_CANNOT)
 
 
-_CUR_DEFAULT, _CUR_ATTACK, _CUR_CANNOT = xrange(3)
 
 
 class StrategicWorld(World):
@@ -160,32 +127,6 @@ class StrategicWorld(World):
         self.construction = None
 
 
-    def handleCursor(self):
-        '''
-        Changes the cursor according to the mode.
-        :return:
-        '''
-        pass
-        '''
-        if self.mode == self._MODE_BUILD:
-            if not self.construction:
-                return
-
-            mousepoint = fife.ScreenPoint(self.mousePos[0], self.mousePos[1])
-            mouseLocation = self.getLocationAt(mousepoint)
-            trajectory = Trajectory(self.scene.instance_to_agent[self.activeUnit], self.cameras['main'], self,0)
-            # print "Is is reachable?"
-            self.cursorHandler.setCursor(_CUR_CANNOT)
-            if trajectory.isInRange(mouseLocation):
-                if trajectory.hasClearPath(mouseLocation):
-                    # print "Changing cursor"
-                    self.cursorHandler.setCursor(_CUR_ATTACK)
-
-        else:
-            self.cursorHandler.setCursor(_CUR_DEFAULT)
-        '''
-
-
     def startBuilding(self, buildingName):
         '''
         Starts the building mode.
@@ -197,7 +138,8 @@ class StrategicWorld(World):
             self.stopBuilding()
 
         self.construction = self.scene.unitLoader.createBuilding(buildingName)
-        self.setMode(self._MODE_BUILD)
+        self.setMode(self.MODE_BUILD)
+        self.HUD.updateUI()
         # self.scene.build()
 
     def stopBuilding(self):
@@ -215,5 +157,4 @@ class StrategicWorld(World):
             self.construction = None
             self.selectUnit(None)
 
-        self.setMode(self._MODE_DEFAULT)
-        self.cursorHandler.setCursor(_CUR_DEFAULT)
+        self.setMode(self.MODE_DEFAULT)

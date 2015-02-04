@@ -327,6 +327,8 @@ class Building(Agent):
 
     def die(self):
         print "This unit is destroyed!"
+        self.removeFootprint()
+        #TODO: Enable attacking footprint area!
         self.world.scene.unitDied(self.agent.getFifeId())
         # self.layer.deleteInstance(self.agent)
 
@@ -339,10 +341,10 @@ class Building(Agent):
 
 
     def getDamage(self, dmg):
-        print "Previous health: ", self.properties.health
+        print "Previous health: ", self.health
         print "Dealing ", dmg, " damage!"
-        self.properties.health -= dmg
-        if self.properties.health <= 0:
+        self.health -= dmg
+        if self.health <= 0:
             self.die()
 
     def onInstanceActionFinished(self, instance, action):
@@ -372,5 +374,25 @@ class Building(Agent):
                 cell.setCellType(fife.CTYPE_STATIC_BLOCKER)
 
         self.landed = True
+
+
+    def removeFootprint(self):
+        '''
+        Sets the cells under this instance as blocking.
+        :return:
+        '''
+        for x in range(self.properties["SizeX"]):
+            for y in range(self.properties["SizeY"]):
+                location = self.agent.getLocation()
+                cellPos = location.getLayerCoordinates()
+                cellPos.x += x
+                cellPos.y -= y
+
+                layer = location.getLayer()
+                cellCache = layer.getCellCache()
+                cell = cellCache.getCell(cellPos)
+                cell.setCellType(fife.CTYPE_NO_BLOCKER)
+
+        self.landed = False
 
 

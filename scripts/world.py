@@ -131,7 +131,27 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
     def cancelDeploy(self):
         self._world.deploying = None
         self._world.storage = None
-        self._world.setMode(self._world._MODE_DEFAULT)
+        self._world.setMode(self._world.MODE_DEFAULT)
+
+
+
+    def clickBuild(self, clickpoint):
+        '''
+        Locate the building at clickpoint.
+        '''
+        # We don't need to do anything since the instance should be here already.
+        location = self._world.getLocationAt(clickpoint)
+        construction = self._world.construction
+        print "Namespace: " , construction.nameSpace
+        if construction.teleport(location):
+            self._world.scene.addBuilding(self._world.construction)
+            self._world.construction = None
+            self._world.cursorHandler.setCursor(self._world.cursorHandler.CUR_DEFAULT)
+            self._world.setMode(self._world.MODE_DEFAULT)
+            self._world.stopBuilding()
+            self._world.HUD.buildingWidget.hide()
+        ## TODO: If we are building a wall then don't close the builder widget.
+
 
 
 
@@ -141,29 +161,33 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
 
         clickpoint = fife.ScreenPoint(evt.getX(), evt.getY())
         if (evt.getButton() == fife.MouseEvent.LEFT):
-            if self._world.mode == self._world._MODE_DEFAULT:
+            if self._world.mode == self._world.MODE_DEFAULT:
                 self.clickDefault(clickpoint)
-            elif self._world.mode == self._world._MODE_ATTACK:
+            elif self._world.mode == self._world.MODE_ATTACK:
                 self.clickAttack(clickpoint)
-            elif self._world.mode == self._world._MODE_DEPLOY:
+            elif self._world.mode == self._world.MODE_DEPLOY:
                 self.clickDeploy(clickpoint)
+            elif self._world.mode == self._world.MODE_BUILD:
+                self.clickBuild(clickpoint)
 
         if (evt.getButton() == fife.MouseEvent.RIGHT):
 
-            if self._world.mode == self._world._MODE_BUILD:
+            if self._world.mode == self._world.MODE_BUILD:
                 self._world.stopBuilding()
             else:
                 self._world.selectUnit(None)
             self._world.HUD.closeExtraWindows()
+            self._world.setMode(self._world.MODE_DEFAULT)
+            # self._world.handleCursor()
 
 
-    def mouseReleased(self, event):
-        pass
 
     def mouseMoved(self, evt):
 
         self._world.mousePos = (evt.getX(), evt.getY())
 
+    def mouseReleased(self, event):
+        pass
 
     def mouseEntered(self, event):
         pass
@@ -246,13 +270,17 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
             self.ctrldown = False
 
 
-_CUR_DEFAULT, _CUR_ATTACK, _CUR_CANNOT = xrange(3)
+
 
 
 class CursorHandler(object):
     '''
     Handles the information for the cursor.
     '''
+
+
+    CUR_DEFAULT, CUR_ATTACK, CUR_CANNOT = xrange(3)
+
     def __init__(self, imageManager, cursor):
         self._imageManager = imageManager
         self._cursor = cursor
@@ -269,11 +297,11 @@ class CursorHandler(object):
 
 
 
-        self.cursorDict = {_CUR_DEFAULT: normalCursor,
-                           _CUR_ATTACK: cursorAttack,
-                          _CUR_CANNOT: cannot}
+        self.cursorDict = {self.CUR_DEFAULT: normalCursor,
+                           self.CUR_ATTACK: cursorAttack,
+                          self.CUR_CANNOT: cannot}
 
-        self.setCursor(_CUR_DEFAULT)
+        self.setCursor(self.CUR_DEFAULT)
 
     def setCursor(self, cursorId):
         cursorImg = self.cursorDict[cursorId]
@@ -288,11 +316,10 @@ class World(object):
     This class handles:
       setup of map view (cameras ...)
       loading the scene
-
-    That's obviously too much, and should get factored out.
     """
 
-    _MODE_DEFAULT, _MODE_ATTACK, _MODE_DROPSHIP, _MODE_DEPLOY, _MODE_BUILD = xrange(5)
+    MODE_DEFAULT, MODE_ATTACK, MODE_DROPSHIP, MODE_DEPLOY, MODE_BUILD = xrange(5)
+    CUR_DEFAULT, CUR_ATTACK, CUR_CANNOT = xrange(3)
 
     def __init__(self, engine, settings, faction, planet):
         # super(World, self).__init__(engine, regMouse=True, regKeys=True)
@@ -319,7 +346,7 @@ class World(object):
         # self._player1 = True
         # self._player2 = False
         # self._objectsToDelete = list()
-        self.mode = self._MODE_DEFAULT
+        self.mode = self.MODE_DEFAULT
         self.storage = None # Points at the storage object in Deploy mode.
         self.deploying = None
 
@@ -617,15 +644,35 @@ class World(object):
     def setMode(self, mode):
         '''
         Sets the current runtime tactical mode.
-        :param mode: _MODE_DEFAULT, _MODE_ATTACK, _MODE_DROPSHIP, _MODE_DEPLOY
+        :param mode: MODE_DEFAULT, MODE_ATTACK, MODE_DROPSHIP, MODE_DEPLOY
         :return:
         '''
 
         self.mode = mode
-        if mode == self._MODE_BUILD:
+        if mode == self.MODE_BUILD:
             self.listener._cellSelectionRenderer.setEnabled(False)
-        # Change cursor type
-        # dictionary containing {mode:cursor}
-        # cursor = self.engine.getCursor()
-        # cursorfile = self.settings.get("rio", "CursorAttack")
-        # cursorImage = cursor.getImage()
+
+        self.handleCursor()
+
+
+    def handleCursor(self):
+        '''
+        Changes the cursor according to the mode.
+        :return:
+        '''
+        if self.mode == self.MODE_ATTACK:
+            if not self.activeUnit:
+                return
+
+            mousepoint = fife.ScreenPoint(self.mousePos[0], self.mousePos[1])
+            mouseLocation = self.getLocationAt(mousepoint)
+            trajectory = Trajectory(self.scene.instance_to_agent[self.activeUnit], self.cameras['main'], self,0)
+            # print "Is is reachable?"
+            self.cursorHandler.setCursor(self.CUR_CANNOT)
+            if trajectory.isInRange(mouseLocation):
+                if trajectory.hasClearPath(mouseLocation):
+                    # print "Changing cursor"
+                    self.cursorHandler.setCursor(self.CUR_ATTACK)
+
+        else:
+            self.cursorHandler.setCursor(self.CUR_DEFAULT)

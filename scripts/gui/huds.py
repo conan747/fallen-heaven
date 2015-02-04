@@ -13,25 +13,13 @@ from xml.sax.xmlreader import AttributesNSImpl
 # from fife.extensions.pychan.internal import get_manager
 
 
-_MODE_DEFAULT, _MODE_BUILD = xrange(2)
+# _MODE_DEFAULT, _MODE_BUILD = xrange(2)
 
 class TacticalHUD(object):
     def __init__(self, world):
         self._world = world
         self._widget = pychan.loadXML('gui/tactical_hud.xml')
 
-        # self._image = world.engine.getImageManager().load("./gui/HUDs/combat_botton.png")
-        # self._guiImage = fife.GuiImage(self._image)
-        # wid = self._widget.findChild(name="high_score")
-        # print wid._getName()
-        # wid.setBackgroundImage(self._guiImage)
-        # print "Image size:" , self._image.getWidth()
-        #
-        #
-        #
-        # print "Image size" , self._guiImage.getWidth(), self._guiImage.getHeight()
-
-        # self._widget.position = (0, 0)
         self._widget.mapEvents({
                 'nextTurnButton' : self._world.onSkipTurnPress,
                 'attackLightButton' : self._world.onAttackButtonPressed
@@ -66,18 +54,6 @@ class StrategicHUD(object):
         self.buildingIndex = None   #Index of the selected building in the List.
         self.selectedBuilding = None    #Name of the selected building.
 
-        # self._image = world.engine.getImageManager().load("./gui/HUDs/combat_botton.png")
-        # self._guiImage = fife.GuiImage(self._image)
-        # wid = self._widget.findChild(name="high_score")
-        # print wid._getName()
-        # wid.setBackgroundImage(self._guiImage)
-        # print "Image size:" , self._image.getWidth()
-        #
-        #
-        #
-        # print "Image size" , self._guiImage.getWidth(), self._guiImage.getHeight()
-
-        # self._widget.position = (0, 0)
         self._widget.mapEvents({
                 'build' : self.onBuildPressed, #self._world.testBuilding
                 # 'attackLightButton' : self._world.onAttackButtonPressed
@@ -149,7 +125,7 @@ class StrategicHUD(object):
             self.buildingIndex = 0
 
         self.selectedBuilding = self.buildingList[self.buildingIndex]["buildingName"]
-        if self._world.mode == _MODE_BUILD:
+        if self._world.mode == self._world.MODE_BUILD:
             self._world.startBuilding(self.selectedBuilding)
 
         self.updateUI()
@@ -175,10 +151,18 @@ class StrategicHUD(object):
 
         activeUnit = None
         activeUnitID = self._world.activeUnit
+        activeUnitInfo = None
+
+
         if activeUnitID:
             activeUnit = self._world.scene.instance_to_agent[activeUnitID]
             activeUnitInfo = activeUnit.properties
             print activeUnitInfo
+        elif self._world.construction:
+            activeUnit = self._world.construction
+            activeUnitInfo = activeUnit.properties
+            print activeUnitInfo
+
         else:
             self.closeExtraWindows()
             return
@@ -196,6 +180,14 @@ class StrategicHUD(object):
                 if label:
                     label.text = unicode(activeUnitInfo[infoDict[info]])
                 self._world.HUD.structureWidget.show()
+
+
+            elif self._world.mode == self._world.MODE_BUILD:
+                label = self.buildingWidget.findChild(name=info)
+                if label:
+                    label.text = unicode(activeUnitInfo[infoDict[info]])
+                self._world.HUD.buildingWidget.show()
+
             else:
                 print "The selected unit is not a Building!"
                 self.closeExtraWindows()
