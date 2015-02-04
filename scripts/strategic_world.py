@@ -139,7 +139,6 @@ class StrategicWorld(World):
 
         self.construction = self.scene.unitLoader.createBuilding(buildingName)
         self.setMode(self.MODE_BUILD)
-        self.HUD.updateUI()
         # self.scene.build()
 
     def stopBuilding(self):

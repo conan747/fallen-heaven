@@ -12,106 +12,86 @@ from xml.sax.saxutils import XMLGenerator
 from xml.sax.xmlreader import AttributesNSImpl
 # from fife.extensions.pychan.internal import get_manager
 
+# -----------------------------------------------------------------------------------------------------------------
+#
+# -----------------------------------------------------------------------------------------------------------------
+class Widget(object):
 
-# _MODE_DEFAULT, _MODE_BUILD = xrange(2)
-
-class TacticalHUD(object):
-    def __init__(self, world):
-        self._world = world
-        self._widget = pychan.loadXML('gui/tactical_hud.xml')
-
-        self._widget.mapEvents({
-                'nextTurnButton' : self._world.onSkipTurnPress,
-                'attackLightButton' : self._world.onAttackButtonPressed
-        })
-
-
-    def show(self):
-        self._widget.show()
+    widget = None
+    infoDict = {"unitName": "buildingName",
+        "production" : "ProductionType",
+        "energyConsumption" : "ConsummationEnergy",
+        "armor" : "Hp",
+        "Cost" : "Cost"
+        }
 
     def hide(self):
-        self._widget.hide()
+        self.widget.hide()
+    def show(self):
+        self.widget.show()
+
+# -----------------------------------------------------------------------------------------------------------------
+#
+# -----------------------------------------------------------------------------------------------------------------
+class HUD(Widget):
+    '''
+    Parent class that will be inherited.
+    '''
+    def __init__(self, world):
+        self.world = world
 
     def closeExtraWindows(self):
         pass
 
-    # def setFPSText(self, text):
-    #     self._fpstext.text = text
+# -----------------------------------------------------------------------------------------------------------------
+#
+# -----------------------------------------------------------------------------------------------------------------
 
-
-
-class StrategicHUD(object):
+class TacticalHUD(HUD):
     def __init__(self, world):
-        self._world = world
-        self._widget = pychan.loadXML('gui/strategic_hud.xml')
-        self.buildingWidget = pychan.loadXML('gui/construction_pannel.xml')
-        self.structureWidget = pychan.loadXML('gui/structure_info.xml')
-        self.structureWidget.hide()
-        self.buildingWidget.hide()
-        self.storageUI = None
+        super(TacticalHUD,self).__init__(world)
+        self.widget = pychan.loadXML('gui/tactical_hud.xml')
 
-        self.buildingList = [] # List containing all the property dictionaries for the buildings
-        self.buildingIndex = None   #Index of the selected building in the List.
-        self.selectedBuilding = None    #Name of the selected building.
-
-        self._widget.mapEvents({
-                'build' : self.onBuildPressed, #self._world.testBuilding
-                # 'attackLightButton' : self._world.onAttackButtonPressed
+        self.widget.mapEvents({
+                'nextTurnButton' : self.world.onSkipTurnPress,
+                'attackLightButton' : self.world.onAttackButtonPressed
         })
+# -----------------------------------------------------------------------------------------------------------------
+#
+# -----------------------------------------------------------------------------------------------------------------
 
-        self.buildingWidget.mapEvents({
+class ConstructingWidget(Widget):
+    def __init__(self, parent):
+
+        self.structureList = [] # List containing all the property dictionaries for the buildings
+        self.structureIndex = None   #Index of the selected building in the List.
+        self.buildingStructName = None    #Name of the structure that is being built.
+        self.HUD = parent
+
+        self.widget = pychan.loadXML('gui/construction_pannel.xml')
+        self.hide()
+
+        self.structureIndex = 0
+
+
+        self.widget.mapEvents({
                 'buttonPrevious' : self.onPreviousPressed,
                 'buttonNext' : self.onNextPressed
         })
-
-
-    def show(self):
-        self._widget.show()
-
-    def hide(self):
-        self._widget.hide()
-
-    def loadBuildingList(self):
-        '''
-        Will load the information about the buildings (what to display) form the UnitLoader.
-        :return:
-        '''
-        allBuildingProps = self._world.scene.unitLoader.buildingProps
-        for buildingProps in allBuildingProps.values():
-            if buildingProps["faction"] == "Human": ## FIXME: make this variable
-                self.buildingList.append(buildingProps)
-
-        self.buildingIndex = 0
-
-
-    def onBuildPressed(self):
-        if not self.buildingList:
-            self.loadBuildingList()
-
-        if not self.buildingWidget.isVisible():
-            self.buildingWidget.show()
-
-            if not self.selectedBuilding:
-                self.onNextPressed()    # So that it displays some information.
-
-            self._world.startBuilding(self.selectedBuilding)
-        else:
-            self.buildingWidget.hide()
-            self._world.stopBuilding()
 
     def onPreviousPressed(self):
         '''
         Select the previous unit.
         :return:
         '''
-        if self.buildingIndex == 0:
-            self.buildingIndex = self.buildingList.__len__() -1
+        if self.structureIndex == 0:
+            self.structureIndex = self.structureList.__len__() -1
         else:
-            self.buildingIndex -= 1
+            self.structureIndex -= 1
 
-        self.selectedBuilding = self.buildingList[self.buildingIndex]["buildingName"]
+        self.buildingStructName = self.structureList[self.structureIndex]["buildingName"]
         self.updateUI()
-        self._world.startBuilding(self.selectedBuilding)
+        self.world.startBuilding(self.buildingStructName)
 
 
     def onNextPressed(self):
@@ -119,16 +99,230 @@ class StrategicHUD(object):
         Select the previous unit.
         :return:
         '''
-        self.buildingIndex += 1
 
-        if self.buildingIndex == self.buildingList.__len__():
-            self.buildingIndex = 0
+        if not self.structureList:
+            self.loadStructureList()
 
-        self.selectedBuilding = self.buildingList[self.buildingIndex]["buildingName"]
-        if self._world.mode == self._world.MODE_BUILD:
-            self._world.startBuilding(self.selectedBuilding)
+        self.structureIndex += 1
 
+        if self.structureIndex == self.structureList.__len__():
+            self.structureIndex = 0
+
+        self.buildingStructName = self.structureList[self.structureIndex]["buildingName"]
         self.updateUI()
+        self.HUD.world.startBuilding(self.buildingStructName)
+
+
+    def loadStructureList(self):
+        '''
+        Will load the information about the buildings (what to display) form the UnitLoader.
+        :return:
+        '''
+        allStructureProps = self.HUD.world.scene.unitLoader.buildingProps
+        for structureProps in allStructureProps.values():
+            if structureProps["faction"] == self.HUD.world.faction.name:
+                self.structureList.append(structureProps)
+
+        self.structureIndex = 0
+
+    def show(self):
+        # self.updateUI()
+        super(ConstructingWidget, self).show()
+
+    def updateUI(self):
+        '''
+        Display the proper information.
+        :return:
+        '''
+
+        if not self.structureList:
+            self.loadStructureList()
+
+        buildingInfo = self.structureList[self.structureIndex]
+
+        for info in self.infoDict.keys():
+            label = self.widget.findChild(name=info)
+            if label:
+                label.text = unicode(buildingInfo[self.infoDict[info]])
+
+        # self.show()
+
+
+# -----------------------------------------------------------------------------------------------------------------
+#
+# -----------------------------------------------------------------------------------------------------------------
+
+class StructureWidget(Widget):
+    def __init__(self, parent):
+
+        self.HUD = parent
+
+        self.widget = pychan.loadXML('gui/structure_info.xml')
+        self.hide()
+        self.storageWidget = None
+
+    def updateUI(self):
+
+        activeUnit = None
+        activeUnitID = self.HUD.world.activeUnit
+        activeUnitInfo = None
+
+        if self.storageWidget:
+                self.storageWidget.hide()
+                self.storageWidget = None
+
+        if not activeUnitID:
+            # No unit was selected therefore hide this widget.
+            self.hide()
+            return
+
+        activeUnit = self.HUD.world.scene.instance_to_agent[activeUnitID]
+        activeUnitInfo = activeUnit.properties
+        print activeUnitInfo
+
+        if activeUnit.nameSpace != "Building":
+            # No Building was selected therefore hide this widget.
+            self.hide()
+            return
+
+
+        for info in self.infoDict.keys():
+            label = self.widget.findChild(name=info)
+            if label:
+                label.text = unicode(activeUnitInfo[self.infoDict[info]])
+
+        self.show()
+
+        if activeUnit.storage:
+            self.storageWidget = StorageUI(activeUnit.storage)
+            self.storageWidget.updateUI()
+            self.storageWidget.show()
+
+
+# -----------------------------------------------------------------------------------------------------------------
+#
+# -----------------------------------------------------------------------------------------------------------------
+
+
+class StorageUI(Widget):
+    def __init__(self, storage):
+
+        self.storage = storage # This will point at the storage object that it represents.
+        self.widget = pychan.loadXML('gui/storage.xml')
+        self.widget.mapEvents({
+            'completeUnits': self.storage.completeUnits
+        })
+        self.hide()
+
+
+
+        self.producinUnitsWidget = None
+        self.availableinUnitsWidget = None
+
+
+    def updateUI(self):
+
+        ## Setup the area where the player can select units to be produced.
+        # As this should not change, do it only once.
+        if not self.availableinUnitsWidget:
+            self.availableinUnitsWidget = self.widget.findChild(name="available_units")
+
+            children = self.availableinUnitsWidget.findChildren()
+            if children.__len__() < 2:
+                for unitName in self.storage.ableToProduce:
+                    vbox = pychan.widgets.VBox()
+                    icon = pychan.widgets.Icon(name=unicode(unitName), image="gui/icons/boy.png")
+                    def callback(arg=unitName): # Weird way of doing it. Taken from here: http://wiki.wxpython.org/Passing%20Arguments%20to%20Callbacks
+                        self.storage.buildUnit(arg)
+
+                    icon.capture(callback, event_name="mouseClicked")
+                    vbox.addChild(icon)
+                    label = pychan.widgets.Label(text=unicode(unitName))
+                    vbox.addChild(label)
+                    cost = self.storage.world.scene.unitLoader.unitProps[unitName]["Cost"]
+                    label = pychan.widgets.Label(text=unicode(str(cost)))
+                    vbox.addChild(label)
+                    self.availableinUnitsWidget.addChild(vbox)
+
+            self.availableinUnitsWidget.adaptLayout()
+
+        ## Add the icons for the units that are being built:
+        if not self.producinUnitsWidget:
+            self.producinUnitsWidget = self.widget.findChild(name="producing_units")
+
+        self.producinUnitsWidget.removeAllChildren()
+
+        # Add the unit icons again.
+
+        for iconName in self.storage.unitsReady:
+            icon = pychan.widgets.Icon(name=unicode(iconName), image="gui/icons/boy.png")
+            icon.background_color = (0, 255, 0, 200)
+            icon.foreground_color = (0, 255, 0, 200)
+            icon.base_color = (0, 255, 0, 200)
+            icon.border_size = 2
+            # Change icon callback to deployUnit
+            print "Icon name" , iconName
+            def callback(arg=iconName): # Weird way of doing it. Taken from here: http://wiki.wxpython.org/Passing%20Arguments%20to%20Callbacks
+                    self.storage.deployUnit(arg) # CHECK!
+            icon.capture(callback, event_name="mouseClicked")
+
+            self.producinUnitsWidget.addChild(icon)
+
+
+        for iconName in self.storage.inProduction:
+            icon = pychan.widgets.Icon(name=unicode(iconName), image="gui/icons/boy.png")
+            def callback(arg=iconName): # Weird way of doing it. Taken from here: http://wiki.wxpython.org/Passing%20Arguments%20to%20Callbacks
+                    self.storage.cancelUnit(arg)
+            icon.capture(callback, event_name="mouseClicked")
+
+            self.producinUnitsWidget.addChild(icon)
+
+        self.producinUnitsWidget.adaptLayout()
+
+
+
+
+
+
+# -----------------------------------------------------------------------------------------------------------------
+#
+# -----------------------------------------------------------------------------------------------------------------
+class StrategicHUD(HUD):
+    def __init__(self, world):
+        super(StrategicHUD, self).__init__(world)
+        self.widget = pychan.loadXML('gui/strategic_hud.xml')
+        self.constructionWidget = ConstructingWidget(self)
+        self.structureWidget = StructureWidget(self)
+        self.storageUI = None
+
+        self.widget.mapEvents({
+                'build' : self.onBuildPressed, #self.world.testBuilding
+                # 'attackLightButton' : self.world.onAttackButtonPressed
+        })
+
+
+    def loadBuildingList(self):
+        '''
+        Will load the information about the buildings (what to display) form the UnitLoader.
+        :return:
+        '''
+        allBuildingProps = self.world.scene.unitLoader.buildingProps
+        for buildingProps in allBuildingProps.values():
+            if buildingProps["faction"] == self.world.faction.name:
+                self.buildingList.append(buildingProps)
+
+        self.buildingIndex = 0
+
+
+    def onBuildPressed(self):
+
+        if self.world.mode != self.world.MODE_BUILD:
+            if self.constructionWidget.buildingStructName:
+                self.world.startBuilding(self.constructionWidget.buildingStructName)
+            else:
+                self.constructionWidget.onNextPressed()
+        else:
+            self.world.stopBuilding()
 
 
     def updateUI(self):
@@ -136,12 +330,18 @@ class StrategicHUD(object):
         Display the proper information.
         :return:
         '''
-        infoDict = {"unitName": "buildingName",
-        "production" : "ProductionType",
-        "energyConsumption" : "ConsummationEnergy",
-        "armor" : "Hp",
-        "Cost" : "Cost"
-        }
+
+        if self.world.mode == self.world.MODE_BUILD:
+            self.constructionWidget.updateUI()
+            self.constructionWidget.show()
+            self.structureWidget.hide() #TEST if this is necesary
+
+        else:
+            self.constructionWidget.hide() # TEST if this is necesary
+            self.structureWidget.updateUI()
+            # self.structureWidget.show()
+
+        '''##-------------------------------------
 
         if not self.buildingList:
                 self.loadBuildingList()
@@ -150,16 +350,16 @@ class StrategicHUD(object):
             self.onNextPressed()    # So that it displays some information.
 
         activeUnit = None
-        activeUnitID = self._world.activeUnit
+        activeUnitID = self.world.activeUnit
         activeUnitInfo = None
 
 
         if activeUnitID:
-            activeUnit = self._world.scene.instance_to_agent[activeUnitID]
+            activeUnit = self.world.scene.instance_to_agent[activeUnitID]
             activeUnitInfo = activeUnit.properties
             print activeUnitInfo
-        elif self._world.construction:
-            activeUnit = self._world.construction
+        elif self.world.construction:
+            activeUnit = self.world.construction
             activeUnitInfo = activeUnit.properties
             print activeUnitInfo
 
@@ -168,30 +368,24 @@ class StrategicHUD(object):
             return
 
         for info in infoDict.keys():
-            # For the buildingWidget
-            label = self.buildingWidget.findChild(name=info)
+            # For the constructionWidget
+            label = self.constructionWidget.findChild(name=info)
             buildingInfo = self.buildingList[self.buildingIndex]
             if label:
                 label.text = unicode(buildingInfo[infoDict[info]])
 
-            if activeUnitID and (activeUnit.nameSpace == "Building"):
-                # For the structureWidget
-                label = self.structureWidget.findChild(name=info)
+
+            elif self.world.mode == self.world.MODE_BUILD:
+                label = self.constructionWidget.findChild(name=info)
                 if label:
                     label.text = unicode(activeUnitInfo[infoDict[info]])
-                self._world.HUD.structureWidget.show()
-
-
-            elif self._world.mode == self._world.MODE_BUILD:
-                label = self.buildingWidget.findChild(name=info)
-                if label:
-                    label.text = unicode(activeUnitInfo[infoDict[info]])
-                self._world.HUD.buildingWidget.show()
+                self.world.HUD.constructionWidget.show()
 
             else:
                 print "The selected unit is not a Building!"
                 self.closeExtraWindows()
                 return
+
 
 
         ## Show storage UI if needed.
@@ -205,6 +399,8 @@ class StrategicHUD(object):
                 self.storageUI.show()
                 print "Showing production window"
 
+        '''
+
     def closeExtraWindows(self):
         if self.storageUI:
             self.storageUI.hide()
@@ -213,4 +409,4 @@ class StrategicHUD(object):
         self.structureWidget.hide()
 
         print "Hiding buildingwidget"
-        self.buildingWidget.hide()
+        self.constructionWidget.hide()

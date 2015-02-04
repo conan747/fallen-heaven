@@ -149,7 +149,6 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
             self._world.cursorHandler.setCursor(self._world.cursorHandler.CUR_DEFAULT)
             self._world.setMode(self._world.MODE_DEFAULT)
             self._world.stopBuilding()
-            self._world.HUD.buildingWidget.hide()
         ## TODO: If we are building a wall then don't close the builder widget.
 
 
@@ -653,6 +652,7 @@ class World(object):
             self.listener._cellSelectionRenderer.setEnabled(False)
 
         self.handleCursor()
+        self.HUD.updateUI()
 
 
     def handleCursor(self):
