@@ -128,8 +128,8 @@ class TacticWorld(World):
 
     That's obviously too much, and should get factored out.
     """
-    def __init__(self, engine, settings):
-        super(TacticWorld, self).__init__(engine, settings)
+    def __init__(self, engine, settings, faction, planet):
+        super(TacticWorld, self).__init__(engine, settings, faction, planet)
 
         self._nextTurnWindow = None
 

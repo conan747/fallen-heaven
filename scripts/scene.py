@@ -225,6 +225,8 @@ class Scene(object):
         self.factionUnits = {}
         self._player1 = True
         self._player2 = False
+        self.faction = self._world.faction
+        self.planet = self._world.planet
 
         self.unitLoader = UnitLoader(self._world, self._world.settings)
 
@@ -383,6 +385,11 @@ class Scene(object):
         saveMapFile(filename, self.engine, self.map)
         storageFile = filename.replace(".xml", ".sto")
         self.saveStorages(storageFile)
+        # Save all the agents at the moment:
+        for agent in self.instance_to_agent.values():
+            self.planet.saveInstance(agent)
+
+        self.planet.save()
 
     def saveStorages(self, filename):
         '''
@@ -405,4 +412,7 @@ class Scene(object):
         print "Saving" , len(storages), "storages"
         if storages:
             pickle.dump(storages, open(filename, "wb"))
+            # Save it in the Planet object too.
+            self.planet.storages = storages
+
 

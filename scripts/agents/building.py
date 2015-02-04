@@ -246,6 +246,7 @@ class Building(Agent):
         if self.properties["ProductionType"] != "NONE":
             self.storage = Storage(self, self.world)
 
+        self.health = self.properties["Hp"]
 
 
     # def onInstanceActionFinished(self, instance, action):

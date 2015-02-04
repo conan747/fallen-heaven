@@ -37,6 +37,9 @@ class Agent(fife.InstanceActionListener):
         self.agent = None
 
 
+        health = None
+
+
         # if uniqInMap:
         #     self.agent = layer.getInstance(agentName)
         #     if not self.agent:

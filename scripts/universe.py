@@ -4,6 +4,8 @@ __author__ = 'cos'
 from tactic_world import TacticWorld
 from strategic_world import StrategicWorld
 from fife.extensions import pychan
+from progress import Progress
+from planet import Planet
 
 
 class Faction(object):
@@ -11,13 +13,13 @@ class Faction(object):
     Holds the information about a faction i.e. a player and all its units and resources.
     '''
     name = None
-    ownedProvinces = []
+    pwnedPlanets = []
     resources = None
     technology = None
 
     # _RES_ENERGY, _RES_CREDITS, _RES_RESEARCH = xrange(3)
 
-    def __init__(self):
+    def __init__(self, name= ""):
         resources = {"Energy": 0,
                      "Credits" : 0,
                      "Research" : 0}
@@ -28,6 +30,8 @@ class Faction(object):
                       "Damage" : 1,
                       "RateOfFire" : 1,
                       "Rocketry" : 1}
+
+        self.name = name
 
         self.pwnedPlanets.append("shrine2")
 
@@ -43,6 +47,7 @@ class Universe(object):
     '''
 
     planets = ["shrine2", "savefile"]
+    selectedPlanet = None
 
     pause = True
 
@@ -69,7 +74,9 @@ class Universe(object):
         # Finally show the main GUI
         self.gui.show()
 
-        self.faction = "Human" # FIXME
+        self.faction = Faction("Human") # FIXME
+        prog = Progress(self)
+        # print dir(self.faction)
         # '''
 
         # self.startTactic(str(self._settings.get("rio", "MapFile")))
@@ -96,32 +103,33 @@ class Universe(object):
     def toWarClicked(self):
         print "Going to war!"
         self.gui.hide()
-        self.startTactic(str(self._settings.get("rio", "MapFile")))
+        self.selectedPlanet = Planet("shrine2")
+        self.startTactic()
 
     def toPlanetClicked(self):
         print "Going to Planet!"
         self.gui.hide()
-        self.startStrategic(str(self._settings.get("rio", "MapFile")))
+        self.selectedPlanet = Planet("shrine2")
+        self.startStrategic()
 
     def endTurn(self):
         pass
 
-    def startTactic(self, mapFile):
+    def startTactic(self):
         '''
         Starts Tactic mode.
-        #TODO: Add parameter to select map.
         :return:
         '''
 
-        self.world = TacticWorld(self._engine, self._settings)
+        self.world = TacticWorld(self._engine, self._settings, self.faction, self.selectedPlanet)
 
-        self.world.load(mapFile)
-        print "Loading map: ", mapFile
+        self.world.load(self.selectedPlanet.getMapPath())
+        print "Loading map: ", self.selectedPlanet.getMapPath()
 
-    def startStrategic(self, mapFile):
-        self.world = StrategicWorld(self._engine, self._settings)
-        self.world.load(mapFile)
-        print "Loading map: ", mapFile
+    def startStrategic(self):
+        self.world = StrategicWorld(self._engine, self._settings, self.faction, self.selectedPlanet)
+        self.world.load(self.selectedPlanet.getMapPath())
+        print "Loading map: ", self.selectedPlanet.getMapPath()
 
 
     def pump(self):

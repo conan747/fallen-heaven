@@ -146,8 +146,8 @@ class StrategicWorld(World):
 
     That's obviously too much, and should get factored out.
     """
-    def __init__(self, engine, settings):
-        super(StrategicWorld, self).__init__(engine, settings)
+    def __init__(self, engine, settings, faction, planet):
+        super(StrategicWorld, self).__init__(engine, settings, faction, planet)
 
         self.listener = StrategicListener(self)
         self.listener.attach()
