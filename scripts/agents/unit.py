@@ -29,12 +29,6 @@ from building import Building
 
 
 
-_STATE_NONE, _STATE_IDLE, _STATE_RUN, _STATE_KICK, _STATE_TALK = xrange(5)
-
-_WALK, _LAND, _AIR = xrange(3)
-_INFANTRY, _GROUND, _HOOVER = xrange(3)
-_LWEAPON, _HWEAPON = xrange(2)
-
 
 ## TODO: When unit is moving, prevent from selecting new position.
 
@@ -57,34 +51,28 @@ class Unit(Agent):
     ;Embedded			--> Only used for Towers, optionnal field --> TRUE / FALSE
     ;EncyclopediaImg	--> Image to display in the encyclopedia
 '''
+
+    WALK, LAND, AIR = xrange(3)
+    INFANTRY, GROUND, HOOVER = xrange(3)
+    LWEAPON, HWEAPON = xrange(2)
+
     instance = None
 
     # movement = None
     lightWeapon = None
     heavyWeapon = None
-    properties = {}
     AP = None
 
     def __init__(self, world, properties, lWeapon = None, HWeapon = None):
+
+        super(Unit, self).__init__(properties["unitName"], "Unit", world)
         self.nameSpace = "Unit"
         self.properties = properties
-        unitName = self.properties["unitName"]
-        super(Unit, self).__init__(unitName, self.nameSpace, world)
 
         self.health = self.properties["Hp"]
         self.AP = self.properties["TimeUnits"]
 
-    def onInstanceActionCancelled(self, instance, action):
-        pass
 
-
-    def start(self):
-        self.idle()
-
-
-    def idle(self):
-        self.state = _STATE_IDLE
-        self.agent.actOnce('stand')
 
 
     def calculateDistance(self,location):
@@ -129,7 +117,7 @@ class Unit(Agent):
         #     self._renderer = fife.CellSelectionRenderer.getInstance(self.world.cameras['main'])
 
         # self._renderer.setEnabled(False)
-        self.state = _STATE_RUN
+        # self.state = _STATE_RUN
         movesLeft = self.AP / 10
 
         iPather = fife.RoutePather()
@@ -141,56 +129,30 @@ class Unit(Agent):
         self.agent.move('run', route.getEndNode(), 2)
 
 
-
-    def kick(self, target):
-        self.state = _STATE_KICK
-        self.agent.actOnce('kick', target)
-
-
-    def talk(self, target):
-        self.state = _STATE_TALK
-        self.agent.actOnce('talk', target)
-
-
     def die(self):
         print "This unit is dead!"
         self.world.scene.unitDied(self.agent.getFifeId())
         # self.layer.deleteInstance(self.agent)
 
 
-    def attack(self, location, weaponType=_LWEAPON):
-        if weaponType == _LWEAPON:
+
+    def attack(self, location, weaponType=None):
+        if not weaponType:
+            weaponType = self.LWEAPON
+        if weaponType == self.LWEAPON:
             self.lightWeapon.fire(location)
-        elif weaponType == _HWEAPON:
+        elif weaponType == self.HWEAPON:
             self.heavyWeapon.fire(location)
 
 
-    def getDamage(self, dmg):
-        print "Previous health: " , self.health
-        print "Dealing ", dmg, " damage!"
-        self.health -= dmg
-        if self.health <= 0:
-            self.die()
-
-    def onInstanceActionFinished(self, instance, action):
-        # if self._renderer:
-            # self._renderer.setEnabled(False) ## instead do self._renderer.reset()
-            # self._renderer.reset()
-        self.idle()
-
-    def printProperties(self):
-        print self.properties
 
 
 
 class Weapon(object):
     """
-	Weapon
+    Weapon
 
-	This class is a super class and is meant to be inherited and
-	not used directly.  You should implement fire() in the sub-
-	class.
-	        """
+    """
 
     def __init__(self, world):
         self._world = world

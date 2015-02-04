@@ -36,17 +36,16 @@ class Agent(fife.InstanceActionListener):
         self.world = world
         self.agent = None
 
+        self.properties = {}
 
-        health = None
+        self.agent = None
+        self.movement = None
+        self.lightWeapon = None
+        self.heavyWeapon = None
 
 
-        # if uniqInMap:
-        #     self.agent = layer.getInstance(agentName)
-        #     if not self.agent:
-        #         # We have to create a new this instance.
-        #         object = model.getObject("boy", "http://www.fifengine.net/xml/rio_de_hola")
-        #         point = fife.Point3D(0,0,0)
-        #         self.agent = layer.createInstance(object, point)
+        self.health = 0
+
 
 
     def createInstance(self, location):
@@ -95,16 +94,33 @@ class Agent(fife.InstanceActionListener):
 
 
     def onInstanceActionFinished(self, instance, action):
-        raise ProgrammingError('No OnActionFinished defined for Agent')
-
-    def onInstanceActionCancelled(self, instance, action):
-        raise ProgrammingError('No OnActionFinished defined for Agent')
-
+        pass
     def onInstanceActionFrame(self, instance, action, frame):
-        raise ProgrammingError('No OnActionFrame defined for Agent')
+        pass
 
     def start(self):
-        raise ProgrammingError('No start defined for Agent')
+        pass
 
-    # def resetAP(self):
-    #     pass
+
+    def onInstanceActionCancelled(self, instance, action):
+        pass
+
+
+    def idle(self):
+        self.agent.actOnce('stand')
+
+
+
+    def printProperties(self):
+        print self.properties
+
+    def getDamage(self, dmg):
+        print "Previous health: " , self.health
+        print "Dealing ", dmg, " damage!"
+        self.health -= dmg
+        if self.health <= 0:
+            self.die()
+
+
+    def resetAP(self):
+        self.properties.AP = self.properties._maxAP

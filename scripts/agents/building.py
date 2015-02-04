@@ -30,12 +30,6 @@ from fife.extensions.pychan import widgets
 import uuid
 
 
-_STATE_NONE, _STATE_IDLE, _STATE_RUN, _STATE_KICK, _STATE_TALK = xrange(5)
-
-_LWEAPON, _HWEAPON = xrange(2)
-_INFANTRY, _GROUND, _HOOVER = xrange(3)
-
-## TODO: Perhaps I could encapsulate common methods with the Unit class? This should be added to the Agent class I guess.
 
 
 
@@ -161,20 +155,18 @@ class Storage(object):
 
 
 class Building(Agent):
-    agent = None
 
-    movement = None
-    lightWeapon = None
-    heavyWeapon = None
-    properties = None
+
     landed = False
 
 
     def __init__(self, world, props):
+
+        super(Building, self).__init__(props["unitName"], "Building", world)
         self.nameSpace = "Building"
         self.properties = props
-        unitName = props["unitName"]
-        super(Building, self).__init__(unitName, self.nameSpace, world)
+
+
         # self.agent = layer.getInstance(agentName)
         self._renderer = None
         self._SelectRenderer = None
@@ -187,46 +179,13 @@ class Building(Agent):
         self.health = self.properties["Hp"]
 
 
-    # def onInstanceActionFinished(self, instance, action):
-    #     pass
-
-
-    def onInstanceActionCancelled(self, instance, action):
-        pass
-
-
-    def start(self):
-        pass
-
-
-    def idle(self):
-        self.state = _STATE_IDLE
-        self.agent.actOnce('stand')
-
 
     def calculateDistance(self, location):
-        # print "Current Location", self.agent.getLocation().getMapCoordinates()
-        # print "Target Location", location.getMapCoordinates()
         iPather = fife.RoutePather()
         route = iPather.createRoute(self.agent.getLocation(), location, True)
-        # print "Beginning of the route", route.getStartNode().getMapCoordinates()
-        # print "End of the route", route.getEndNode().getMapCoordinates()
-        # if iPather.solveRoute(route):
-        # print "Route solved!"
-        # route = fife.Route(self.agent.getLocation(),location)
-        # path = route.getPath()
         distance = route.getPathLength()
-        # print "Distance to walk:", distance
-        # pathList = route.getPath()
-        # print "Path coordinates:"
-        # for location in pathList:
-        #     print location.getMapCoordinates()
-        # print "End path coords"
         return distance
 
-
-    def resetAP(self):
-        self.properties.AP = self.properties._maxAP
 
     def teleport(self, location):
         if self.landed:
@@ -271,28 +230,6 @@ class Building(Agent):
         # self.layer.deleteInstance(self.agent)
 
 
-    def attack(self, location, weaponType=_LWEAPON):
-        if weaponType == _LWEAPON:
-            self.lightWeapon.fire(location)
-        elif weaponType == _HWEAPON:
-            self.heavyWeapon.fire(location)
-
-
-    def getDamage(self, dmg):
-        print "Previous health: ", self.health
-        print "Dealing ", dmg, " damage!"
-        self.health -= dmg
-        if self.health <= 0:
-            self.die()
-
-    def onInstanceActionFinished(self, instance, action):
-        pass
-
-
-    def createInstance(self, location):
-        super(Building, self).createInstance(location)
-        print "Instance Created!"
-
 
     def setFootprint(self):
         '''
@@ -336,5 +273,3 @@ class Building(Agent):
                 cell.setCellType(fife.CTYPE_NO_BLOCKER)
 
         self.landed = False
-
-
