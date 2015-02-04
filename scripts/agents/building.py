@@ -76,13 +76,6 @@ class Storage(object):
         print "Units able to be produced by this building: ", productionType
         print self.ableToProduce
 
-        # # Setup UI:
-        # self.UI = pychan.loadXML('gui/storage.xml')
-        # self.UI.mapEvents({
-        #     'completeUnits': self.completeUnits
-        # })
-        # self.updateUI()
-
         self.deployingID = None
 
         self.updateUI = self.world.HUD.updateUI
@@ -108,44 +101,11 @@ class Storage(object):
 
         # self.updateUI()
 
-    '''
-    def updateUI(self):
-        # Check if it is already configured:
-        self.producinUnitsWidget = self.UI.findChild(name="available_units")
-        children = self.producinUnitsWidget.findChildren()
-        if children.__len__() < 2:
-            for unitName in self.ableToProduce:
-                vbox = pychan.widgets.VBox()
-                icon = pychan.widgets.Icon(name=unitName, image="gui/icons/boy.png")
-                def callback(arg=unitName): # Weird way of doing it. Taken from here: http://wiki.wxpython.org/Passing%20Arguments%20to%20Callbacks
-                    self.buildUnit(arg)
-
-                icon.capture(callback, event_name="mouseClicked")
-                vbox.addChild(icon)
-                label = pychan.widgets.Label(text=unitName)
-                vbox.addChild(label)
-                cost = self.world.scene.unitLoader.unitProps[unitName]["Cost"]
-                label = pychan.widgets.Label(text=str(cost))
-                vbox.addChild(label)
-                self.producinUnitsWidget.addChild(vbox)
-
-        self.producinUnitsWidget.adaptLayout()
-    '''
-
     def cancelUnit(self, unitName):
         print "Removing: ", unitName
         self.inProduction.remove(unitName)
         # TODO: reinburse unit costs
         self.updateUI()
-
-        # icon = self.UI.findChild(name=unitName)
-        # if icon:
-        #     container = self.UI.findChild(name="producing_units")
-        #     container.removeChild(icon)
-        #
-        #
-        #     self.producinUnitsWidget.adaptLayout()
-
 
 
     def buildUnit(self, unitName):
@@ -159,23 +119,7 @@ class Storage(object):
         self.inProduction.append(iconName)
 
         self.updateUI()
-        #
-        # oldIcon = self.UI.findChild(name=unitName)
-        # newIcon = oldIcon.clone(str(prefix)+':')
-        # iconName = newIcon.name
-        # print "Adding button:", iconName
-        # def callback(arg=iconName): # Weird way of doing it. Taken from here: http://wiki.wxpython.org/Passing%20Arguments%20to%20Callbacks
-        #             self.cancelUnit(arg)
-        #
-        # newIcon.capture(callback, event_name="mouseClicked")
-        # container = self.UI.findChild(name="producing_units")
-        # container.addChild(newIcon)
-        # self.producinUnitsWidget.adaptLayout()
-        #
 
-
-    # def getUI(self):
-    #     return self.UI
 
     def completeUnits(self):
         '''
@@ -185,22 +129,9 @@ class Storage(object):
         print "Running completeConstruction"
         for unit in self.inProduction:
             self.unitsReady.append(unit)
-            # icon = self.UI.findChild(name=unit)
-            # icon.background_color = (0, 255, 0, 200)
-            # icon.foreground_color = (0, 255, 0, 200)
-            # icon.base_color = (0, 255, 0, 200)
-            # print "Background color" , icon.background_color
-            # icon.border_size = 2
-            # print unit, " completed!"
-
-            # Change icon callback to deployUnit
-            # def callback(arg=unit): # Weird way of doing it. Taken from here: http://wiki.wxpython.org/Passing%20Arguments%20to%20Callbacks
-            #         self.deployUnit(arg)
-            # icon.capture(callback, event_name="mouseClicked")
 
         self.inProduction = []
         self.updateUI()
-        # self.UI.adaptLayout()
 
     def deployUnit(self, unitID):
         '''
@@ -221,13 +152,6 @@ class Storage(object):
     def unitDeployed(self):
         unitName = self.deployingID
         self.unitsReady.remove(unitName)
-        # icon = self.UI.findChild(name=unitName)
-        # if icon:
-        #     container = self.UI.findChild(name="producing_units")
-        #     container.removeChild(icon)
-        #
-        #     self.unitsReady.remove(unitName)
-        #     self.producinUnitsWidget.adaptLayout()
 
         self.deployingID = None
         self.updateUI()

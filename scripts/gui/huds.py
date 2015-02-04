@@ -341,65 +341,6 @@ class StrategicHUD(HUD):
             self.structureWidget.updateUI()
             # self.structureWidget.show()
 
-        '''##-------------------------------------
-
-        if not self.buildingList:
-                self.loadBuildingList()
-
-        if not self.selectedBuilding:
-            self.onNextPressed()    # So that it displays some information.
-
-        activeUnit = None
-        activeUnitID = self.world.activeUnit
-        activeUnitInfo = None
-
-
-        if activeUnitID:
-            activeUnit = self.world.scene.instance_to_agent[activeUnitID]
-            activeUnitInfo = activeUnit.properties
-            print activeUnitInfo
-        elif self.world.construction:
-            activeUnit = self.world.construction
-            activeUnitInfo = activeUnit.properties
-            print activeUnitInfo
-
-        else:
-            self.closeExtraWindows()
-            return
-
-        for info in infoDict.keys():
-            # For the constructionWidget
-            label = self.constructionWidget.findChild(name=info)
-            buildingInfo = self.buildingList[self.buildingIndex]
-            if label:
-                label.text = unicode(buildingInfo[infoDict[info]])
-
-
-            elif self.world.mode == self.world.MODE_BUILD:
-                label = self.constructionWidget.findChild(name=info)
-                if label:
-                    label.text = unicode(activeUnitInfo[infoDict[info]])
-                self.world.HUD.constructionWidget.show()
-
-            else:
-                print "The selected unit is not a Building!"
-                self.closeExtraWindows()
-                return
-
-
-
-        ## Show storage UI if needed.
-        if self.storageUI:
-                self.storageUI.hide()
-                self.storageUI = None
-
-        if activeUnitID and (activeUnit.nameSpace == "Building"):
-            if activeUnit.storage:
-                self.storageUI = activeUnit.storage.getUI()
-                self.storageUI.show()
-                print "Showing production window"
-
-        '''
 
     def closeExtraWindows(self):
         if self.storageUI:
