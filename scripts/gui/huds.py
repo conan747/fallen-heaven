@@ -8,12 +8,13 @@ from fife.extensions import pychan
 from fife.extensions.pychan import widgets
 from fife.extensions.pychan.fife_pychansettings import FifePychanSettings
 
-from xml.sax.saxutils import XMLGenerator
-from xml.sax.xmlreader import AttributesNSImpl
-# from fife.extensions.pychan.internal import get_manager
+# from xml.sax.saxutils import XMLGenerator
+# from xml.sax.xmlreader import AttributesNSImpl
+
+
 
 # -----------------------------------------------------------------------------------------------------------------
-#
+#       Widget
 # -----------------------------------------------------------------------------------------------------------------
 class Widget(object):
 
@@ -30,8 +31,9 @@ class Widget(object):
     def show(self):
         self.widget.show()
 
+
 # -----------------------------------------------------------------------------------------------------------------
-#
+#       HUD
 # -----------------------------------------------------------------------------------------------------------------
 class HUD(Widget):
     '''
@@ -43,8 +45,12 @@ class HUD(Widget):
     def closeExtraWindows(self):
         pass
 
+    def updateUI(self):
+        pass
+
+
 # -----------------------------------------------------------------------------------------------------------------
-#
+#       TacticalHUD
 # -----------------------------------------------------------------------------------------------------------------
 
 class TacticalHUD(HUD):
@@ -56,8 +62,15 @@ class TacticalHUD(HUD):
                 'nextTurnButton' : self.world.onSkipTurnPress,
                 'attackLightButton' : self.world.onAttackButtonPressed
         })
+
+        self.structureWidget = StructureWidget(self)
+
+    def updateUI(self):
+        self.structureWidget.updateUI()
+
+
 # -----------------------------------------------------------------------------------------------------------------
-#
+#       ConstructingWidget
 # -----------------------------------------------------------------------------------------------------------------
 
 class ConstructingWidget(Widget):
@@ -148,8 +161,9 @@ class ConstructingWidget(Widget):
         # self.show()
 
 
+
 # -----------------------------------------------------------------------------------------------------------------
-#
+#       StructureWidget
 # -----------------------------------------------------------------------------------------------------------------
 
 class StructureWidget(Widget):
@@ -180,6 +194,10 @@ class StructureWidget(Widget):
         activeUnitInfo = activeUnit.properties
         print activeUnitInfo
 
+        # if activeUnit.properties.faction != self.HUD.world.faction.name:
+        #     print activeUnit.properties.faction #TEST
+        #     return
+
         if activeUnit.nameSpace != "Building":
             # No Building was selected therefore hide this widget.
             self.hide()
@@ -199,8 +217,9 @@ class StructureWidget(Widget):
             self.storageWidget.show()
 
 
+
 # -----------------------------------------------------------------------------------------------------------------
-#
+#       StorageUI
 # -----------------------------------------------------------------------------------------------------------------
 
 
@@ -285,7 +304,7 @@ class StorageUI(Widget):
 
 
 # -----------------------------------------------------------------------------------------------------------------
-#
+#       StrategicHUD
 # -----------------------------------------------------------------------------------------------------------------
 class StrategicHUD(HUD):
     def __init__(self, world):
