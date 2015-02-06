@@ -190,18 +190,19 @@ class FallenHeaven(PychanApplicationBase):
 
     def _pump(self):
         if self.listener.quit:
-            if self.universe.world:
+            self.universe.save()
+            # if self.universe.world:
 
                 # get the correct directory to save the map file to
                 # mapSaveDir = getUserDataDirectory("fife", "fallen") + "/maps"
-                mapSaveDir = "maps"
+                # mapSaveDir = "saves/test"
 
                 # create the directory structure if it does not exist
-                if not os.path.isdir(mapSaveDir):
-                    os.makedirs(mapSaveDir)
+                # if not os.path.isdir(mapSaveDir):
+                #     os.makedirs(mapSaveDir)
 
                 # save map file to directory
-                self.universe.world.scene.save(mapSaveDir + "/savefile.xml")
+                # self.universe.world.scene.save(mapSaveDir + "/savefile.xml")
             self.breakRequested = True
         else:
             self.universe.pump()

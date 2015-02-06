@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ascii" ?>
-<map id="firstCapital" format="1.0">
+<map id="secondPlanet" format="1.0">
     <import file="../objects/terrains/grass_and_water_atlas.xml" />
     <import dir="../objects/agents/buildings/" />
     <layer id="Ground" x_offset="0.000000" y_offset="0.000000" z_offset="0.000000" x_scale="1.000000" y_scale="1.000000" rotation="0.000000" grid_type="square" transparency="0" pathing="cell_edges_and_diagonals" sorting="camera" layer_type="interact" layer_type_id="TechdemoMapGroundObjectLayer">

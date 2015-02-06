@@ -2,6 +2,7 @@ __author__ = 'cos'
 
 from scene import Scene
 import cPickle as pickle
+import os
 
 
 
@@ -14,11 +15,11 @@ class Planet(object):
     name = None # Name of the planet. Used to figure out map file.
     storages = {} # Dictionary containing the information for building storages.
     agentInfo = {} # Information of each Agent on the map.
-    _fileNameTemplate = "maps/planet.plt"
+    _fileNameTemplate = "saves/test/planet.plt"
 
-    def __init__(self, planetName=""):
+    def __init__(self, planetName="", planetInfo = None):
         self.name = planetName
-        self.load()
+        self.load(planetInfo)
 
 
     def getMapPath(self):
@@ -38,28 +39,40 @@ class Planet(object):
 
         self.agentInfo[agentName] = info
 
+
+    def getPlanetDict(self):
+        tosave = { "name" : self.name,
+                   "agentInfo" : self.agentInfo,
+                   "storages" : self.storages}
+        return tosave
+
     def save(self):
         '''
         Pickles the planet. (Try saying it three times)
         :return:
         '''
-        tosave = { "name" : self.name,
-                   "agentInfo" : self.agentInfo,
-                   "storages" : self.storages}
+        tosave = self.getPlanetDict()
         fileName = self._fileNameTemplate.replace("planet", self.name)
         pickle.dump(tosave, open(fileName, 'wb'))
 
-    def load(self):
+    def load(self, planetInfo = None):
         '''
-        Load previously saved planet information.
+        Load previously saved planet information, or imports planetInfo into this planet.
         :return:
         '''
-        fileName = self._fileNameTemplate.replace("planet", self.name)
-        pickleFile = open(fileName, 'rb')
-        if not pickleFile:
-            return False
-        content = pickle.load(pickleFile)
-        pickleFile.close()
+        if not planetInfo:
+            fileName = self._fileNameTemplate.replace("planet", self.name)
+            if os.path.isfile(fileName):
+                pickleFile = open(fileName, 'rb')
+            else:
+                return False
+            content = pickle.load(pickleFile)
+            pickleFile.close()
+
+        else:
+            content = planetInfo
+            assert content["name"] == self.name, "trying to copy info from planet %r into planet %r" % (content["name"], self.name)
+
 
         for attr in content.keys():
             setattr(self, attr, content[attr])

@@ -17,7 +17,7 @@ class Universe(object):
     Start Tactical turn: Generates a tactic_world instance. It's the combat mode.
     '''
 
-    planetNames = ["shrine2", "savefile"]
+
     selectedPlanet = None
 
     pause = True
@@ -45,8 +45,8 @@ class Universe(object):
         # Finally show the main GUI
         self.gui.show()
 
-        self.faction = Faction("Human") # FIXME
-        prog = Progress(self)
+        # self.faction = Faction("Human") # FIXME
+        self.faction = None
 
 
     def newGame(self):
@@ -64,6 +64,18 @@ class Universe(object):
 
         engine = self._engine
         settings = self._settings
+
+        self.progress = Progress(self) # to save the progress.
+        self.faction = Faction("Human")
+        faction2 = Faction("Tauran")
+        self.progress.factions["Human"] = self.faction
+        self.progress.factions["Tauran"] = faction2
+
+        planetNames = ["firstCapital", "secondPlanet"]
+        for planetName in planetNames:
+            planet = Planet(planetName)
+            self.progress.allPlanets[planetName] = planet.getPlanetDict()
+
         self.continueGame()
 
     def pauseGame(self):
@@ -75,13 +87,17 @@ class Universe(object):
     def toWarClicked(self):
         print "Going to war!"
         self.gui.hide()
-        self.selectedPlanet = Planet("firstCapital")
+        planetName = "firstCapital"
+        self.progress.allPlanets[planetName]
+        self.selectedPlanet = Planet(planetName, self.progress.allPlanets[planetName])
         self.startTactic()
 
     def toPlanetClicked(self):
         print "Going to Planet!"
         self.gui.hide()
-        self.selectedPlanet = Planet("firstCapital")
+        planetName = "firstCapital"
+        self.progress.allPlanets[planetName]
+        self.selectedPlanet = Planet(planetName, self.progress.allPlanets[planetName])
         self.startStrategic()
 
     def endTurn(self):
@@ -112,3 +128,6 @@ class Universe(object):
 
     # def quit(self):
     #     self._applictaion.requestQuit()
+
+    def save(self):
+        self.progress.save()

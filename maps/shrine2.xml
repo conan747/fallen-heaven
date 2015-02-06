@@ -14,8 +14,7 @@
     <import file="../objects/agents/girl/object.xml" />
     <import file="../objects/agents/hippie_priest/object.xml" />
     <import file="../objects/agents/bee/object.xml" />
-    
-  <import file="grass_and_water_atlas.xml"/>
+	<import dir="../objects/agents/buildings/"></import>
     <layer id="TechdemoMapTileLayer" x_offset="0.000000" y_offset="0.000000" z_offset="0.000000" x_scale="1.000000" y_scale="1.000000" rotation="0.000000" grid_type="square" transparency="0" pathing="cell_edges_and_diagonals" sorting="camera" layer_type="interact" layer_type_id="TechdemoMapGroundObjectLayer">
         <instances>
             <i ns="http://www.fifengine.net/xml/rio_de_hola" o="sands:01" x="-1.000000" y="1.000000" z="0.000000" r="0" stackpos="0" />

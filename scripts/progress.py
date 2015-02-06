@@ -1,25 +1,35 @@
 __author__ = 'cos'
 
 
+import cPickle as pickle
 
 class Progress(object):
     '''
     Tracks the current progress to save/restore games.
     '''
 
-    progressDict = {}
+
 
     def __init__(self, universe):
         '''
 
         :return:
         '''
-        self.universe = universe
+        self.universe = universe # Points at the universe
+
+        self.playerFactionName = "Human"
+        self.saveDir = "saves/test/"    # Directory where the file should be saved/loaded
+        self.allPlanets = {} # Dictionary containing planet name:planetInfo
+        self.factions = {} # Dictionary containing faction name:factionInfo.
+
+        # Dictionary containing all the information. Will be saved/loaded.
+        self.progressDict = {"playerFactionName" : self.playerFactionName,
+                             "saveDir" : self.saveDir}
 
 
+    def update(self):
 
-    def save(self):
-
+        # Update Faction
         faction = self.universe.faction
         print dir(faction)
         factionDict = {}
@@ -27,10 +37,34 @@ class Progress(object):
             if not member.startswith("__"):
                 factionDict[member] = getattr(faction, member)
 
-        self.progressDict["Faction"] = factionDict
+        self.factions[factionDict["name"]] = factionDict
+        self.progressDict["factions"] = self.factions
 
 
-        pickle.dump(self.progressDict, open("savegame", 'wb'))
+        # Update open planet:
+        if self.universe.world.planet:
+            planetDict = self.universe.world.planet.getPlanetDict()
+            self.allPlanets[planetDict["name"]] = planetDict
+
+        self.progressDict["allPlanets"] = self.allPlanets
+
+
+    def save(self):
+
+        self.update()
+
+        saveFile = self.saveDir + self.playerFactionName + ".sav"
+        pickle.dump(self.progressDict, open(saveFile, 'wb'))
+
+
+    def load(self, fileName):
+
+        assert os.path.isfile(fileName) , "File could not be loaded!"
+        self.progressDict = self.load(open(fileName, 'rb'))
+
+        assert self.progressDict, "Empty file loaded!"
+
+        [self.__setattr__(attr, self.progressDict[attr]) for attr in self.progressDict.keys()]
 
 
 
