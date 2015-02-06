@@ -341,43 +341,46 @@ class Scene(object):
         """
 
         self.agentLayer = self.map.getLayer('TechdemoMapGroundObjectLayer')
+        if not self.agentLayer:
+            self.agentLayer = self.map.getLayers()[0]
 
         id_to_class = {"PC": "Squad",
                     "NPC" : "Squad",
                     "beach_bar": "Barrack",
                     "Energy_Center": "Energy Center"}
 
-        allInstances = self.agentLayer.getInstances()
+        if self.agentLayer:
+            allInstances = self.agentLayer.getInstances()
 
-        for instance in allInstances:
-            # print "Loading ", instance.getId()
-            id = instance.getId()
-            agentFound = id.split(":")[0]
-            if agentFound in id_to_class.keys():
-                agentName = id_to_class[agentFound]
+            for instance in allInstances:
+                # print "Loading ", instance.getId()
+                id = instance.getId()
+                agentFound = id.split(":")[0]
+                if agentFound in id_to_class.keys():
+                    agentName = id_to_class[agentFound]
 
-                if self.unitLoader.isUnit(agentName):
-                    newUnit = self.unitLoader.createUnit(agentName)
-                elif self.unitLoader.isBuilding(agentName):
-                    newUnit = self.unitLoader.createBuilding(agentName)
-                else:
-                    continue
+                    if self.unitLoader.isUnit(agentName):
+                        newUnit = self.unitLoader.createUnit(agentName)
+                    elif self.unitLoader.isBuilding(agentName):
+                        newUnit = self.unitLoader.createBuilding(agentName)
+                    else:
+                        continue
 
-                newUnit.selectInstance(id)
-                self.instance_to_agent[newUnit.agent.getFifeId()] = newUnit
-                newUnit.start()
-                print id , "loaded!"
+                    newUnit.selectInstance(id)
+                    self.instance_to_agent[newUnit.agent.getFifeId()] = newUnit
+                    newUnit.start()
+                    print id , "loaded!"
 
-                # if isinstance(newUnit,Building):
-                #     newUnit.setFootprint()
-                if newUnit.nameSpace == "Building":
-                    newUnit.setFootprint()
+                    # if isinstance(newUnit,Building):
+                    #     newUnit.setFootprint()
+                    if newUnit.nameSpace == "Building":
+                        newUnit.setFootprint()
 
-                ## FIXME: A fix to test the loading of units
-                if id == "PC":
-                    self.factionUnits[self._player1] = [newUnit.agent.getFifeId()]
-                elif id == "NPC":
-                    self.factionUnits[self._player2] = [newUnit.agent.getFifeId()]
+                    ## FIXME: A fix to test the loading of units
+                    if id == "PC":
+                        self.factionUnits[self._player1] = [newUnit.agent.getFifeId()]
+                    elif id == "NPC":
+                        self.factionUnits[self._player2] = [newUnit.agent.getFifeId()]
 
 
 

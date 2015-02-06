@@ -75,13 +75,13 @@ class Universe(object):
     def toWarClicked(self):
         print "Going to war!"
         self.gui.hide()
-        self.selectedPlanet = Planet("shrine2")
+        self.selectedPlanet = Planet("firstCapital")
         self.startTactic()
 
     def toPlanetClicked(self):
         print "Going to Planet!"
         self.gui.hide()
-        self.selectedPlanet = Planet("shrine2")
+        self.selectedPlanet = Planet("firstCapital")
         self.startStrategic()
 
     def endTurn(self):

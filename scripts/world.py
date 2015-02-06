@@ -383,6 +383,7 @@ class World(object):
         Load a xml map and setup agents and cameras.
         """
         self.reset()
+        self.filename = filename
         self.scene.load(filename)
 
         if int(self.settings.get("FIFE", "PlaySounds")):
