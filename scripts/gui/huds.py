@@ -104,7 +104,7 @@ class ConstructingWidget(Widget):
 
         self.buildingStructName = self.structureList[self.structureIndex]["buildingName"]
         self.updateUI()
-        self.world.startBuilding(self.buildingStructName)
+        self.HUD.world.startBuilding(self.buildingStructName)
 
 
     def onNextPressed(self):
@@ -198,7 +198,7 @@ class StructureWidget(Widget):
         #     print activeUnit.properties.faction #TEST
         #     return
 
-        if activeUnit.nameSpace != "Building":
+        if activeUnit.agentType != "Building":
             # No Building was selected therefore hide this widget.
             self.hide()
             return

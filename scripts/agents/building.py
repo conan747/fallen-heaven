@@ -163,7 +163,7 @@ class Building(Agent):
     def __init__(self, world, props):
 
         super(Building, self).__init__(props["unitName"], "Building", world)
-        self.nameSpace = "Building"
+        self.agentType = "Building"
         self.properties = props
 
 
@@ -273,3 +273,6 @@ class Building(Agent):
                 cell.setCellType(fife.CTYPE_NO_BLOCKER)
 
         self.landed = False
+
+    def start(self):
+        self.setFootprint()

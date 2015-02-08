@@ -34,7 +34,13 @@ class Planet(object):
         agentName = agent.agentName
         info = {}
         info["HP"] = agent.health
-        if agent.nameSpace == "Unit":
+
+        # Location
+        location = agent.agent.getLocation()
+        point = location.getLayerCoordinates()
+        info["Location"] = (point.x , point.y, point.z)
+
+        if agent.agentType == "Unit":
             info["AP"] = agent.AP
 
         self.agentInfo[agentName] = info

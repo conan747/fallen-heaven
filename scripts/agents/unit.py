@@ -66,7 +66,7 @@ class Unit(Agent):
     def __init__(self, world, properties, lWeapon = None, HWeapon = None):
 
         super(Unit, self).__init__(properties["unitName"], "Unit", world)
-        self.nameSpace = "Unit"
+        self.agentType = "Unit"
         self.properties = properties
 
         self.health = self.properties["Hp"]
@@ -126,7 +126,7 @@ class Unit(Agent):
         self.AP -= route.getPathLength() *10
         print "Path length:", route.getPathLength()
 
-        self.agent.move('run', route.getEndNode(), 2)
+        self.agent.move('stand', route.getEndNode(), 5)
 
 
     def die(self):

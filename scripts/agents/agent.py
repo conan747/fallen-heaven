@@ -25,13 +25,13 @@ from fife import fife
 from scripts.common.common import ProgrammingError
 
 class Agent(fife.InstanceActionListener):
-    def __init__(self, unitName, nameSpace, world):
+    def __init__(self, unitName, agentType, world):
         fife.InstanceActionListener.__init__(self)
         # self.settings = settings
         # self.model = model
         self.agentName = None
         self.unitName = unitName
-        self.nameSpace = nameSpace
+        self.agentType = agentType
         # self.layer = layer
         self.world = world
         self.agent = None
@@ -54,12 +54,17 @@ class Agent(fife.InstanceActionListener):
         :param location: Location where the instance will be.
         :return:
         '''
+
+        if type(location) is fife.Location:
+            point = location.getLayerCoordinates()
+        else:
+            point = fife.Point3D(location[0], location[1], location[2])
+
         #FIXME: Fix this namespace.
         self.nameSpace = "http://www.fifengine.net/xml/rio_de_hola"
         object = self.world.model.getObject(self.unitName, self.nameSpace)
         if not object:
             print "Error! No ", self.unitName ,"found in the object library"
-        point = location.getLayerCoordinates()
         self.agent = self.world.scene.agentLayer.createInstance(object, point)
         self.agent.setCellStackPosition(0)
 
@@ -68,10 +73,9 @@ class Agent(fife.InstanceActionListener):
             self.agentName = self.unitName + ":" + str(fifeID)
 
             self.agent.setId(self.agentName)
-            print self.agent.getId()
+            print "Created ", self.agent.getId()
 
         self.agent.addActionListener(self)
-
 
 
     def selectInstance(self, instanceName):
@@ -90,7 +94,6 @@ class Agent(fife.InstanceActionListener):
             return True
         else:
             return False
-
 
 
     def onInstanceActionFinished(self, instance, action):

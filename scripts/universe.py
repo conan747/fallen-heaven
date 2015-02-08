@@ -43,10 +43,22 @@ class Universe(object):
         self.gui.mapEvents(eventMap)
 
         # Finally show the main GUI
-        self.gui.show()
+        # self.gui.show()
 
         # self.faction = Faction("Human") # FIXME
         self.faction = None
+
+
+    def load(self, name="Human"):
+        saveDir = "saves/test/"
+        self.progress = Progress(self)
+        self.progress.load(saveDir + name + ".sav")
+        self.gui.show()
+
+        self.faction = Faction()
+        self.faction.__setInfo__(self.progress.factions[self.progress.playerFactionName])
+        # self.planetNames = self.progress.allPlanets.keys()
+        self.continueGame()
 
 
     def newGame(self):
@@ -61,9 +73,6 @@ class Universe(object):
             self.world = None
 
         self.gui.show()
-
-        engine = self._engine
-        settings = self._settings
 
         self.progress = Progress(self) # to save the progress.
         self.faction = Faction("Human")
@@ -96,8 +105,8 @@ class Universe(object):
         print "Going to Planet!"
         self.gui.hide()
         planetName = "firstCapital"
-        self.progress.allPlanets[planetName]
-        self.selectedPlanet = Planet(planetName, self.progress.allPlanets[planetName])
+        planetInfo = self.progress.allPlanets[planetName]
+        self.selectedPlanet = Planet(planetName, planetInfo)
         self.startStrategic()
 
     def endTurn(self):
@@ -109,7 +118,7 @@ class Universe(object):
         :return:
         '''
 
-        self.world = TacticWorld(self._engine, self._settings, self.faction, self.selectedPlanet)
+        self.world = TacticWorld(self._engine, self._settings, self.faction, self.selectedPlanet, self.progress.factions)
 
         self.world.load(self.selectedPlanet.getMapPath())
         print "Loading map: ", self.selectedPlanet.getMapPath()
@@ -130,4 +139,6 @@ class Universe(object):
     #     self._applictaion.requestQuit()
 
     def save(self):
+        if self.world.scene:
+            self.world.scene.updatePlanet()
         self.progress.save()

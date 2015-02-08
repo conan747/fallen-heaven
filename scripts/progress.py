@@ -2,6 +2,7 @@ __author__ = 'cos'
 
 
 import cPickle as pickle
+import os
 
 class Progress(object):
     '''
@@ -41,9 +42,13 @@ class Progress(object):
         self.progressDict["factions"] = self.factions
 
 
+
         # Update open planet:
         if self.universe.world.planet:
+            self.universe.world.scene.updatePlanet()
+            storages = self.universe.world.scene.saveStorages()
             planetDict = self.universe.world.planet.getPlanetDict()
+            planetDict["storages"] = storages
             self.allPlanets[planetDict["name"]] = planetDict
 
         self.progressDict["allPlanets"] = self.allPlanets
@@ -60,11 +65,13 @@ class Progress(object):
     def load(self, fileName):
 
         assert os.path.isfile(fileName) , "File could not be loaded!"
-        self.progressDict = self.load(open(fileName, 'rb'))
+        self.progressDict = pickle.load(open(fileName, 'rb'))
 
         assert self.progressDict, "Empty file loaded!"
 
-        [self.__setattr__(attr, self.progressDict[attr]) for attr in self.progressDict.keys()]
+        [setattr(self, attr, self.progressDict[attr]) for attr in self.progressDict.keys()]
+
+
 
 
 

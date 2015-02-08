@@ -97,7 +97,7 @@ class TacticWorld(World):
 
     That's obviously too much, and should get factored out.
     """
-    def __init__(self, engine, settings, faction, planet):
+    def __init__(self, engine, settings, faction, planet, factions):
         super(TacticWorld, self).__init__(engine, settings, faction, planet)
 
         self._nextTurnWindow = None
@@ -106,7 +106,7 @@ class TacticWorld(World):
         self.listener = TacticListener(self)
         self.listener.attach()
 
-
+        self.factions = factions
 
         self.scene = TacticScene(self, self.engine)
 

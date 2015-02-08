@@ -76,6 +76,7 @@ class ApplicationListener(eventlistenerbase.EventListenerBase):
             # 'credits': self._world.showCredits,
             # 'high_scores': self._world.showHighScores,
             'quit': self.onQuitButtonPress,
+            'load' : self.onLoadPressed
         }
 
         self._widget.mapEvents(eventMap)
@@ -84,6 +85,7 @@ class ApplicationListener(eventlistenerbase.EventListenerBase):
         self._continueMaxWidth = self._continue.max_width
         self._continueMaxHeight = self._continue.max_height
 
+
     def onContinuePressed(self):
         self.hide()
         self.universe.continueGame()
@@ -91,6 +93,11 @@ class ApplicationListener(eventlistenerbase.EventListenerBase):
     def onNewGamePressed(self):
         self.hide()
         self.universe.newGame()
+        self.cont = True
+
+    def onLoadPressed(self):
+        self.hide()
+        self.universe.load("Human")
         self.cont = True
 
 
@@ -180,7 +187,7 @@ class FallenHeaven(PychanApplicationBase):
     It also creates the Main Menu which is saved in self.listener.
     '''
     def __init__(self):
-        super(FallenHeaven,self).__init__(TDS)
+        super(FallenHeaven, self).__init__(TDS)
         self.universe = Universe(self.engine, TDS)
         self.listener = ApplicationListener(self.engine, self.universe, TDS)
         self.listener.show()

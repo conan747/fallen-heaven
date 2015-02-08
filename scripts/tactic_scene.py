@@ -41,7 +41,7 @@ class TacticScene(Scene):
         super(TacticScene, self).__init__(world, engine)
 
         ## Added by Jon:
-        self.currentTurn = True
+        self.currentTurn = world.factions.keys()[0]
         self._objectsToDelete = list()
 
     def load(self, filename):
@@ -51,6 +51,15 @@ class TacticScene(Scene):
         [self.cellRenderer.addPathVisual(instance.agent) for instance in self.instance_to_agent.values()]
         self.cellRenderer.setEnabledPathVisual(True)
         self.cellRenderer.setEnabled(True)
+
+        # Setup factionUnits
+        for factionName in self._world.factions.keys():
+            self.factionUnits[factionName] = []
+            for instanceID in self.instance_to_agent.keys():
+                agent = self.instance_to_agent[instanceID]
+                if agent.properties["faction"] == factionName:
+                    self.factionUnits[factionName].append(instanceID)
+
 
 
     def resetAPs(self):
@@ -66,7 +75,10 @@ class TacticScene(Scene):
         '''
         Skips to the next turn
         '''
-        self.currentTurn = not self.currentTurn
+        if self._world.factions.keys()[0] == self.currentTurn:
+            self.currentTurn = self._world.factions.keys()[1]
+        else:
+            self.currentTurn = self._world.factions.keys()[0]
         self._world.selectUnit(None)
         self.resetAPs()
         self._world.setMode(_MODE_DEFAULT)
@@ -104,9 +116,9 @@ class TacticScene(Scene):
 
             self.agentLayer.deleteInstance(unit.agent)
             unit.agent = None
-        for player in range(2):
-            if unitID in self.factionUnits[player]:
-                self.factionUnits[player].remove(unitID)
+        for factionName in self.factionUnits.keys():
+            if unitID in self.factionUnits[factionName]:
+                self.factionUnits[factionName].remove(unitID)
                 return
 
         print "Could not delete instance: " , unitID

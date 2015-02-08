@@ -31,3 +31,6 @@ class Faction(object):
 
         self.pwnedPlanets.append("shrine2")
 
+    def __setInfo__(self, factionInfo):
+        [setattr(self, info, factionInfo[info]) for info in factionInfo.keys()]
+

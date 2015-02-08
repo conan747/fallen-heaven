@@ -105,6 +105,7 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
                 print "Instance: ", id
                 if id in self._world.scene.instance_to_agent.keys():
                     self._world.selectUnit(id)
+                    print "Agent Name: " , self._world.activeUnit.agentName
         if self._world.activeUnit:
             self._world.scene.instance_to_agent[self._world.activeUnit].teleport(self._world.getLocationAt(clickpoint))
 
@@ -142,7 +143,7 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
         # We don't need to do anything since the instance should be here already.
         location = self._world.getLocationAt(clickpoint)
         construction = self._world.construction
-        print "Namespace: " , construction.nameSpace
+        print "Namespace: " , construction.agentType
         if construction.teleport(location):
             self._world.scene.addBuilding(self._world.construction)
             self._world.construction = None
@@ -355,7 +356,7 @@ class World(object):
 
         ## Constants
         self._camMoveMargin = 20
-        self._camMoveSpeed = 0.1
+        self._camMoveSpeed = 0.2
         self.light_intensity = 1
         self.light_sources = 0
         self.lightmodel = int(TDS.get("FIFE", "Lighting"))
@@ -517,18 +518,18 @@ class World(object):
         self.activeUnit = id
         if id:
             self.activeUnitRenderer.addOutlined(self.scene.getInstance(id), 173, 255, 47, 2)
-
-            ## Get rid of all this because we don't have it on the original game.
-            ## Show it on the mini-camera:
-            print "Trying to show in the mini-camera"
-            unit = self.scene.instance_to_agent[id]
-            self.cameras['small'].setLocation(unit.agent.getLocation())
-            self.cameras['small'].attach(unit.agent)
-            self.cameras['small'].setEnabled(True)
-
-        else:
-            self.cameras['small'].detach()
-            self.cameras['small'].setEnabled(False)
+        #
+        #     ## Get rid of all this because we don't have it on the original game.
+        #     ## Show it on the mini-camera:
+        #     print "Trying to show in the mini-camera"
+        #     unit = self.scene.instance_to_agent[id]
+        #     self.cameras['small'].setLocation(unit.agent.getLocation())
+        #     self.cameras['small'].attach(unit.agent)
+        #     self.cameras['small'].setEnabled(True)
+        #
+        # else:
+        #     self.cameras['small'].detach()
+        #     self.cameras['small'].setEnabled(False)
 
     def changeRotation(self):
         """

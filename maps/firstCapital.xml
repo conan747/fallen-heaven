@@ -2,6 +2,7 @@
 <map id="firstCapital" format="1.0">
     <import file="../objects/terrains/grass_and_water_atlas.xml" />
     <import dir="../objects/agents/buildings/" />
+    <import dir="../objects/agents/units/" />
     <layer id="Ground" x_offset="0.000000" y_offset="0.000000" z_offset="0.000000" x_scale="1.000000" y_scale="1.000000" rotation="0.000000" grid_type="square" transparency="0" pathing="cell_edges_and_diagonals" sorting="camera" layer_type="interact" layer_type_id="TechdemoMapGroundObjectLayer">
         <instances>
             <i ns="ground" o="1" x="-25.000000" y="-25.000000" z="0.000000" r="0" stackpos="0" />

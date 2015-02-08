@@ -273,9 +273,6 @@ class Scene(object):
     def pump(self):
         pass
 
-    def reset(self):
-        pass
-
     def initScene(self, mapobj):
         """
         Initializess the scene and scene graph.  This creates game objects for
@@ -294,7 +291,6 @@ class Scene(object):
         Load a xml map and setup agents and cameras.
         """
         self.filename = filename
-        self.reset()
         loader = fife.MapLoader(self.engine.getModel(),
                                 self.engine.getVFS(),
                                 self.engine.getImageManager(),
@@ -342,61 +338,64 @@ class Scene(object):
 
         self.agentLayer = self.map.getLayer('TechdemoMapGroundObjectLayer')
         if not self.agentLayer:
+            print "Using the first layer that was found: ", self.map.getLayers()[0].getId()
             self.agentLayer = self.map.getLayers()[0]
 
-        id_to_class = {"PC": "Squad",
-                    "NPC" : "Squad",
-                    "beach_bar": "Barrack",
-                    "Energy_Center": "Energy Center"}
+        agentList = self.planet.agentInfo
+        self.planet.agentInfo = {}
 
-        if self.agentLayer:
-            allInstances = self.agentLayer.getInstances()
+        for agentID in agentList.keys():
+            id = agentID
+            agentType = id.split(":")[0] # Holds the unit or stucture name
 
-            for instance in allInstances:
-                # print "Loading ", instance.getId()
-                id = instance.getId()
-                agentFound = id.split(":")[0]
-                if agentFound in id_to_class.keys():
-                    agentName = id_to_class[agentFound]
+            if self.unitLoader.isUnit(agentType):
+                newUnit = self.unitLoader.createUnit(agentType)
+                newUnit.AP = agentList[agentID]["AP"]
+            elif self.unitLoader.isBuilding(agentType):
+                newUnit = self.unitLoader.createBuilding(agentType)
+            else:
+                print "Error: unit is not building nor unit! ??"
+                continue
 
-                    if self.unitLoader.isUnit(agentName):
-                        newUnit = self.unitLoader.createUnit(agentName)
-                    elif self.unitLoader.isBuilding(agentName):
-                        newUnit = self.unitLoader.createBuilding(agentName)
-                    else:
-                        continue
+            location = agentList[agentID]["Location"]
+            newUnit.createInstance(location)
+            self.instance_to_agent[newUnit.agent.getFifeId()] = newUnit
+            newUnit.start()
 
-                    newUnit.selectInstance(id)
-                    self.instance_to_agent[newUnit.agent.getFifeId()] = newUnit
-                    newUnit.start()
-                    print id , "loaded!"
+            # Apply storage:
+            if agentID in self.planet.storages.keys():
+                storage = self.planet.storages[agentID]
+                newUnit.storage.setStorage(storage)
 
-                    # if isinstance(newUnit,Building):
+
+
+            # Apply health:
+            newUnit.health = agentList[agentID]["HP"]
+
+            print id , "loaded!"
+
+                    # if newUnit.nameSpace == "Building":
                     #     newUnit.setFootprint()
-                    if newUnit.nameSpace == "Building":
-                        newUnit.setFootprint()
 
-                    ## FIXME: A fix to test the loading of units
-                    if id == "PC":
-                        self.factionUnits[self._player1] = [newUnit.agent.getFifeId()]
-                    elif id == "NPC":
-                        self.factionUnits[self._player2] = [newUnit.agent.getFifeId()]
+    def updatePlanet(self):
+        for angent in self.instance_to_agent.values():
+            self.planet.saveInstance(angent)
 
 
-
-    def save(self, filename):
+    def save(self, filename = ""):
+        self.updatePlanet()
         print "Saving map..."
         # mapFile = saveDir + "/savefile.xml"
         saveMapFile(filename, self.engine, self.map)
         storageFile = filename.replace(".xml", ".sto")
         self.saveStorages(storageFile)
         # Save all the agents at the moment:
-        for agent in self.instance_to_agent.values():
-            self.planet.saveInstance(agent)
+        # for agent in self.instance_to_agent.values():
+        #     self.planet.saveInstance(agent)
 
         self.planet.save()
 
-    def saveStorages(self, filename):
+    def saveStorages(self, filename=""):
         '''
         Saves building storages (in pickles)
         :return:
@@ -406,7 +405,7 @@ class Scene(object):
 
         for agentName in self.instance_to_agent.keys():
             agent = self.instance_to_agent[agentName]
-            if agent.nameSpace == "Building":
+            if agent.agentType == "Building":
                 if agent.storage:
                     # Add this to the storages
                     if agent.storage.inProduction or agent.storage.unitsReady:
@@ -415,9 +414,10 @@ class Scene(object):
                         storages[agent.agentName] = thisStorage
 
         print "Saving" , len(storages), "storages"
-        if storages:
-            pickle.dump(storages, open(filename, "wb"))
+        # if storages:
+        #     pickle.dump(storages, open(filename, "wb"))
             # Save it in the Planet object too.
-            self.planet.storages = storages
+            # self.planet.storages = storages
+        return storages
 
 

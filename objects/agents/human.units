@@ -185,46 +185,46 @@ DestructionAnimation=UNITEXPLODES
 EncyclopediaImg=e-hgun8
 EncyclopediaTxt=
 
-[Laser Tower]
-PictureID=HTUR
-LightWeapon=WEAPON_TOWERH
-HeavyWeapon=WEAPON_TOWERH
-Movement=NOMOVE
-Cost=100
-ProductionType=NONE
-TimeUnits=10
-Initiative=1
-Hp=50
-Upkeep=0
-UnitCategory=TowerGun
-MoveSound=Troop
-Embedded=TRUE
-AcquireExperience=FALSE
-DestructionAnimation=UNITEXPLODES
-EncyclopediaImg=e-htur8
-EncyclopediaTxt=
+;[Laser Tower]
+;PictureID=HTUR
+;LightWeapon=WEAPON_TOWERH
+;HeavyWeapon=WEAPON_TOWERH
+;Movement=NOMOVE
+;Cost=100
+;ProductionType=NONE
+;TimeUnits=10
+;Initiative=1
+;Hp=50
+;Upkeep=0
+;UnitCategory=TowerGun
+;MoveSound=Troop
+;Embedded=TRUE
+;AcquireExperience=FALSE
+;DestructionAnimation=UNITEXPLODES
+;EncyclopediaImg=e-htur8
+;EncyclopediaTxt=
 
-[MegaTower]
+;[MegaTower]
 ; the next picture ID MUST be the tile at pos( 0,0 ) 
 ; of the embedding structure
-PictureID=HHQ
+;PictureID=HHQ
 ; the next line defines only 1 frame for the unit
 ; this means that no matter what is the unit's facing, 
 ; the image will stay the same
-QtyFacings=1
-LightWeapon=WEAPON_MEGATWER
-HeavyWeapon=WEAPON_MEGATWER
-ProductionType=NONE
-Movement=NOMOVE
-Embedded=TRUE
-AcquireExperience=FALSE
-Cost=75
-TimeUnits=10
-Hp=1100
-Upkeep=0
-UnitCategory=MegaTowerGun
-MoveSound=Troop
-DestructionAnimation=
-EncyclopediaImg=NUL
-EncyclopediaTxt=NUL
+;QtyFacings=1
+;LightWeapon=WEAPON_MEGATWER
+;HeavyWeapon=WEAPON_MEGATWER
+;ProductionType=NONE
+;Movement=NOMOVE
+;Embedded=TRUE
+;AcquireExperience=FALSE
+;Cost=75
+;TimeUnits=10
+;Hp=1100
+;Upkeep=0
+;UnitCategory=MegaTowerGun
+;MoveSound=Troop
+;DestructionAnimation=
+;EncyclopediaImg=NUL
+;EncyclopediaTxt=NUL
 
