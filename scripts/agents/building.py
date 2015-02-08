@@ -276,3 +276,6 @@ class Building(Agent):
 
     def start(self):
         self.setFootprint()
+
+    def run(self):
+        pass

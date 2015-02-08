@@ -2511,12 +2511,9 @@
         <instances>
         </instances>
     </layer>
-    <cellcaches>
-        <cellcache id="TechdemoMapGroundObjectLayer" default_cost="1.000000" default_speed="1.000000" search_narrow="1">
-            <cell x="1" y="8">
-                <cost id="a" value="1.000000" />
-            </cell>
-        </cellcache>
-    </cellcaches>
+        <layer id="TrajectoryLayer" x_offset="0.000000" y_offset="0.000000" z_offset="0.000000" x_scale="1.000000" y_scale="1.000000" rotation="0.000000" grid_type="square" transparency="0" pathing="cell_edges_and_diagonals" sorting="camera" layer_type="walkable">
+        <instances>
+        </instances>
+    </layer>
     <camera id="main" ref_layer_id="Ground" zoom="1.000000" tilt="-60.000000" rotation="-45.000000" viewport="0,0,1024,768" ref_cell_width="64" ref_cell_height="32" />
 </map>

@@ -668,7 +668,7 @@ class World(object):
 
             mousepoint = fife.ScreenPoint(self.mousePos[0], self.mousePos[1])
             mouseLocation = self.getLocationAt(mousepoint)
-            trajectory = Trajectory(self.scene.instance_to_agent[self.activeUnit], self.cameras['main'], self,0)
+            trajectory = Trajectory(self.scene.instance_to_agent[self.activeUnit], self,0)
             # print "Is is reachable?"
             self.cursorHandler.setCursor(self.CUR_CANNOT)
             if trajectory.isInRange(mouseLocation):

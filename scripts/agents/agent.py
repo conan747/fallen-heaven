@@ -126,4 +126,4 @@ class Agent(fife.InstanceActionListener):
 
 
     def resetAP(self):
-        self.properties.AP = self.properties._maxAP
+        pass

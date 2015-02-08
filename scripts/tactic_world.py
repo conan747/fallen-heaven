@@ -55,7 +55,7 @@ class TacticListener(WorldListener):
             return
 
         clickLocation = self._world.getLocationAt(clickpoint)
-        trajectory = Trajectory(self._world.scene.instance_to_agent[self._world.activeUnit], self._world.cameras['main'], self._world,0)
+        trajectory = Trajectory(self._world.scene.instance_to_agent[self._world.activeUnit], self._world,0)
         # print "Is is reachable?"
         if trajectory.isInRange(clickLocation):
 
@@ -82,8 +82,16 @@ class TacticListener(WorldListener):
                     print "Instance: " , id, " is owned by this player!"
                     #self.activeUnit = id
                     self._world.selectUnit(id)
-        if self._world.activeUnit:
-            self._world.scene.instance_to_agent[self._world.activeUnit].run(self._world.getLocationAt(clickpoint))
+
+        elif self._world.activeUnit:
+            # there was a unit selected and an empty cell has been clicked
+            agent = self._world.scene.instance_to_agent[self._world.activeUnit]
+            if agent.agentType == "Unit":
+                # move the unit if possible
+                self._world.scene.instance_to_agent[self._world.activeUnit].run(self._world.getLocationAt(clickpoint))
+            else:
+                # we assume it's a building -> deselect it.
+                self._world.selectUnit(None)
 
 
 

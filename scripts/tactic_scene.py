@@ -60,6 +60,8 @@ class TacticScene(Scene):
                 if agent.properties["faction"] == factionName:
                     self.factionUnits[factionName].append(instanceID)
 
+        self._world.selectUnit(None)
+
 
 
     def resetAPs(self):
