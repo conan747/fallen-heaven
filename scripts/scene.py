@@ -306,13 +306,6 @@ class Scene(object):
         #Set background color
         self.engine.getRenderBackend().setBackgroundColor(0,0,0)
 
-        ## Start cellRenderer to show instance paths:
-        self.cellRenderer = fife.CellRenderer.getInstance(self._world.cameras['main'])
-        self.cellRenderer.addActiveLayer(self.agentLayer)
-        # self.cellRenderer.activateAllLayers(self.map)
-        self.cellRenderer.setEnabledBlocking(True)
-        self.cellRenderer.setPathColor(0,0,255)
-        self.cellRenderer.setEnabled(True)
 
         ## Load storages:
         storageFile = filename.replace(".xml",".sto")

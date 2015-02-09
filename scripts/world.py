@@ -428,34 +428,35 @@ class World(object):
         # ... so we set that up.
         # You'll se that for our demo we use a image font, so we have to specify the font glyphs
         # for that one.
-        renderer = fife.FloatingTextRenderer.getInstance(self.cameras['main'])
+        # renderer = fife.FloatingTextRenderer.getInstance(self.cameras['main'])
         textfont = get_manager().createFont('fonts/rpgfont.png', 0, str(TDS.get("FIFE", "FontGlyphs")));
-        renderer.setFont(textfont)
-        renderer.activateAllLayers(self.scene.map)
-        renderer.setBackground(100, 255, 100, 165)
-        renderer.setBorder(50, 255, 50)
-        renderer.setEnabled(True)
+        # renderer.setFont(textfont)
+        # renderer.activateAllLayers(self.scene.map)
+        # renderer.setBackground(100, 255, 100, 165)
+        # renderer.setBorder(50, 255, 50)
+        # renderer.setEnabled(True)
 
         # Activate the grid renderer on all layers
-        renderer = self.cameras['main'].getRenderer('GridRenderer')
-        renderer.activateAllLayers(self.scene.map)
+        # renderer = self.cameras['main'].getRenderer('GridRenderer')
+        # renderer.activateAllLayers(self.scene.map)
+        # renderer.setEnabled(True)
 
         #Added by Jon
         rend = fife.CellSelectionRenderer.getInstance(self.cameras['main'])
-        rend.setColor(1,0,0)
+        rend.setColor(0,0,0)
         rend.activateAllLayers(self.scene.map)
 
         # The following renderers are used for debugging.
         # Note that by default ( that is after calling View.resetRenderers or Camera.resetRenderers )
         # renderers will be handed all layers. That's handled here.
-        renderer = fife.CoordinateRenderer.getInstance(self.cameras['main'])
-        renderer.setFont(textfont)
-        renderer.clearActiveLayers()
-        renderer.addActiveLayer(self.scene.map.getLayer(str(TDS.get("rio", "CoordinateLayerName"))))
+        # renderer = fife.CoordinateRenderer.getInstance(self.cameras['main'])
+        # renderer.setFont(textfont)
+        # renderer.clearActiveLayers()
+        # renderer.addActiveLayer(self.scene.map.getLayer(str(TDS.get("rio", "CoordinateLayerName"))))
         #
         # renderer = self.cameras['main'].getRenderer('QuadTreeRenderer')
+        # renderer.activateAllLayers(self.scene.map)
         # renderer.setEnabled(True)
-        # renderer.clearActiveLayers()
         # if str(TDS.get("rio", "QuadTreeLayerName")):
         #     renderer.addActiveLayer(self.scene.map.getLayer(str(TDS.get("rio", "QuadTreeLayerName"))))
 
@@ -467,18 +468,18 @@ class World(object):
         #     renderer.addActiveLayer(self.scene.map.getLayer('TechdemoMapGroundObjectLayer'))
 
         # Fog of War stuff
-        renderer = fife.CellRenderer.getInstance(self.cameras['main'])
-        renderer.setEnabled(True)
-        renderer.clearActiveLayers()
-        renderer.addActiveLayer(self.scene.map.getLayer('TechdemoMapGroundObjectLayer'))
-        concimg = self.engine.getImageManager().load("misc/black_cell.png")
-        maskimg = self.engine.getImageManager().load("misc/mask_cell.png")
-        renderer.setConcealImage(concimg)
-        renderer.setMaskImage(maskimg)
-        renderer.setFogOfWarLayer(self.scene.map.getLayer('TechdemoMapGroundObjectLayer'))
+        # renderer = fife.CellRenderer.getInstance(self.cameras['main'])
+        # renderer.setEnabled(True)
+        # renderer.clearActiveLayers()
+        # renderer.addActiveLayer(self.scene.map.getLayer('TechdemoMapGroundObjectLayer'))
+        # concimg = self.engine.getImageManager().load("misc/black_cell.png")
+        # maskimg = self.engine.getImageManager().load("misc/mask_cell.png")
+        # renderer.setConcealImage(concimg)
+        # renderer.setMaskImage(maskimg)
+        # renderer.setFogOfWarLayer(self.scene.map.getLayer('TechdemoMapGroundObjectLayer'))
 
         #disable FoW by default.  Users can turn it on with the 'f' key.
-        renderer.setEnabledFogOfWar(False)
+        # renderer.setEnabledFogOfWar(False)
 
         #renderer.setEnabledBlocking(True)
         self.target_rotation = self.cameras['main'].getRotation()
@@ -489,8 +490,20 @@ class World(object):
         renderer = fife.CoordinateRenderer.getInstance(self.cameras['main'])
         # renderer.setFont(textfont)
         renderer.clearActiveLayers()
+        renderer.setFont(textfont)
         renderer.addActiveLayer(self.scene.map.getLayer("TrajectoryLayer"))
         renderer.setEnabled(True)
+
+
+
+        ## Start cellRenderer to show instance paths:
+        self.cellRenderer = fife.CellRenderer.getInstance(self.cameras['main'])
+        # self.cellRenderer.addActiveLayer(self.scene.agentLayer)
+        self.cellRenderer.activateAllLayers(self.scene.map)
+        self.cellRenderer.setEnabledBlocking(True)
+        self.cellRenderer.setPathColor(0,0,255)
+        self.cellRenderer.setEnabled(True)
+
 
 
     def getInstancesAt(self, clickpoint):

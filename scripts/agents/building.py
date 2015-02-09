@@ -264,15 +264,17 @@ class Building(Agent):
         Sets the cells under this instance as blocking.
         :return:
         '''
+
+        location = self.agent.getLocation()
+        layer = location.getLayer()
+        cellCache = layer.getCellCache()
+
         for x in range(self.properties["SizeX"]):
             for y in range(self.properties["SizeY"]):
-                location = self.agent.getLocation()
                 cellPos = location.getLayerCoordinates()
                 cellPos.x -= x
                 cellPos.y -= y
 
-                layer = location.getLayer()
-                cellCache = layer.getCellCache()
                 cell = cellCache.getCell(cellPos)
                 cell.setCellType(fife.CTYPE_NO_BLOCKER)
 

@@ -75,7 +75,7 @@ class Agent(fife.InstanceActionListener):
             self.agent.setId(self.agentName)
             print "Created ", self.agent.getId()
 
-        self.agent.addActionListener(self)
+        # self.agent.addActionListener(self)
 
 
     def selectInstance(self, instanceName):

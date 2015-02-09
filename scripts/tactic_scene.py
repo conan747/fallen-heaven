@@ -48,9 +48,9 @@ class TacticScene(Scene):
         super(TacticScene, self).load(filename)
 
         ## Start cellRenderer to show instance paths:
-        [self.cellRenderer.addPathVisual(instance.agent) for instance in self.instance_to_agent.values()]
-        self.cellRenderer.setEnabledPathVisual(True)
-        self.cellRenderer.setEnabled(True)
+        [self._world.cellRenderer.addPathVisual(instance.agent) for instance in self.instance_to_agent.values()]
+        self._world.cellRenderer.setEnabledPathVisual(True)
+        self._world.cellRenderer.setEnabled(True)
 
         # Setup factionUnits
         for factionName in self._world.factions.keys():
@@ -114,7 +114,7 @@ class TacticScene(Scene):
             unit = self.instance_to_agent[unitID]
             self.instance_to_agent.__delitem__(unitID)
             unit.agent.removeActionListener(unit)
-            self.cellRenderer.removePathVisual(unit.agent)
+            self._world.cellRenderer.removePathVisual(unit.agent)
 
             self.agentLayer.deleteInstance(unit.agent)
             unit.agent = None
