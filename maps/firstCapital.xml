@@ -2515,5 +2515,5 @@
         <instances>
         </instances>
     </layer>
-    <camera id="main" ref_layer_id="Ground" zoom="1.000000" tilt="-60.000000" rotation="-45.000000" viewport="0,0,1024,768" ref_cell_width="64" ref_cell_height="32" />
+    <camera id="main" ref_layer_id="Ground" zoom="1.000000" tilt="-60.000000" rotation="-45.500000" ref_cell_width="64" ref_cell_height="32" />
 </map>

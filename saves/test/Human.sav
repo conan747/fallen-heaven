@@ -16,7 +16,7 @@ p8
 S'agentInfo'
 p10
 (dp11
-S'Tank:5181'
+S'Tank:5180'
 p12
 (dp13
 S'AP'
@@ -27,8 +27,8 @@ p15
 I65
 sS'Location'
 p16
-(I7
-I4
+(I5
+I-2
 I0
 tp17
 ssS'Tank:5179'
@@ -43,7 +43,7 @@ sg16
 I-1
 I0
 tp20
-ssS'Factory:5180'
+ssS'Factory:5181'
 p21
 (dp22
 g15
