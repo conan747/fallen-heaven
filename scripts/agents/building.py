@@ -199,6 +199,9 @@ class Building(Agent):
         if location == self.agent.getLocation():
             return True
 
+
+        layer = self.agent.getLocation().getLayer()
+
         # unblocked = True
         for x in range(self.properties["SizeX"]):
             for y in range(self.properties["SizeY"]):
@@ -206,15 +209,17 @@ class Building(Agent):
                 #     continue
                 # loc = self.agent.getLocation()
                 cellPos = location.getLayerCoordinates()
-                cellPos.x += x
+                cellPos.x -= x
                 cellPos.y -= y
 
-                layer = self.agent.getLocation().getLayer()
-                if not self.cellCache:
-                    self.cellCache = layer.getCellCache()
-                cell = self.cellCache.getCell(cellPos)
-                if cell.getCellType() != fife.CTYPE_NO_BLOCKER:
+                if layer.cellContainsBlockingInstance(cellPos):
                     return False
+
+                # if not self.cellCache:
+                #     self.cellCache = layer.getCellCache()
+                # cell = self.cellCache.getCell(cellPos)
+                # if cell.getCellType() != fife.CTYPE_NO_BLOCKER:
+                #     return False
 
         # ## Check if the location is empty:
         # if not self.world.scene.getInstacesInTile(location):
@@ -236,23 +241,22 @@ class Building(Agent):
         Sets the cells under this instance as blocking.
         :return:
         '''
+
+        location = self.agent.getLocation()
+        layer = location.getLayer()
+        cellCache = layer.getCellCache()
+        # anchorPos = location.getLayerCoordinates()
+
         for x in range(self.properties["SizeX"]):
             for y in range(self.properties["SizeY"]):
-                location = self.agent.getLocation()
                 cellPos = location.getLayerCoordinates()
-                cellPos.x += x
+                cellPos.x -= x
                 cellPos.y -= y
 
-                layer = location.getLayer()
-                cellCache = layer.getCellCache()
                 cell = cellCache.getCell(cellPos)
                 cell.setCellType(fife.CTYPE_STATIC_BLOCKER)
 
         self.landed = True
-
-
-        if self.properties["ProductionType"] != "NONE":
-            self.storage = Storage(self, self.world)
 
 
     def removeFootprint(self):
@@ -264,7 +268,7 @@ class Building(Agent):
             for y in range(self.properties["SizeY"]):
                 location = self.agent.getLocation()
                 cellPos = location.getLayerCoordinates()
-                cellPos.x += x
+                cellPos.x -= x
                 cellPos.y -= y
 
                 layer = location.getLayer()
@@ -276,6 +280,8 @@ class Building(Agent):
 
     def start(self):
         self.setFootprint()
+        if self.properties["ProductionType"] != "NONE":
+            self.storage = Storage(self, self.world)
 
     def run(self):
         pass

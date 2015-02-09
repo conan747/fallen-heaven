@@ -406,6 +406,7 @@ class World(object):
         # self._music.looping = True
         # self._soundmanager.playClip(self._music)
 
+
     def initCameras(self):
         """
         Before we can actually see something on screen we have to specify the render setup.
@@ -451,19 +452,19 @@ class World(object):
         renderer.setFont(textfont)
         renderer.clearActiveLayers()
         renderer.addActiveLayer(self.scene.map.getLayer(str(TDS.get("rio", "CoordinateLayerName"))))
-
-        renderer = self.cameras['main'].getRenderer('QuadTreeRenderer')
-        renderer.setEnabled(True)
-        renderer.clearActiveLayers()
-        if str(TDS.get("rio", "QuadTreeLayerName")):
-            renderer.addActiveLayer(self.scene.map.getLayer(str(TDS.get("rio", "QuadTreeLayerName"))))
+        #
+        # renderer = self.cameras['main'].getRenderer('QuadTreeRenderer')
+        # renderer.setEnabled(True)
+        # renderer.clearActiveLayers()
+        # if str(TDS.get("rio", "QuadTreeLayerName")):
+        #     renderer.addActiveLayer(self.scene.map.getLayer(str(TDS.get("rio", "QuadTreeLayerName"))))
 
         # If Light is enabled in settings then init the lightrenderer.
-        if self.lightmodel != 0:
-            renderer = fife.LightRenderer.getInstance(self.cameras['main'])
-            renderer.setEnabled(True)
-            renderer.clearActiveLayers()
-            renderer.addActiveLayer(self.scene.map.getLayer('TechdemoMapGroundObjectLayer'))
+        # if self.lightmodel != 0:
+        #     renderer = fife.LightRenderer.getInstance(self.cameras['main'])
+        #     renderer.setEnabled(True)
+        #     renderer.clearActiveLayers()
+        #     renderer.addActiveLayer(self.scene.map.getLayer('TechdemoMapGroundObjectLayer'))
 
         # Fog of War stuff
         renderer = fife.CellRenderer.getInstance(self.cameras['main'])
@@ -481,6 +482,15 @@ class World(object):
 
         #renderer.setEnabledBlocking(True)
         self.target_rotation = self.cameras['main'].getRotation()
+
+        ## Coordinate Renderer
+        # self.rend = self.cameras['main'].getRenderer('CoordinateRenderer')
+        # self.rend.setEnabled(True)
+        renderer = fife.CoordinateRenderer.getInstance(self.cameras['main'])
+        # renderer.setFont(textfont)
+        renderer.clearActiveLayers()
+        renderer.addActiveLayer(self.scene.map.getLayer("TrajectoryLayer"))
+        renderer.setEnabled(True)
 
 
     def getInstancesAt(self, clickpoint):

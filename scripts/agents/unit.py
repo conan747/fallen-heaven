@@ -100,6 +100,7 @@ class Unit(Agent):
         self.AP = self.properties["TimeUnits"]
 
     def teleport(self, location):
+        print "Teleportin unit"
         exactcoords = location.getLayerCoordinates()
         layercoords = fife.DoublePoint3D(int(exactcoords.x), int(exactcoords.y), int(exactcoords.z) )
         location.setExactLayerCoordinates(layercoords)
@@ -107,7 +108,9 @@ class Unit(Agent):
         if not self.world.scene.getInstacesInTile(location):
             if self.agent:
                 self.agent.setLocation(location)
+            print "It was able to teleport"
             return True
+        print "Not able to teleport!"
         return False
 
 

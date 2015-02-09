@@ -1,19 +1,18 @@
 <?fife type="object"?>
-
-<object blocking="1" id="Buggy" namespace="http://www.fifengine.net/xml/rio_de_hola" static="0">
+<object blocking="1" cellstack_position="0" cost="1.0" cost_id="" id="Buggy" namespace="http://www.fifengine.net/xml/rio_de_hola" static="0">
 
 
 
 	<action id="stand">
-		<animation atlas="stand.png" height="96" width="96">
-			<direction delay="130" dir="0" frames="1"/>
-			<direction delay="130" dir="45" frames="1"/>
-			<direction delay="130" dir="90" frames="1"/>
-			<direction delay="130" dir="135" frames="1"/>
-			<direction delay="130" dir="180" frames="1"/>
-			<direction delay="130" dir="225" frames="1"/>
-			<direction delay="130" dir="270" frames="1"/>
-			<direction delay="130" dir="315" frames="1"/>
+		<animation atlas="stand.png" height="96" width="96" y_offset="-10" >
+			<direction delay="130" dir="0" frames="1" />
+			<direction delay="130" dir="45" frames="1" />
+			<direction delay="130" dir="90" frames="1" />
+			<direction delay="130" dir="135" frames="1" />
+			<direction delay="130" dir="180" frames="1" />
+			<direction delay="130" dir="225" frames="1" />
+			<direction delay="130" dir="270" frames="1" />
+			<direction delay="130" dir="315" frames="1" />
 		</animation>
 	</action>
 

@@ -140,5 +140,6 @@ class Universe(object):
 
     def save(self):
         if self.world.scene:
+            # self.world.scene.save("test.xml")
             self.world.scene.updatePlanet()
         self.progress.save()

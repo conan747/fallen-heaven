@@ -304,7 +304,7 @@ class Scene(object):
         # self.initCameras()
 
         #Set background color
-        self.engine.getRenderBackend().setBackgroundColor(80,80,255)
+        self.engine.getRenderBackend().setBackgroundColor(0,0,0)
 
         ## Start cellRenderer to show instance paths:
         self.cellRenderer = fife.CellRenderer.getInstance(self._world.cameras['main'])
@@ -386,6 +386,7 @@ class Scene(object):
         self.updatePlanet()
         print "Saving map..."
         # mapFile = saveDir + "/savefile.xml"
+        # filename = "saving"
         saveMapFile(filename, self.engine, self.map)
         storageFile = filename.replace(".xml", ".sto")
         self.saveStorages(storageFile)
