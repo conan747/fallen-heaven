@@ -47,6 +47,7 @@ class Universe(object):
         self.faction.__setInfo__(self.progress.factions[self.progress.playerFactionName])
         # self.planetNames = self.progress.allPlanets.keys()
         self.continueGame()
+        self.gui.updateUI()
 
 
     def newGame(self):
@@ -74,6 +75,7 @@ class Universe(object):
             self.progress.allPlanets[planetName] = planet.getPlanetDict()
 
         self.continueGame()
+        self.gui.updateUI()
 
     def pauseGame(self):
         self.pause = True

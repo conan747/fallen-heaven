@@ -53,3 +53,22 @@ class UniverseUI(object):
 
     def hide(self):
         self.gui.hide()
+
+    def updateUI(self):
+        '''
+        Will update the Universe UI information.
+        :return:
+        '''
+
+        # Update pwned planets
+
+        planetBox = self.gui.findChild(name="planetBox")
+        planetBox.removeAllChildren()
+        for name in self.universe.faction.pwnedPlanets:
+            newButton = pychan.Button(name=name, text=unicode("Go to planet " + name))
+            planetBox.addChild(newButton)
+            def callback(arg=name): # Weird way of doing it. Taken from here: http://wiki.wxpython.org/Passing%20Arguments%20to%20Callbacks
+                        self.universe.goToPlanet(arg)
+            newButton.capture(callback, event_name="mouseClicked")
+
+        planetBox.adaptLayout()
