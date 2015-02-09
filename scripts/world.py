@@ -555,6 +555,9 @@ class World(object):
         #     self.cameras['small'].detach()
         #     self.cameras['small'].setEnabled(False)
 
+        # Update UI:
+        self.HUD.updateUI()
+
     def changeRotation(self):
         """
         Smoothly change the main cameras rotation until
