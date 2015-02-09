@@ -3,9 +3,10 @@
     <VBox hexpand="1">
         <Label text="Here should go the credit info etc. "/>
         <HBox vexpand="1">
-            <VBox margins="0,0" hexpand="2">
-                <Button name="toPlanet" text="Enter Planet Strategic"/>
-                <Button name="toWar" text="Enter Planet Tactical"/>
+            <VBox name="planetBox" margins="0,0" hexpand="2">
+                <!--<Button name="toCapital" text="Planet 1: First Capital"/>-->
+                <!--<Button name="toPlanet" text="Planet 2: Conquered Planet"/>-->
+                <!--<Button name="toWar" text="Planet 3: Enemy Capital"/>-->
             </VBox>
             <ScrollArea>
                 <Label name="dummy" text="Planet info"/>

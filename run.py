@@ -140,30 +140,30 @@ class ApplicationListener(eventlistenerbase.EventListenerBase):
         # elif keystr == 'p':
         #     self.engine.getRenderBackend().captureScreen('screenshot.png')
         #     evt.consume()
-
-    def onCommand(self, command):
-        if command.getCommandType() == fife.CMD_QUIT_GAME:
-            self.quit = True
-            command.consume()
-
-    def onConsoleCommand(self, command):
-        result = ''
-        if command.lower() in ('quit', 'exit'):
-            self.quit = True
-            result = 'quitting'
-        elif command.lower() in ( 'help', 'help()' ):
-            get_manager().getConsole().println( open( 'misc/infotext.txt', 'r' ).read() )
-            result = "-- End of help --"
-        else:
-            result = self.world.onConsoleCommand(command)
-        if not result:
-            try:
-                result = str(eval(command))
-            except:
-                pass
-        if not result:
-            result = 'no result'
-        return result
+    #
+    # def onCommand(self, command):
+    #     if command.getCommandType() == fife.CMD_QUIT_GAME:
+    #         self.quit = True
+    #         command.consume()
+    #
+    # def onConsoleCommand(self, command):
+    #     result = ''
+    #     if command.lower() in ('quit', 'exit'):
+    #         self.quit = True
+    #         result = 'quitting'
+    #     elif command.lower() in ( 'help', 'help()' ):
+    #         get_manager().getConsole().println( open( 'misc/infotext.txt', 'r' ).read() )
+    #         result = "-- End of help --"
+    #     else:
+    #         result = self.world.onConsoleCommand(command)
+    #     if not result:
+    #         try:
+    #             result = str(eval(command))
+    #         except:
+    #             pass
+    #     if not result:
+    #         result = 'no result'
+    #     return result
 
     def onQuitButtonPress(self):
         self.quit = True

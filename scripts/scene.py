@@ -296,8 +296,11 @@ class Scene(object):
                                 self.engine.getImageManager(),
                                 self.engine.getRenderBackend())
 
-        if loader.isLoadable(filename):
-            self.map = loader.load(filename)
+        if not loader.isLoadable(filename):
+            print "Problem loading map: map file is not loadable"
+            return
+
+        self.map = loader.load(filename)
 
         self._world.initCameras()
         self.initAgents()

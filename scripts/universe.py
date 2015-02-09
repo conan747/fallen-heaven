@@ -3,10 +3,10 @@ __author__ = 'cos'
 
 from tactic_world import TacticWorld
 from strategic_world import StrategicWorld
-from fife.extensions import pychan
 from progress import Progress
 from planet import Planet
 from faction import Faction
+from gui.universeUI import UniverseUI
 
 class Universe(object):
     '''
@@ -31,22 +31,10 @@ class Universe(object):
 
         # '''
         # Build the main GUI
-        # TODO: Probably we would like to separate this into another GUI object.
-        self.gui = pychan.loadXML('gui/universe_screen.xml')
-        self.gui.min_size = self._engine.getRenderBackend().getScreenWidth(), self._engine.getRenderBackend().getScreenHeight()
+        self.gui = UniverseUI(self)
 
-        eventMap = {
-            'toWar': self.toWarClicked,
-            'toPlanet': self.toPlanetClicked,
-            'endTurn': self.endTurn,
-        }
-        self.gui.mapEvents(eventMap)
-
-        # Finally show the main GUI
-        # self.gui.show()
-
-        # self.faction = Faction("Human") # FIXME
         self.faction = None
+
 
 
     def load(self, name="Human"):
@@ -101,11 +89,29 @@ class Universe(object):
         self.selectedPlanet = Planet(planetName, self.progress.allPlanets[planetName])
         self.startTactic()
 
-    def toPlanetClicked(self):
+    def toCapitalClicked(self):
         print "Going to Planet!"
         self.gui.hide()
         planetName = "firstCapital"
         planetInfo = self.progress.allPlanets[planetName]
+        self.selectedPlanet = Planet(planetName, planetInfo)
+        self.startStrategic()
+
+    def toPlanetClicked(self):
+        print "Going to Planet!"
+        self.gui.hide()
+        planetName = "secondPlanet"
+        planetInfo = self.progress.allPlanets[planetName]
+        self.selectedPlanet = Planet(planetName, planetInfo)
+        self.startStrategic()
+
+    def goToPlanet(self, planetName):
+        print "Going to Planet ", planetName
+        self.gui.hide()
+        if planetName in self.progress.allPlanets.keys():
+            planetInfo = self.progress.allPlanets[planetName]
+        else:
+            planetInfo = None
         self.selectedPlanet = Planet(planetName, planetInfo)
         self.startStrategic()
 
@@ -114,7 +120,7 @@ class Universe(object):
 
     def startTactic(self):
         '''
-        Starts Tactic mode.
+        Starts Tactic mode. Loads TacticWorld.
         :return:
         '''
 
@@ -124,6 +130,10 @@ class Universe(object):
         print "Loading map: ", self.selectedPlanet.getMapPath()
 
     def startStrategic(self):
+        '''
+        Starts strategic mode. Loads StrategicWorld.
+        :return:
+        '''
         self.world = StrategicWorld(self._engine, self._settings, self.faction, self.selectedPlanet)
         self.world.load(self.selectedPlanet.getMapPath())
         print "Loading map: ", self.selectedPlanet.getMapPath()
