@@ -65,6 +65,9 @@ class Agent(fife.InstanceActionListener):
         object = self.world.model.getObject(self.unitName, self.nameSpace)
         if not object:
             print "Error! No ", self.unitName ,"found in the object library"
+
+        object = self.setWalkableAreas(object)
+
         self.agent = self.world.scene.agentLayer.createInstance(object, point)
         self.agent.setCellStackPosition(0)
 
@@ -76,6 +79,20 @@ class Agent(fife.InstanceActionListener):
             print "Created ", self.agent.getId()
 
         # self.agent.addActionListener(self)
+
+
+    def setWalkableAreas(self, object):
+
+        # Set walkable area:
+        object.addWalkableArea("land")
+
+        if self.properties.has_key("Movement"):
+            movementType = self.properties["Movement"]
+            if movementType == "HOVER":
+                object.addWalkableArea("water")
+
+        return object
+
 
 
     def selectInstance(self, instanceName):

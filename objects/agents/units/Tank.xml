@@ -1,7 +1,7 @@
 <?fife type="object"?>
 
 <object blocking="1" id="Tank" namespace="http://www.fifengine.net/xml/rio_de_hola" static="0">
-
+<walkable_area id="land"/>
 
 
 	<action id="stand">

@@ -25,75 +25,75 @@
     <image height="64" source="23" width="64" xpos="128" ypos="320"/>
     <image height="64" source="24" width="64" xpos="192" ypos="320"/>
   </atlas>
-  <object blocking="0" id="1" namespace="ground" static="1">
+  <object blocking="0" id="1" namespace="ground" static="1" area_id="land">
     <image direction="45" source="1"/>
   </object>
-  <object blocking="0" id="2" namespace="ground" static="1">
+  <object blocking="0" id="2" namespace="ground" static="1" area_id="land">
     <image direction="45" source="2"/>
   </object>
-  <object blocking="0" id="3" namespace="ground" static="1">
+  <object blocking="0" id="3" namespace="ground" static="1" area_id="land">
     <image direction="45" source="3"/>
   </object>
-  <object blocking="0" id="4" namespace="ground" static="1">
+  <object blocking="0" id="4" namespace="ground" static="1" area_id="land">
     <image direction="45" source="4"/>
   </object>
-  <object blocking="0" id="5" namespace="ground" static="1">
+  <object blocking="0" id="5" namespace="ground" static="1" area_id="land">
     <image direction="45" source="5"/>
   </object>
-  <object blocking="0" id="6" namespace="ground" static="1">
+  <object blocking="0" id="6" namespace="ground" static="1" area_id="land">
     <image direction="45" source="6"/>
   </object>
-  <object blocking="0" id="7" namespace="ground" static="1">
+  <object blocking="0" id="7" namespace="ground" static="1" area_id="land">
     <image direction="45" source="7"/>
   </object>
-  <object blocking="0" id="8" namespace="ground" static="1">
+  <object blocking="0" id="8" namespace="ground" static="1" area_id="land">
     <image direction="45" source="8"/>
   </object>
-  <object blocking="0" id="9" namespace="ground" static="1">
+  <object blocking="0" id="9" namespace="ground" static="1" area_id="land">
     <image direction="45" source="9"/>
   </object>
-  <object blocking="0" id="10" namespace="ground" static="1">
+  <object blocking="0" id="10" namespace="ground" static="1" area_id="land">
     <image direction="45" source="10"/>
   </object>
-  <object blocking="0" id="11" namespace="ground" static="1">
+  <object blocking="0" id="11" namespace="ground" static="1" area_id="land">
     <image direction="45" source="11"/>
   </object>
-  <object blocking="0" id="12" namespace="ground" static="1">
+  <object blocking="0" id="12" namespace="ground" static="1" area_id="land">
     <image direction="45" source="12"/>
   </object>
-  <object blocking="0" id="13" namespace="ground" static="1">
+  <object blocking="0" id="13" namespace="ground" static="1" area_id="land">
     <image direction="45" source="13"/>
   </object>
-  <object blocking="0" id="14" namespace="ground" static="1">
+  <object blocking="0" id="14" namespace="ground" static="1" area_id="land">
     <image direction="45" source="14"/>
   </object>
-  <object blocking="0" id="15" namespace="ground" static="1">
+  <object blocking="0" id="15" namespace="ground" static="1" area_id="land">
     <image direction="45" source="15"/>
   </object>
-  <object blocking="0" id="16" namespace="ground" static="1">
+  <object blocking="0" id="16" namespace="ground" static="1" area_id="land">
     <image direction="45" source="16"/>
   </object>
-  <object blocking="0" id="17" namespace="ground" static="1">
+  <object blocking="0" id="17" namespace="ground" static="1" area_id="land">
     <image direction="45" source="17"/>
   </object>
-  <object blocking="0" id="18" namespace="ground" static="1">
+  <object blocking="0" id="18" namespace="ground" static="1" area_id="land">
     <image direction="45" source="18"/>
   </object>
-  <object blocking="0" id="19" namespace="ground" static="1">
+  <object blocking="0" id="19" namespace="ground" static="1" area_id="land">
     <image direction="45" source="19"/>
   </object>
-  <object blocking="0" id="20" namespace="ground" static="1">
+  <object blocking="0" id="20" namespace="ground" static="1" area_id="land">
     <image direction="45" source="20"/>
   </object>
-  <object blocking="0" id="21" namespace="ground" static="1">
+  <object blocking="0" id="21" namespace="ground" static="1" area_id="land">
     <image direction="45" source="21"/>
   </object>
-  <object blocking="0" id="22" namespace="ground" static="1">
+  <object blocking="0" id="22" namespace="ground" static="1" area_id="land">
     <image direction="45" source="22"/>
   </object>
-  <object blocking="0" id="23" namespace="ground" static="1">
+  <object blocking="0" id="23" namespace="ground" static="1" area_id="water">
     <image direction="45" source="23"/>
   </object>
-  <object blocking="0" id="24" namespace="ground" static="1">
+  <object blocking="0" id="24" namespace="ground" static="1" area_id="water">
     <image direction="45" source="24"/>
   </object>
