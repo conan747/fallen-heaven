@@ -77,23 +77,15 @@ class Storage(object):
 
     def setStorage(self, infoDict):
         '''
-        Sets the storage info that was loaded from a pickle.
+        Sets the storage info that was loaded from the progress.
         :param infoDict: Dictionary containing two lists: unitsReady and inProduction
         :return:
         '''
-        # self.unitsReady = infoDict["unitsReady"]
-        # self.inProduction = infoDict["inProduction"]
-        for unitID in infoDict["unitsReady"]:
-            unitName = unitID.split(":")[1]
-            self.buildUnit(unitName)
+        if not infoDict:
+            return
 
-        self.completeUnits()
-
-        for unitID in infoDict["inProduction"]:
-            unitName = unitID.split(":")[1]
-            self.buildUnit(unitName)
-
-        # self.updateUI()
+        for key in infoDict.keys():
+            setattr(self, key, infoDict[key])
 
     def cancelUnit(self, unitName):
         print "Removing: ", unitName
@@ -279,6 +271,7 @@ class Building(Agent):
                 cell.setCellType(fife.CTYPE_NO_BLOCKER)
 
         self.landed = False
+
 
     def start(self):
         self.setFootprint()

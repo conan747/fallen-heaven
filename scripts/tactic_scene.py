@@ -42,7 +42,6 @@ class TacticScene(Scene):
 
         ## Added by Jon:
         self.currentTurn = world.factions.keys()[0]
-        self._objectsToDelete = list()
 
     def load(self, filename):
         super(TacticScene, self).load(filename)

@@ -71,4 +71,9 @@ class UniverseUI(object):
                         self.universe.goToPlanet(arg)
             newButton.capture(callback, event_name="mouseClicked")
 
+        separator = pychan.Spacer(planetBox)
+        newButton = pychan.Button(name="test" , text="Go to war!")
+        newButton.capture(self.universe.toWarClicked)
+        planetBox.addChild(newButton)
+
         planetBox.adaptLayout()

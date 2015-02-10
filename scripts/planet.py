@@ -79,6 +79,8 @@ class Planet(object):
             content = planetInfo
             assert content["name"] == self.name, "trying to copy info from planet %r into planet %r" % (content["name"], self.name)
 
-
+        print "Loading planet: " , self.name
         for attr in content.keys():
             setattr(self, attr, content[attr])
+            print attr, ": ", content[attr]
+

@@ -159,46 +159,6 @@ class UnitLoader(object):
         else:
             return False
 
-#
-#         # self.createFiles()
-#
-#
-#     def createFiles(self):
-#         '''
-#         Temp! Not for the final game!
-#         :return:
-#         '''
-#
-#         os.chdir('/media/cos/Programas/fife/fifengine/demos/fallen/objects/agents/units/')
-#         for unit in self.unitProps.keys():
-#             file = open(unit+".xml", mode='w')
-#             text = '''<?fife type="object"?>\n
-# <object blocking="1" id="'''
-#             text = text + unit
-#             text = text + '''" namespace="http://www.fifengine.net/xml/rio_de_hola" static="0">
-#
-#
-# 	<action id="stand">
-# 		<animation atlas="stand.png" height="96" width="96">
-# 			<direction delay="2000" dir="0" frames="1"/>
-# 			<direction delay="2000" dir="45" frames="1"/>
-# 			<direction delay="2000" dir="90" frames="1"/>
-# 			<direction delay="2000" dir="135" frames="1"/>
-# 			<direction delay="2000" dir="180" frames="1"/>
-# 			<direction delay="2000" dir="225" frames="1"/>
-# 			<direction delay="2000" dir="270" frames="1"/>
-# 			<direction delay="2000" dir="315" frames="1"/>
-# 		</animation>
-# 	</action>
-#
-#
-# </object>'''
-#             file.writelines(text)
-#             file.close()
-#
-#
-
-
 
 
 class Scene(object):
@@ -232,11 +192,14 @@ class Scene(object):
 
         self.unitLoader = UnitLoader(self._world, self._world.settings)
 
-    def destroyScene(self):
+    def destroy(self):
         """
         Removes all objects from the scene and deletes them from the layer.
         """
-        pass
+        for agent in self.instance_to_agent.values():
+            if hasattr(agent, "storage"):
+                del agent.storage
+            del agent
 
     def getInstacesInTile(self, tileLocation):
         '''
@@ -272,18 +235,6 @@ class Scene(object):
 
     def pump(self):
         pass
-
-    def initScene(self, mapobj):
-        """
-        Initializess the scene and scene graph.  This creates game objects for
-        FIFE instances that exist in the map.
-
-        """
-        self.map, self.agentLayer = None, None
-        self.cameras = {}
-        self.cur_cam2_x, self.initial_cam2_x, self.cam2_scrolling_right = 0, 0, True
-        self.target_rotation = 0
-        self.instance_to_agent = {}
 
 
     def load(self, filename):
@@ -325,11 +276,7 @@ class Scene(object):
         """
         Setup agents.
 
-        For this techdemo we have a very simple 'active things on the map' model,
-        which is called agents. All rio maps will have a separate layer for them.
-
-        Note that we keep a mapping from map instances (C++ model of stuff on the map)
-        to the python agents for later reference.
+        Loads the "agents" (i.e. units and structures) from the planet object and initialises them.
         """
 
         self.agentLayer = self.map.getLayer('TechdemoMapGroundObjectLayer')
@@ -362,6 +309,7 @@ class Scene(object):
             if agentID in self.planet.storages.keys():
                 storage = self.planet.storages[agentID]
                 newUnit.storage.setStorage(storage)
+                self.planet.storages[agentID] = None
 
 
 
@@ -373,31 +321,22 @@ class Scene(object):
                     # if newUnit.nameSpace == "Building":
                     #     newUnit.setFootprint()
 
-    def updatePlanet(self):
+    def updatePlanetAgents(self):
+        '''
+        Updates the agent information (units and structures) that the planet object stores.
+        :return:
+        '''
+        self.planet.agentInfo = {}
         for angent in self.instance_to_agent.values():
             self.planet.saveInstance(angent)
 
 
-    def save(self, filename = ""):
-        self.updatePlanet()
-        print "Saving map..."
-        # mapFile = saveDir + "/savefile.xml"
-        # filename = "saving"
-        saveMapFile(filename, self.engine, self.map)
-        storageFile = filename.replace(".xml", ".sto")
-        self.saveStorages(storageFile)
-        # Save all the agents at the moment:
-        # for agent in self.instance_to_agent.values():
-        #     self.planet.saveInstance(agent)
 
-        self.planet.save()
-
-    def saveStorages(self, filename=""):
+    def getStorageDicts(self):
         '''
-        Saves building storages (in pickles)
+        Return a dictionary containing the storages of the buildings in this scene.
         :return:
         '''
-
         storages = {}
 
         for agentName in self.instance_to_agent.keys():
@@ -411,10 +350,5 @@ class Scene(object):
                         storages[agent.agentName] = thisStorage
 
         print "Saving" , len(storages), "storages"
-        # if storages:
-        #     pickle.dump(storages, open(filename, "wb"))
-            # Save it in the Planet object too.
-            # self.planet.storages = storages
+
         return storages
-
-

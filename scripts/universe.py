@@ -126,7 +126,7 @@ class Universe(object):
         :return:
         '''
 
-        self.world = TacticWorld(self._engine, self._settings, self.faction, self.selectedPlanet, self.progress.factions)
+        self.world = TacticWorld(self, self.selectedPlanet)
 
         self.world.load(self.selectedPlanet.getMapPath())
         print "Loading map: ", self.selectedPlanet.getMapPath()
@@ -136,7 +136,7 @@ class Universe(object):
         Starts strategic mode. Loads StrategicWorld.
         :return:
         '''
-        self.world = StrategicWorld(self._engine, self._settings, self.faction, self.selectedPlanet)
+        self.world = StrategicWorld(self, self.selectedPlanet)
         self.world.load(self.selectedPlanet.getMapPath())
         print "Loading map: ", self.selectedPlanet.getMapPath()
 
@@ -153,5 +153,38 @@ class Universe(object):
     def save(self):
         if self.world.scene:
             # self.world.scene.save("test.xml")
-            self.world.scene.updatePlanet()
+            self.world.scene.updatePlanetAgents()
         self.progress.save()
+
+    def backToUniverse(self):
+        # Save the information
+        self.progress.update()
+
+        self.world.scene.destroy()
+        self.world.HUD.closeExtraWindows()
+
+        # delete map and objects.
+        model = self._engine.getModel()
+        model.deleteMaps()
+        model.deleteObjects()
+
+        self.world.listener.detach()
+        del self.world.listener
+        self.world.music.stop()
+        del self.world.music
+        self.world.waves.stop()
+        del self.world.waves
+        # self.world.soundmanager.releaseEmitter(id)
+        del self.world.soundmanager
+        # del self.world.waves
+        self.world.scene = None
+        self.world.HUD.destroy()
+        self.world.HUD = None
+
+        self.world.scene = None
+        self.world = None
+
+        if self.selectedPlanet:
+            self.selectedPlanet = None
+
+        self.gui.show()

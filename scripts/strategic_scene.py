@@ -51,7 +51,7 @@ class StrategicScene(Scene):
         :param building:
         :return:
         '''
-        building.setFootprint()
+        building.start()
         self.instance_to_agent[building.agent.getFifeId()] = building
         # self.planet.saveInstance(building)
         # building.nameSpace = "Building" ## FIXME: This is a bit messy.

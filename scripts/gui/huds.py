@@ -65,6 +65,17 @@ class TacticalHUD(HUD):
 
         self.structureWidget = StructureWidget(self)
 
+
+    def destroy(self):
+        self.widget.hide()
+        self.widget.mapEvents({
+                'nextTurnButton' : None,
+                'attackLightButton' : None
+        })
+        del self.widget
+        self.structureWidget.destroy()
+
+
     def updateUI(self):
         self.structureWidget.updateUI()
 
@@ -91,6 +102,16 @@ class ConstructingWidget(Widget):
                 'buttonPrevious' : self.onPreviousPressed,
                 'buttonNext' : self.onNextPressed
         })
+
+    def destroy(self):
+        self.widget.hide()
+
+        self.widget.mapEvents({
+                'buttonPrevious' : None,
+                'buttonNext' : None
+        })
+        del self.widget
+
 
     def onPreviousPressed(self):
         '''
@@ -167,6 +188,8 @@ class ConstructingWidget(Widget):
 # -----------------------------------------------------------------------------------------------------------------
 
 class StructureWidget(Widget):
+
+
     def __init__(self, parent):
 
         self.HUD = parent
@@ -174,6 +197,13 @@ class StructureWidget(Widget):
         self.widget = pychan.loadXML('gui/structure_info.xml')
         self.hide()
         self.storageWidget = None
+
+    def destroy(self):
+        self.hide()
+        if self.storageWidget:
+            self.storageWidget.destroy()
+        self.widget.removeAllChildren()
+        del self.widget
 
     def updateUI(self):
 
@@ -183,6 +213,7 @@ class StructureWidget(Widget):
 
         if self.storageWidget:
                 self.storageWidget.hide()
+                del self.storageWidget
                 self.storageWidget = None
 
         if not activeUnitID:
@@ -233,16 +264,33 @@ class StorageUI(Widget):
         })
         self.hide()
 
-
-
         self.producinUnitsWidget = None
         self.availableinUnitsWidget = None
+
+
+    def destroy(self):
+        self.widget.mapEvents({
+            'completeUnits': None
+        })
+
+        children = self.widget.findChildren(parent=self.widget)
+        for widget in children:
+            widget.capture(callback=None, event_name="mouseClicked")
+
+        self.widget.hide()
+        del self.widget
+
+
 
 
     def updateUI(self):
 
         ## Setup the area where the player can select units to be produced.
         # As this should not change, do it only once.
+
+        print "At this point the storage contains: "
+        print "In production: " , self.storage.inProduction
+        print "Ready: ", self.storage.unitsReady
         if not self.availableinUnitsWidget:
             self.availableinUnitsWidget = self.widget.findChild(name="available_units")
 
@@ -269,6 +317,10 @@ class StorageUI(Widget):
         if not self.producinUnitsWidget:
             self.producinUnitsWidget = self.widget.findChild(name="producing_units")
 
+
+
+        for widget in self.producinUnitsWidget.findChildren(parent=self):
+            widget.capture(callback=None, event_name="mouseClicked")
         self.producinUnitsWidget.removeAllChildren()
 
         # Add the unit icons again.
@@ -312,13 +364,23 @@ class StrategicHUD(HUD):
         self.widget = pychan.loadXML('gui/strategic_hud.xml')
         self.constructionWidget = ConstructingWidget(self)
         self.structureWidget = StructureWidget(self)
-        self.storageUI = None
 
         self.widget.mapEvents({
                 'build' : self.onBuildPressed, #self.world.testBuilding
-                # 'attackLightButton' : self.world.onAttackButtonPressed
+                'toUniverseButton' : self.world.backToUniverse
         })
 
+    def destroy(self):
+
+        self.widget.mapEvents({
+                'build' : None,
+                'toUniverseButton' : None
+        })
+
+        self.widget.hide()
+        del self.widget
+        self.constructionWidget.destroy()
+        self.structureWidget.destroy()
 
     def loadBuildingList(self):
         '''
@@ -362,9 +424,9 @@ class StrategicHUD(HUD):
 
 
     def closeExtraWindows(self):
-        if self.storageUI:
-            self.storageUI.hide()
-            self.storageUI = None
+        # if self.storageUI:
+        #     self.storageUI.hide()
+        #     self.storageUI = None
 
         self.structureWidget.hide()
 

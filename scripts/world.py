@@ -321,20 +321,21 @@ class World(object):
     MODE_DEFAULT, MODE_ATTACK, MODE_DROPSHIP, MODE_DEPLOY, MODE_BUILD = xrange(5)
     CUR_DEFAULT, CUR_ATTACK, CUR_CANNOT = xrange(3)
 
-    def __init__(self, engine, settings, faction, planet):
+    def __init__(self, universe, planet):
         # super(World, self).__init__(engine, regMouse=True, regKeys=True)
-        self.engine = engine
-        self.eventmanager = engine.getEventManager()
-        self.model = engine.getModel()
+        self.universe = universe
+        self.engine = universe._engine
+        self.eventmanager = self.engine.getEventManager()
+        self.model = self.engine.getModel()
         self.filename = ''
         self.pump_ctr = 0 # for testing purposis
         self.ctrldown = False
         self.instancemenu = None
         self.dynamic_widgets = {}
-        self.faction = faction
+        self.faction = universe.faction
         self.planet = planet
 
-        self.settings = settings
+        self.settings = universe._settings
 
 
         ## Added by Jon
@@ -705,3 +706,10 @@ class World(object):
 
         else:
             self.cursorHandler.setCursor(self.CUR_DEFAULT)
+
+    def backToUniverse(self):
+        '''
+
+        :return:
+        '''
+        self.universe.backToUniverse()
