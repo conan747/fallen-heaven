@@ -486,7 +486,7 @@ class World(object):
         self.target_rotation = self.cameras['main'].getRotation()
 
         ## Coordinate Renderer
-        '''
+
         # self.rend = self.cameras['main'].getRenderer('CoordinateRenderer')
         # self.rend.setEnabled(True)
         renderer = fife.CoordinateRenderer.getInstance(self.cameras['main'])
@@ -495,7 +495,7 @@ class World(object):
         renderer.setFont(textfont)
         renderer.addActiveLayer(self.scene.map.getLayer("TrajectoryLayer"))
         renderer.setEnabled(True)
-        '''
+
 
 
         ## Start cellRenderer to show instance paths:
@@ -644,19 +644,20 @@ class World(object):
 
         ## Move camera if needed:
         if self.mousePos[0] < self._camMoveMargin:
-            speedVector = (-self._camMoveSpeed,0)
+            speedVector = (-self._camMoveSpeed, -self._camMoveSpeed)
+            # speedVector = (speedVector[0] * math.cos
             self.moveCamera(speedVector)
 
         if self.mousePos[0] > (engineSettings.getScreenWidth()-self._camMoveMargin):
-            speedVector = (self._camMoveSpeed,0)
+            speedVector = (self._camMoveSpeed,self._camMoveSpeed)
             self.moveCamera(speedVector)
 
         if self.mousePos[1] < self._camMoveMargin:
-            speedVector = (0,-self._camMoveSpeed)
+            speedVector = (self._camMoveSpeed,-self._camMoveSpeed)
             self.moveCamera(speedVector)
 
         if self.mousePos[1] > (engineSettings.getScreenHeight()-self._camMoveMargin):
-            speedVector = (0,self._camMoveSpeed)
+            speedVector = (-self._camMoveSpeed , self._camMoveSpeed)
             self.moveCamera(speedVector)
 
         self.changeRotation()
