@@ -583,7 +583,9 @@ class World(object):
         currentPoint = currentLocation.getMapCoordinates()
         newPoint = currentPoint + vector
         currentLocation.setMapCoordinates(newPoint)
-        mainCamera.setLocation(currentLocation)
+
+        if self.cameras['main'].getMatchingInstances(currentLocation):
+            mainCamera.setLocation(currentLocation)
 
 
     def lightIntensity(self, value):
