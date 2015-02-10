@@ -193,6 +193,7 @@ class Building(Agent):
 
 
         layer = self.agent.getLocation().getLayer()
+        cellCache = layer.getCellCache()
 
         # unblocked = True
         for x in range(self.properties["SizeX"]):
@@ -205,6 +206,10 @@ class Building(Agent):
                 cellPos.y -= y
 
                 if layer.cellContainsBlockingInstance(cellPos):
+                    return False
+
+                cell = cellCache.getCell(cellPos)
+                if cellCache.isCellInArea("water", cell):
                     return False
 
                 # if not self.cellCache:

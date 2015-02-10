@@ -105,7 +105,16 @@ class Unit(Agent):
         layercoords = fife.DoublePoint3D(int(exactcoords.x), int(exactcoords.y), int(exactcoords.z) )
         location.setExactLayerCoordinates(layercoords)
 
-        # if layercoords == self.agent.get
+        layer = location.getLayer()
+        cellCache = layer.getCellCache()
+        cellPos = location.getLayerCoordinates()
+
+        if layer.cellContainsBlockingInstance(cellPos):
+            return False
+        if self.properties["Movement"] == "GROUND":
+            cell = cellCache.getCell(cellPos)
+            if cellCache.isCellInArea("water", cell):
+                return False
 
         ## TODO: Handle the teleport looking if the target cell is not occupied and the unit can stand there (e.g. not water).
         if not self.world.scene.getInstacesInTile(location):
