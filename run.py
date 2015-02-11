@@ -197,7 +197,8 @@ class FallenHeaven(PychanApplicationBase):
 
     def _pump(self):
         if self.listener.quit:
-            self.universe.save()
+            if self.universe:
+                self.universe.save()
             # if self.universe.world:
 
                 # get the correct directory to save the map file to

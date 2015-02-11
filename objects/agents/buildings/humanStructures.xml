@@ -1,0 +1,48 @@
+<?fife type="atlas"?>
+<atlas name="humanStructures.png" namespace="fallen" width="2048" height="128">
+	<image source="Gravport.png" xpos="0" ypos="0" width="214" height="124"/>
+	<image source="Mining Facility.png" xpos="214" ypos="0" width="187" height="107"/>
+	<image source="Factory.png" xpos="401" ypos="0" width="144" height="112"/>
+	<image source="Power Plant.png" xpos="545" ypos="0" width="115" height="82"/>
+	<image source="Laboratory.png" xpos="660" ypos="0" width="105" height="82"/>
+	<image source="Radar.png" xpos="765" ypos="0" width="106" height="69"/>
+	<image source="Barrack.png" xpos="871" ypos="0" width="107" height="62"/>
+	<image source="Anti-Missile.png" xpos="978" ypos="0" width="97" height="60"/>
+	<image source="Nuclear Silo.png" xpos="1075" ypos="0" width="86" height="45"/>
+	<image source="Wall.png" xpos="1161" ypos="0" width="56" height="48"/>
+	<image source="Laster Tower.png" xpos="1217" ypos="0" width="42" height="45"/>
+</atlas>
+<object id="Anti-Missile" namespace="fallen" blocking="0" static="1">
+	<image source="Anti-Missile.png" direction="0"/>
+</object>
+<object id="Barrack" namespace="fallen" blocking="0" static="1">
+	<image source="Barrack.png" direction="0"/>
+</object>
+<object id="Factory" namespace="fallen" blocking="0" static="1">
+	<image source="Factory.png" direction="0"/>
+</object>
+<object id="Gravport" namespace="fallen" blocking="0" static="1">
+	<image source="Gravport.png" direction="0"/>
+</object>
+<object id="Laboratory" namespace="fallen" blocking="0" static="1">
+	<image source="Laboratory.png" direction="0"/>
+</object>
+<object id="Laser Tower" namespace="fallen" blocking="0" static="1">
+	<image source="Laster Tower.png" direction="0"/>
+</object>
+<object id="Mining Facility" namespace="fallen" blocking="0" static="1">
+	<image source="Mining Facility.png" direction="0"/>
+</object>
+<object id="Nuclear Silo" namespace="fallen" blocking="0" static="1">
+	<image source="Nuclear Silo.png" direction="0"/>
+</object>
+<object id="Power Plant" namespace="fallen" blocking="0" static="1">
+	<image source="Power Plant.png" direction="0"/>
+</object>
+<object id="Radar" namespace="fallen" blocking="0" static="1">
+	<image source="Radar.png" direction="0"/>
+</object>
+<object id="Wall" namespace="fallen" blocking="0" static="1">
+	<image source="Wall.png" direction="0"/>
+</object>
+

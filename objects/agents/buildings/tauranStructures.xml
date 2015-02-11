@@ -1,0 +1,48 @@
+<?fife type="atlas"?>
+<atlas name="tauranStructures.png" namespace="fallen" width="2048" height="128">
+	<image source="Hover Pads.png" xpos="0" ypos="0" width="205" height="114"/>
+	<image source="Refinery.png" xpos="205" ypos="0" width="164" height="113"/>
+	<image source="Production Center.png" xpos="369" ypos="0" width="184" height="100"/>
+	<image source="Nest Center.png" xpos="553" ypos="0" width="112" height="80"/>
+	<image source="Research Center.png" xpos="665" ypos="0" width="106" height="81"/>
+	<image source="Energy Center.png" xpos="771" ypos="0" width="104" height="79"/>
+	<image source="Scanning Device.png" xpos="875" ypos="0" width="77" height="77"/>
+	<image source="Nuclear Launcher.png" xpos="952" ypos="0" width="107" height="42"/>
+	<image source="Missile-Shield.png" xpos="1059" ypos="0" width="70" height="64"/>
+	<image source="Wall.png" xpos="1129" ypos="0" width="56" height="48"/>
+	<image source="Fusion Tower.png" xpos="1185" ypos="0" width="40" height="36"/>
+</atlas>
+<object id="Energy Center" namespace="fallen" blocking="0" static="1">
+	<image source="Energy Center.png" direction="0"/>
+</object>
+<object id="Fusion Tower" namespace="fallen" blocking="0" static="1">
+	<image source="Fusion Tower.png" direction="0"/>
+</object>
+<object id="Hover Pads" namespace="fallen" blocking="0" static="1">
+	<image source="Hover Pads.png" direction="0"/>
+</object>
+<object id="Missile-Shield" namespace="fallen" blocking="0" static="1">
+	<image source="Missile-Shield.png" direction="0"/>
+</object>
+<object id="Nest Center" namespace="fallen" blocking="0" static="1">
+	<image source="Nest Center.png" direction="0"/>
+</object>
+<object id="Nuclear Launcher" namespace="fallen" blocking="0" static="1">
+	<image source="Nuclear Launcher.png" direction="0"/>
+</object>
+<object id="Production Center" namespace="fallen" blocking="0" static="1">
+	<image source="Production Center.png" direction="0"/>
+</object>
+<object id="Refinery" namespace="fallen" blocking="0" static="1">
+	<image source="Refinery.png" direction="0"/>
+</object>
+<object id="Research Center" namespace="fallen" blocking="0" static="1">
+	<image source="Research Center.png" direction="0"/>
+</object>
+<object id="Scanning Device" namespace="fallen" blocking="0" static="1">
+	<image source="Scanning Device.png" direction="0"/>
+</object>
+<object id="Wall" namespace="fallen" blocking="0" static="1">
+	<image source="Wall.png" direction="0"/>
+</object>
+

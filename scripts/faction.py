@@ -29,7 +29,7 @@ class Faction(object):
 
         self.name = name
 
-        self.pwnedPlanets.append("shrine2")
+        self.pwnedPlanets.append("firstCapital")
 
     def __setInfo__(self, factionInfo):
         [setattr(self, info, factionInfo[info]) for info in factionInfo.keys()]

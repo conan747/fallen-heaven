@@ -253,7 +253,7 @@ class StructureWidget(Widget):
         self.widget.adaptLayout()
 
 
-
+        # self.widget.distributeData(self.infoDict)
 
         for info in self.infoDict.keys():
             label = self.widget.findChild(name=info)

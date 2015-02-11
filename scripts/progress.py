@@ -27,6 +27,8 @@ class Progress(object):
         self.progressDict = {"playerFactionName" : self.playerFactionName,
                              "saveDir" : self.saveDir}
 
+        self.waitingForResponse = False
+
 
     def update(self):
 
@@ -52,6 +54,8 @@ class Progress(object):
             self.allPlanets[planetDict["name"]] = planetDict
 
         self.progressDict["allPlanets"] = self.allPlanets
+
+        self.progressDict["waitingForResponse"] = self.waitingForResponse
 
 
     def save(self):

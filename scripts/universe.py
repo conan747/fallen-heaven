@@ -7,6 +7,7 @@ from progress import Progress
 from planet import Planet
 from faction import Faction
 from gui.universeUI import UniverseUI
+from campaign import Campaign
 
 class Universe(object):
     '''
@@ -32,6 +33,9 @@ class Universe(object):
         # '''
         # Build the main GUI
         self.gui = UniverseUI(self)
+        self.gui.mapEvents = {
+            "endTurn" : self.endTurn
+        }
 
         self.faction = None
 
@@ -39,7 +43,10 @@ class Universe(object):
 
     def load(self, name="Human"):
         saveDir = "saves/test/"
-        self.progress = Progress(self)
+        # self.progress = Progress(self)
+        self.campaign = Campaign(self)
+        self.campaign.loadCampaign()
+
         self.progress.load(saveDir + name + ".sav")
         self.gui.show()
 
@@ -52,7 +59,7 @@ class Universe(object):
 
     def newGame(self):
         '''
-        Restarts the game.
+        Creates a new campaign and starts it.
         :return:
         '''
         #FIXME: Look into restarting the program.
@@ -63,13 +70,16 @@ class Universe(object):
 
         self.gui.show()
 
-        self.progress = Progress(self) # to save the progress.
-        self.faction = Faction("Human")
-        faction2 = Faction("Tauran")
-        self.progress.factions["Human"] = self.faction
-        self.progress.factions["Tauran"] = faction2
+        self.campaign = Campaign(self)
+        self.campaign.newCampaign()
 
-        planetNames = ["firstCapital", "secondPlanet"]
+        self.progress = self.campaign.players["Me"] # to save the progress.
+        # self.faction = Faction("Human")
+        # faction2 = Faction("Tauran")
+        # self.progress.factions["Human"] = self.faction
+        # self.progress.factions["Tauran"] = faction2
+
+        planetNames =  self.campaign.planetList#["firstCapital", "secondPlanet"]
         for planetName in planetNames:
             planet = Planet(planetName)
             self.progress.allPlanets[planetName] = planet.getPlanetDict()
@@ -188,3 +198,15 @@ class Universe(object):
             self.selectedPlanet = None
 
         self.gui.show()
+
+
+    def endTurn(self):
+        '''
+        Ends the current turn. This implies:
+        - Saves the information for this turn and should send it.
+        - Leaves the game at a state where it's waiting the input from the other player.
+        - After the other pla
+        :return:
+        '''
+        self.progress.save()
+        self.campaign.compileYear()
