@@ -134,7 +134,7 @@ DestructionAnimation=SQUADEXPLODESALI
 EncyclopediaImg=e-afly8
 EncyclopediaTxt=
 
-[Tank]
+[Alien Tank]
 PictureID=amdt
 LightWeapon=WEAPON_TANKL
 HeavyWeapon=WEAPON_TANKH

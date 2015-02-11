@@ -61,7 +61,7 @@ class Agent(fife.InstanceActionListener):
             point = fife.Point3D(location[0], location[1], location[2])
 
         #FIXME: Fix this namespace.
-        self.nameSpace = "http://www.fifengine.net/xml/rio_de_hola"
+        self.nameSpace = "fallen"
         object = self.world.model.getObject(self.unitName, self.nameSpace)
         if not object:
             print "Error! No ", self.unitName ,"found in the object library"
@@ -127,7 +127,8 @@ class Agent(fife.InstanceActionListener):
 
 
     def idle(self):
-        self.agent.actOnce('stand')
+        pass
+        # self.agent.actOnce('stand')
 
 
 

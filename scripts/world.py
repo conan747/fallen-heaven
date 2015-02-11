@@ -486,7 +486,7 @@ class World(object):
         self.target_rotation = self.cameras['main'].getRotation()
 
         ## Coordinate Renderer
-
+        '''
         # self.rend = self.cameras['main'].getRenderer('CoordinateRenderer')
         # self.rend.setEnabled(True)
         renderer = fife.CoordinateRenderer.getInstance(self.cameras['main'])
@@ -495,7 +495,7 @@ class World(object):
         renderer.setFont(textfont)
         renderer.addActiveLayer(self.scene.map.getLayer("TrajectoryLayer"))
         renderer.setEnabled(True)
-
+        '''
 
 
         ## Start cellRenderer to show instance paths:
