@@ -235,14 +235,24 @@ class StructureWidget(Widget):
         activeUnitInfo = activeUnit.properties
         print activeUnitInfo
 
-        # if activeUnit.properties.faction != self.HUD.world.faction.name:
-        #     print activeUnit.properties.faction #TEST
-        #     return
-
         if activeUnit.agentType != "Building":
             # No Building was selected therefore hide this widget.
             self.hide()
             return
+
+        ## Display the proper image:
+        imageContainer = self.widget.findChild(name="imageContainer")
+        imageWidget = None
+        imageWidget = imageContainer.findChildByName("image")
+        if imageWidget:
+            imageContainer.removeChild(imageWidget)
+        buildingName = activeUnitInfo["buildingName"]
+        imageFile = "objects/agents/buildings/" + buildingName + ".png"
+        imageWidget = pychan.Icon(parent=imageContainer, name="image", image=imageFile )
+        imageContainer.addChild(imageWidget)
+        self.widget.adaptLayout()
+
+
 
 
         for info in self.infoDict.keys():

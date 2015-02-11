@@ -8,10 +8,10 @@
         <HBox><Label text="Production type: "/><Label name="production" />  <Spacer/></HBox>
         <HBox><Label text="Energy consumption: "/><Label name="energyConsumption" />  <Spacer/></HBox>
         <HBox><Label text="Armor: "/><Label name="armor" /> <Spacer/> </HBox>
-
-        <HBox hexpand="1">
+        <Spacer/>
+        <HBox name="imageContainer" hexpand="1">
             <Spacer/>
-            <Icon name="image" image="objects/agents/buildings/barrack.png"/>
+            <Icon name="image" />
         </HBox>
 
 

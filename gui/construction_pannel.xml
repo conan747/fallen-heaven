@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="ascii"?>
 
 
-	<VBox position="10,30" name="high_score" base_color="20,20,20" opaque="1" min_size="400,400" hexpand="1">
-        <VBox vexpand="2" hexpand="1">
-            <!--<VBox hexpand="1">-->
-            <HBox><Label text="Building: "/><Label name="unitName" />  </HBox>
-            <HBox><Label text="Production type: "/><Label name="production" />  </HBox>
-            <HBox><Label text="Energy consumption: "/><Label name="energyConsumption" />  </HBox>
-            <HBox><Label text="Armor: "/><Label name="armor" />  </HBox>
-            <HBox><Label text="Cost: "/><Label name="Cost" />  </HBox>
+<VBox position="10,30" name="high_score" base_color="20,20,20" opaque="1" min_size="400,400" hexpand="1">
+    <VBox vexpand="2" hexpand="1">
+        <!--<VBox hexpand="1">-->
+        <HBox><Label text="Building: "/><Label name="unitName" />  </HBox>
+        <HBox><Label text="Production type: "/><Label name="production" />  </HBox>
+        <HBox><Label text="Energy consumption: "/><Label name="energyConsumption" />  </HBox>
+        <HBox><Label text="Armor: "/><Label name="armor" />  </HBox>
+        <HBox><Label text="Cost: "/><Label name="Cost" />  </HBox>
 
 
-            <!--</VBox>-->
-
-            <HBox name="imageContainer" hexpand="1">
-                <Spacer/>
+        <!--</VBox>-->
+        <Spacer/>
+        <HBox name="imageContainer" hexpand="1">
+        <Spacer/>
             <!--<Icon name="image" />-->
-            </HBox>
-
-        </VBox>
-
-        <HBox vexpand="0" max_size="400,20">
-            <Label name="errorText"/>
-            <Button name="buttonPrevious" text="Previous"/>
-            <Button name="buttonNext" text="Next" />
         </HBox>
 
-	</VBox>
+    </VBox>
+
+    <HBox vexpand="0" max_size="400,20">
+        <Label name="errorText"/>
+        <Button name="buttonPrevious" text="Previous"/>
+        <Button name="buttonNext" text="Next" />
+    </HBox>
+
+</VBox>
