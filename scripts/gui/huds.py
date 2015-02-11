@@ -179,7 +179,17 @@ class ConstructingWidget(Widget):
             if label:
                 label.text = unicode(buildingInfo[self.infoDict[info]])
 
-        # self.show()
+        ## Display the proper image:
+        imageContainer = self.widget.findChild(name="imageContainer")
+        imageWidget = None
+        imageWidget = imageContainer.findChildByName("image")
+        if imageWidget:
+            imageContainer.removeChild(imageWidget)
+        buildingName = buildingInfo["buildingName"]
+        imageFile = "objects/agents/buildings/" + buildingName + ".png"
+        imageWidget = pychan.Icon(parent=imageContainer, name="image", image=imageFile )
+        imageContainer.addChild(imageWidget)
+        self.widget.adaptLayout()
 
 
 

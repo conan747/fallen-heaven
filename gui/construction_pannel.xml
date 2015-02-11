@@ -13,9 +13,9 @@
 
             <!--</VBox>-->
 
-            <HBox hexpand="1">
+            <HBox name="imageContainer" hexpand="1">
                 <Spacer/>
-            <Icon name="image" image="objects/agents/buildings/barrack.png"/>
+            <!--<Icon name="image" />-->
             </HBox>
 
         </VBox>

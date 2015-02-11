@@ -60,7 +60,6 @@ class Agent(fife.InstanceActionListener):
         else:
             point = fife.Point3D(location[0], location[1], location[2])
 
-        #FIXME: Fix this namespace.
         self.nameSpace = "fallen"
         object = self.world.model.getObject(self.unitName, self.nameSpace)
         if not object:
