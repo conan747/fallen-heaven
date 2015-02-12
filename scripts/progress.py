@@ -27,6 +27,7 @@ class Progress(object):
         self.progressDict = {"playerFactionName" : self.playerFactionName,
                              "saveDir" : self.saveDir}
 
+        self.playerName = ""
         self.waitingForResponse = False
 
 
@@ -62,13 +63,13 @@ class Progress(object):
 
         self.update()
 
-        saveFile = self.saveDir + self.playerFactionName + ".sav"
+        saveFile = self.saveDir + self.playerName + ".prg"
         pickle.dump(self.progressDict, open(saveFile, 'wb'))
 
 
     def load(self, fileName):
 
-        assert os.path.isfile(fileName) , "File could not be loaded!"
+        assert os.path.isfile(fileName) , "File %r could not be loaded!" % fileName
         self.progressDict = pickle.load(open(fileName, 'rb'))
 
         assert self.progressDict, "Empty file loaded!"

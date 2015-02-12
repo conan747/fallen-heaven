@@ -12,11 +12,16 @@ class Campaign(object):
     Campaign object deals with the information exchange between players.
     '''
 
-    def __init__(self, universe):
+    def __init__(self, universe, fileName=None):
         self.universe = universe
         self.planetList = self.getPlanetNames()
         self.year = 0 # Strategic turn
         self.turn = 0 # Tactic turn
+        self.players = {} # Dictionary containing {playerName : PlayerProgress}
+        self.name = "ForeverWar"
+
+        if fileName:
+            self.loadCampaign(fileName)
 
 
     def newCampaign(self):
@@ -32,6 +37,10 @@ class Campaign(object):
         for progress in self.players.values():
             for factionName in factionNames:
                 progress.factions[factionName] = Faction(factionName)
+
+        # for playerName in self.players.keys():
+        #     self.players[playerName].playerName = playerName
+        #     self.players[playerName].save()
 
         print self.players
 
@@ -72,4 +81,38 @@ class Campaign(object):
         progress.factions[factionName]["pwnedPlanets"]
 
     def saveCampaign(self):
+        '''
+        Saves the campaign file .cpn
+        :return:
+        '''
+        playerNames = self.players.keys()
 
+        campaignDict = { "playerNames" : playerNames,
+                         "year" : self.year,
+                         "turn" : self.turn,
+                         "planetList" : self.planetList}
+
+        pickle.dump(campaignDict, open("saves/test/" + self.name + ".cpn" , 'wb'))
+
+        for prog in self.players.values():
+            prog.save()
+
+    def loadCampaign(self, fileName):
+        '''
+        Loads campaign file.
+        :param fileName:
+        :return:
+        '''
+
+        campaignDict = pickle.load(open(fileName, 'rb'))
+        self.year = campaignDict["year"]
+        self.turn = campaignDict["turn"]
+        self.planetList = campaignDict["planetList"]
+
+        rootFolder = os.path.dirname(fileName)
+        for playerName in campaignDict["playerNames"]:
+            progress = Progress(self.universe)
+            self.players[playerName] = progress.load(rootFolder + "/" + playerName + ".prg")
+
+        # TODO: MAke this variable.
+        return players["Me"]

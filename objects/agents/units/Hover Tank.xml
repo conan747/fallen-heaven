@@ -5,7 +5,7 @@
 
 
 	<action id="stand">
-		<animation atlas="stand.png" height="96" width="96">
+		<animation atlas="Hover Tank.png" height="96" width="96">
 			<direction delay="2000" dir="0" frames="1"/>
 			<direction delay="2000" dir="45" frames="1"/>
 			<direction delay="2000" dir="90" frames="1"/>

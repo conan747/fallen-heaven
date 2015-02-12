@@ -9,7 +9,6 @@ class Faction(object):
     Holds the information about a faction i.e. a player and all its units and resources.
     '''
     name = None
-    pwnedPlanets = []
     resources = None
     technology = None
 
@@ -29,7 +28,7 @@ class Faction(object):
 
         self.name = name
 
-        self.pwnedPlanets.append("firstCapital")
+        self.pwnedPlanets = ["firstCapital"]
 
     def __setInfo__(self, factionInfo):
         [setattr(self, info, factionInfo[info]) for info in factionInfo.keys()]

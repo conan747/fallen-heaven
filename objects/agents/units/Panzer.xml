@@ -1,11 +1,11 @@
 <?fife type="object"?>
 
-<object blocking="1" id="Light Tank" namespace="http://www.fifengine.net/xml/rio_de_hola" static="0">
-
+<object blocking="1" id="Panzer" namespace="fallen" static="0">
+<walkable_area id="land"/>
 
 
 	<action id="stand">
-		<animation atlas="Light Tank.png" height="96" width="96">
+		<animation atlas="Panzer.png" height="96" width="96">
 			<direction delay="2000" dir="0" frames="1"/>
 			<direction delay="2000" dir="45" frames="1"/>
 			<direction delay="2000" dir="90" frames="1"/>

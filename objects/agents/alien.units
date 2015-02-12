@@ -83,7 +83,7 @@ DestructionAnimation=UNITEXPLODES
 EncyclopediaImg=e-altk8
 EncyclopediaTxt=
 
-[Artillery]
+[Launcher]
 PictureID=apla
 LightWeapon=WEAPON_ARTL
 HeavyWeapon=WEAPON_ARTH
