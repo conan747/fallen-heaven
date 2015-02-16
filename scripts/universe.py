@@ -41,17 +41,17 @@ class Universe(object):
 
 
 
-    def load(self, name="Human"):
+    def load(self):
         saveDir = "saves/test/"
         self.progress = Progress(self)
         self.campaign = Campaign(self, "saves/test/ForeverWar.cpn")
-        self.progress = self.campaign.loadCampaign()
+        self.progress = self.campaign.progress
 
         # self.progress.load(saveDir + name + ".sav")
         self.gui.show()
 
         self.faction = Faction()
-        self.faction.__setInfo__(self.progress.factions[self.progress.playerFactionName])
+        self.faction.__setInfo__(self.progress.factionInfo)
         # self.planetNames = self.progress.allPlanets.keys()
         self.continueGame()
         self.gui.updateUI()
@@ -73,8 +73,9 @@ class Universe(object):
         self.campaign = Campaign(self)
         self.campaign.newCampaign()
 
-        self.progress = self.campaign.players["Me"] # to save the progress.
-        self.faction = self.progress.factions[self.progress.playerFactionName]
+        self.progress = self.campaign.progress # to save the progress.
+        self.faction = Faction()
+        self.faction.__setInfo__(self.progress.factionInfo)
         # self.faction = Faction("Human")
         # faction2 = Faction("Tauran")
         # self.progress.factions["Human"] = self.faction
@@ -211,5 +212,7 @@ class Universe(object):
         - After the other pla
         :return:
         '''
+
+        self.progress.faction = self.faction
         self.progress.save()
         self.campaign.compileYear()

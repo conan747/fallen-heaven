@@ -21,7 +21,7 @@ class Progress(object):
         self.playerFactionName = "Human"
         self.saveDir = "saves/test/"    # Directory where the file should be saved/loaded
         self.allPlanets = {} # Dictionary containing planet name:planetInfo
-        self.factions = {} # Dictionary containing faction name:factionInfo.
+        self.factionInfo = None # Dictionary containing faction factionInfo.
 
         # Dictionary containing all the information. Will be saved/loaded.
         self.progressDict = {"playerFactionName" : self.playerFactionName,
@@ -35,24 +35,20 @@ class Progress(object):
 
         # Update Faction
         faction = self.universe.faction
-        print dir(faction)
-        factionDict = {}
-        for member in dir(faction):
-            if not member.startswith("__"):
-                factionDict[member] = getattr(faction, member)
 
-        self.factions[factionDict["name"]] = factionDict
-        self.progressDict["factions"] = self.factions
+        self.factionInfo = faction.__getInfo__()
+        self.progressDict["factionInfo"] = self.factionInfo
 
 
 
         # Update open planet:
-        if self.universe.world.planet:
-            self.universe.world.scene.updatePlanetAgents()
-            storages = self.universe.world.scene.getStorageDicts()
-            planetDict = self.universe.world.planet.getPlanetDict()
-            planetDict["storages"] = storages
-            self.allPlanets[planetDict["name"]] = planetDict
+        if self.universe.world:
+            if self.universe.world.planet:
+                self.universe.world.scene.updatePlanetAgents()
+                storages = self.universe.world.scene.getStorageDicts()
+                planetDict = self.universe.world.planet.getPlanetDict()
+                planetDict["storages"] = storages
+                self.allPlanets[planetDict["name"]] = planetDict
 
         self.progressDict["allPlanets"] = self.allPlanets
 

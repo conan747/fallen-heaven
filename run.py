@@ -97,7 +97,7 @@ class ApplicationListener(eventlistenerbase.EventListenerBase):
 
     def onLoadPressed(self):
         self.hide()
-        self.universe.load("Human")
+        self.universe.load()
         self.cont = True
 
 

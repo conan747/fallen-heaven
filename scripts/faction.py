@@ -33,3 +33,11 @@ class Faction(object):
     def __setInfo__(self, factionInfo):
         [setattr(self, info, factionInfo[info]) for info in factionInfo.keys()]
 
+    def __getInfo__(self):
+
+        factionDict = {}
+        for member in dir(self):
+            if not member.startswith("__"):
+                factionDict[member] = getattr(self, member)
+
+        return factionDict

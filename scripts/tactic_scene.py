@@ -41,7 +41,9 @@ class TacticScene(Scene):
         super(TacticScene, self).__init__(world, engine)
 
         ## Added by Jon:
-        self.currentTurn = world.factions.keys()[0]
+        playerFactionName = world.universe.progress.playerFactionName
+        self.currentTurn = playerFactionName
+        self.factionNames = [playerFactionName, "Enemy"]
 
     def load(self, filename):
         super(TacticScene, self).load(filename)
@@ -52,7 +54,7 @@ class TacticScene(Scene):
         self._world.cellRenderer.setEnabled(True)
 
         # Setup factionUnits
-        for factionName in self._world.factions.keys():
+        for factionName in self.factionNames:
             self.factionUnits[factionName] = []
             for instanceID in self.instance_to_agent.keys():
                 agent = self.instance_to_agent[instanceID]
@@ -76,10 +78,10 @@ class TacticScene(Scene):
         '''
         Skips to the next turn
         '''
-        if self._world.factions.keys()[0] == self.currentTurn:
-            self.currentTurn = self._world.factions.keys()[1]
+        if self.factionNames[0] == self.currentTurn:
+            self.currentTurn = self.factionNames[1]
         else:
-            self.currentTurn = self._world.factions.keys()[0]
+            self.currentTurn = self.factionNames[0]
         self._world.selectUnit(None)
         self.resetAPs()
         self._world.setMode(_MODE_DEFAULT)
