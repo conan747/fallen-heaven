@@ -20,9 +20,6 @@ class Enemy(object):
         self.pwnedPlanets = []
 
 
-
-
-
 class Campaign(object):
     '''
     Campaign object deals with the information exchange between players.

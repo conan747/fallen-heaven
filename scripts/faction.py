@@ -15,11 +15,11 @@ class Faction(object):
     # _RES_ENERGY, _RES_CREDITS, _RES_RESEARCH = xrange(3)
 
     def __init__(self, name= ""):
-        resources = {"Energy": 0,
+        self.resources = {"Energy": 0,
                      "Credits" : 0,
                      "Research" : 0}
 
-        technology = {"Energy" : 1,
+        self.technology = {"Energy" : 1,
                       "Armor" : 1,
                       "Movement" : 1,
                       "Damage" : 1,

@@ -98,13 +98,18 @@ class Storage(object):
         print "Building ", unitName
 
         ## TODO: Check if we can expend the credits
+        cost = int(self.world.scene.unitLoader.unitProps[unitName]["Cost"])
+        if self.world.deductCredits(cost):
 
-        # Create an icon for the new unit:
-        prefix = uuid.uuid4().int
-        iconName = str(prefix)+':'+ unitName
-        self.inProduction.append(iconName)
+            # Create an icon for the new unit:
+            prefix = uuid.uuid4().int
+            iconName = str(prefix)+':'+ unitName
+            self.inProduction.append(iconName)
 
-        self.updateUI()
+            self.updateUI()
+
+        else:
+            print "Not enough Credits!"
 
 
     def completeUnits(self):

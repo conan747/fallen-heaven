@@ -76,6 +76,9 @@ class Universe(object):
         self.progress = self.campaign.progress # to save the progress.
         self.faction = Faction()
         self.faction.__setInfo__(self.progress.factionInfo)
+        # Give a freebee of 100000 credits
+        self.faction.resources["Credits"] = 10000
+
         # self.faction = Faction("Human")
         # faction2 = Faction("Tauran")
         # self.progress.factions["Human"] = self.faction
