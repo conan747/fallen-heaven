@@ -114,7 +114,7 @@ class TacticWorld(World):
         self.listener = TacticListener(self)
         self.listener.attach()
 
-        self.faction = self.universe.progress.faction
+        self.faction = self.universe.faction
 
         self.scene = TacticScene(self, self.engine)
 

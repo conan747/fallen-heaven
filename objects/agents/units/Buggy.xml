@@ -4,15 +4,8 @@
 
 
 	<action id="stand">
-		<animation atlas="Buggy.png" height="96" width="96" y_offset="-10" >
+		<animation atlas="Buggy.png" height="45" width="45" y_offset="-10" >
 			<direction delay="130" dir="0" frames="1" />
-			<direction delay="130" dir="45" frames="1" />
-			<direction delay="130" dir="90" frames="1" />
-			<direction delay="130" dir="135" frames="1" />
-			<direction delay="130" dir="180" frames="1" />
-			<direction delay="130" dir="225" frames="1" />
-			<direction delay="130" dir="270" frames="1" />
-			<direction delay="130" dir="315" frames="1" />
 		</animation>
 	</action>
 
