@@ -45,6 +45,27 @@ class StrategicListener(WorldListener):
         self._cellSelectionRenderer = None
 
 
+    def clickRecycle(self, clickpoint):
+        # self.hide_instancemenu()
+
+        instances = self._world.getInstancesAt(clickpoint)
+        print "selected instances on agent layer: ", [i.getObject().getId() for i in instances]
+        print "Found " , instances.__len__(), "instances"
+
+        if instances:
+            for instance in instances:
+                id = instance.getFifeId()
+                print "Instance: ", id
+                if id in self._world.scene.instance_to_agent.keys():
+                    agent = self._world.scene.instance_to_agent[id]
+                    print "Recycling: ", agent.agentName
+                    agent.die()
+                    # refund the cost
+                    cost = int(agent.properties["Cost"])
+                    self._world.deductCredits(-cost)
+                    self._world.HUD.updateUI()
+
+
     def clickDefault(self, clickpoint):
         # self.hide_instancemenu()
 
@@ -96,9 +117,9 @@ class StrategicListener(WorldListener):
                 construction.createInstance(location)
 
             if construction.teleport(location):
-                self._world.cursorHandler.setCursor(self._world.CUR_DEFAULT)
+                self._world.cursorHandler.setCursor(self._world.cursorHandler.CUR_DEFAULT)
             else:
-                self._world.cursorHandler.setCursor(self._world.CUR_CANNOT)
+                self._world.cursorHandler.setCursor(self._world.cursorHandler.CUR_CANNOT)
 
 
 
@@ -126,6 +147,13 @@ class StrategicWorld(World):
 
         self.construction = None
 
+
+    def startRecycling(self):
+        '''
+        Starts the recycling mode.
+        :return:
+        '''
+        self.setMode(self.MODE_RECYCLE)
 
     def startBuilding(self, buildingName):
         '''

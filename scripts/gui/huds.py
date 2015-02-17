@@ -318,7 +318,10 @@ class StorageUI(Widget):
             if children.__len__() < 2:
                 for unitName in self.storage.ableToProduce:
                     vbox = pychan.widgets.VBox()
-                    icon = pychan.widgets.Icon(name=unicode(unitName), image="gui/icons/boy.png")
+                    imageName = "gui/icons/boy.png"
+                    if os.path.isfile("objects/agents/units/" + unitName + ".png"):
+                        imageName = "objects/agents/units/" + unitName + ".png"
+                    icon = pychan.widgets.Icon(name=unicode(unitName), image=imageName)
                     def callback(arg=unitName): # Weird way of doing it. Taken from here: http://wiki.wxpython.org/Passing%20Arguments%20to%20Callbacks
                         self.storage.buildUnit(arg)
 
@@ -346,7 +349,11 @@ class StorageUI(Widget):
         # Add the unit icons again.
 
         for iconName in self.storage.unitsReady:
-            icon = pychan.widgets.Icon(name=unicode(iconName), image="gui/icons/boy.png")
+            imageName = "gui/icons/boy.png"
+            unitName = iconName.split(":")[1]
+            if os.path.isfile("objects/agents/units/" + unitName + ".png"):
+                imageName = "objects/agents/units/" + unitName + ".png"
+            icon = pychan.widgets.Icon(name=unicode(iconName), image=imageName)
             icon.background_color = (0, 255, 0, 200)
             icon.foreground_color = (0, 255, 0, 200)
             icon.base_color = (0, 255, 0, 200)
@@ -361,7 +368,11 @@ class StorageUI(Widget):
 
 
         for iconName in self.storage.inProduction:
-            icon = pychan.widgets.Icon(name=unicode(iconName), image="gui/icons/boy.png")
+            imageName = "gui/icons/boy.png"
+            unitName = iconName.split(":")[1]
+            if os.path.isfile("objects/agents/units/" + unitName + ".png"):
+                imageName = "objects/agents/units/" + unitName + ".png"
+            icon = pychan.widgets.Icon(name=unicode(iconName), image=imageName)
             def callback(arg=iconName): # Weird way of doing it. Taken from here: http://wiki.wxpython.org/Passing%20Arguments%20to%20Callbacks
                     self.storage.cancelUnit(arg)
             icon.capture(callback, event_name="mouseClicked")
@@ -384,11 +395,21 @@ class StrategicHUD(HUD):
         self.widget = pychan.loadXML('gui/strategic_hud.xml')
         self.constructionWidget = ConstructingWidget(self)
         self.structureWidget = StructureWidget(self)
+        self.topWidget = pychan.loadXML('gui/topWidget.xml')
+        self.topWidget.show()
 
         self.widget.mapEvents({
                 'build' : self.onBuildPressed, #self.world.testBuilding
-                'toUniverseButton' : self.world.backToUniverse
+                'toUniverseButton' : self.world.backToUniverse,
+                'recycle' : self.onRecyclePressed
         })
+
+        self.updateUI()
+
+    def show(self):
+        self.widget.show()
+        self.topWidget.show()
+
 
     def destroy(self):
 
@@ -426,6 +447,13 @@ class StrategicHUD(HUD):
             self.world.stopBuilding()
 
 
+    def onRecyclePressed(self):
+
+        if self.world.mode != self.world.MODE_RECYCLE:
+            self.world.startRecycling()
+        else:
+            self.world.setMode(self.world.MODE_DEFAULT)
+
     def updateUI(self):
         '''
         Display the proper information.
@@ -442,6 +470,13 @@ class StrategicHUD(HUD):
             self.structureWidget.updateUI()
             # self.structureWidget.show()
 
+        # Update Credits:
+        creditLabel = self.topWidget.findChildByName("totalCredits")
+        credits = self.world.faction.resources["Credits"]
+        creditLabel.text = unicode(str(credits))
+
+        self.topWidget.adaptLayout()
+
 
     def closeExtraWindows(self):
         # if self.storageUI:
@@ -452,3 +487,4 @@ class StrategicHUD(HUD):
 
         print "Hiding buildingwidget"
         self.constructionWidget.hide()
+

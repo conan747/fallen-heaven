@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ascii"?>
+
+
+<Container position="400,1" base_color="0,0,0" size="200,20">
+
+    <HBox name="topWidget" hexpand="1">
+        <Label text="Total Credits:" />
+        <Label name="totalCredits"/>
+        <Spacer/>
+        <Label text="Energy:"/>
+        <Label name="energy"/>
+
+    </HBox>
+
+</Container>

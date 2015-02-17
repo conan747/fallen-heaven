@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="ascii"?>
 
-<Container position="1,667" base_color="255,0,0" border_size="0" background_image="./gui/HUDs/strategic/bottom.png" size="636,76">
+
+<Container position="1,667" base_color="0,0,0" border_size="0" background_image="./gui/HUDs/strategic/bottom.png" size="636,76">
 
 
-    <ImageButton name="build" up_image="./gui/HUDs/strategic/build.png" position="46,6" border_size="0"/>
+    <ImageButton name="build" up_image="./gui/HUDs/strategic/build.png" position="46,6" border_size="1"/>
+    <ImageButton name="recycle" up_image="./gui/HUDs/strategic/recycle.png" position="158,6" border_size="1"/>
     <ImageButton name="toUniverseButton" up_image="./gui/HUDs/strategic/toUniverse.png" position="557,6" size="68,68" border_size="0"/>
+
 
 </Container>

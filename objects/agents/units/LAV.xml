@@ -1,0 +1,14 @@
+<?fife type="object"?>
+
+<object blocking="1" id="LAV" namespace="http://www.fifengine.net/xml/rio_de_hola" static="0">
+
+
+
+	<action id="stand">
+		<animation atlas="LAV.png" height="44" width="47">
+			<direction delay="2000" dir="0" frames="1"/>
+		</animation>
+	</action>
+
+
+</object>

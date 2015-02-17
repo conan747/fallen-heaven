@@ -90,21 +90,27 @@ class Storage(object):
     def cancelUnit(self, unitName):
         print "Removing: ", unitName
         self.inProduction.remove(unitName)
-        # TODO: reinburse unit costs
+        unitName = unitName.split(":")[1]
+        cost = int(self.world.scene.unitLoader.unitProps[unitName]["Cost"])
+        self.world.deductCredits(-cost)
         self.updateUI()
 
 
     def buildUnit(self, unitName):
         print "Building ", unitName
 
-        ## TODO: Check if we can expend the credits
+        cost = int(self.world.scene.unitLoader.unitProps[unitName]["Cost"])
+        if self.world.deductCredits(cost):
 
-        # Create an icon for the new unit:
-        prefix = uuid.uuid4().int
-        iconName = str(prefix)+':'+ unitName
-        self.inProduction.append(iconName)
+            # Create an icon for the new unit:
+            prefix = uuid.uuid4().int
+            iconName = str(prefix)+':'+ unitName
+            self.inProduction.append(iconName)
 
-        self.updateUI()
+            self.updateUI()
+
+        else:
+            print "Not enough Credits!"
 
 
     def completeUnits(self):
