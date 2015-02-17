@@ -352,3 +352,22 @@ class Scene(object):
         print "Saving" , len(storages), "storages"
 
         return storages
+
+
+    def unitDied(self, unitID):
+        '''
+        Process the destruction of a unit
+        :param unitID: ID of the destroyed unit
+        :return:
+        '''
+
+        if unitID in self.instance_to_agent.keys():
+            unit = self.instance_to_agent[unitID]
+            self.instance_to_agent.__delitem__(unitID)
+            unit.agent.removeActionListener(unit)
+
+            self.agentLayer.deleteInstance(unit.agent)
+            unit.agent = None
+
+        else:
+            print "Could not delete instance: " , unitID

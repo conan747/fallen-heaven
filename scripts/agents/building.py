@@ -90,14 +90,15 @@ class Storage(object):
     def cancelUnit(self, unitName):
         print "Removing: ", unitName
         self.inProduction.remove(unitName)
-        # TODO: reinburse unit costs
+        unitName = unitName.split(":")[1]
+        cost = int(self.world.scene.unitLoader.unitProps[unitName]["Cost"])
+        self.world.deductCredits(-cost)
         self.updateUI()
 
 
     def buildUnit(self, unitName):
         print "Building ", unitName
 
-        ## TODO: Check if we can expend the credits
         cost = int(self.world.scene.unitLoader.unitProps[unitName]["Cost"])
         if self.world.deductCredits(cost):
 

@@ -400,7 +400,8 @@ class StrategicHUD(HUD):
 
         self.widget.mapEvents({
                 'build' : self.onBuildPressed, #self.world.testBuilding
-                'toUniverseButton' : self.world.backToUniverse
+                'toUniverseButton' : self.world.backToUniverse,
+                'recycle' : self.onRecyclePressed
         })
 
         self.updateUI()
@@ -445,6 +446,13 @@ class StrategicHUD(HUD):
         else:
             self.world.stopBuilding()
 
+
+    def onRecyclePressed(self):
+
+        if self.world.mode != self.world.MODE_RECYCLE:
+            self.world.startRecycling()
+        else:
+            self.world.setMode(self.world.MODE_DEFAULT)
 
     def updateUI(self):
         '''

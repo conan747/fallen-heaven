@@ -171,6 +171,8 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
                 self.clickDeploy(clickpoint)
             elif self._world.mode == self._world.MODE_BUILD:
                 self.clickBuild(clickpoint)
+            elif self._world.mode == self._world.MODE_RECYCLE:
+                self.clickRecycle(clickpoint)
 
         if (evt.getButton() == fife.MouseEvent.RIGHT):
 
@@ -281,7 +283,7 @@ class CursorHandler(object):
     '''
 
 
-    CUR_DEFAULT, CUR_ATTACK, CUR_CANNOT = xrange(3)
+    CUR_DEFAULT, CUR_ATTACK, CUR_CANNOT, CUR_RECYCLE = xrange(4)
 
     def __init__(self, imageManager, cursor):
         self._imageManager = imageManager
@@ -297,11 +299,16 @@ class CursorHandler(object):
         cannot.setXShift(-32)
         cannot.setYShift(-32)
 
+        recycle = imageManager.load("/gui/pointers/recycle.png")
+        recycle.setXShift(-32)
+        recycle.setYShift(-32)
+
 
 
         self.cursorDict = {self.CUR_DEFAULT: normalCursor,
                            self.CUR_ATTACK: cursorAttack,
-                          self.CUR_CANNOT: cannot}
+                           self.CUR_CANNOT: cannot,
+                           self.CUR_RECYCLE : recycle}
 
         self.setCursor(self.CUR_DEFAULT)
 
@@ -320,8 +327,8 @@ class World(object):
       loading the scene
     """
 
-    MODE_DEFAULT, MODE_ATTACK, MODE_DROPSHIP, MODE_DEPLOY, MODE_BUILD = xrange(5)
-    CUR_DEFAULT, CUR_ATTACK, CUR_CANNOT = xrange(3)
+    MODE_DEFAULT, MODE_ATTACK, MODE_DROPSHIP, MODE_DEPLOY, MODE_BUILD, MODE_RECYCLE = xrange(6)
+
 
     def __init__(self, universe, planet):
         # super(World, self).__init__(engine, regMouse=True, regKeys=True)
@@ -707,10 +714,13 @@ class World(object):
             if trajectory.isInRange(mouseLocation):
                 if trajectory.hasClearPath(mouseLocation):
                     # print "Changing cursor"
-                    self.cursorHandler.setCursor(self.CUR_ATTACK)
+                    self.cursorHandler.setCursor(self.cursorHandler.CUR_ATTACK)
+
+        elif self.mode == self.MODE_RECYCLE:
+            self.cursorHandler.setCursor(self.cursorHandler.CUR_RECYCLE)
 
         else:
-            self.cursorHandler.setCursor(self.CUR_DEFAULT)
+            self.cursorHandler.setCursor(self.cursorHandler.CUR_DEFAULT)
 
     def backToUniverse(self):
         '''
