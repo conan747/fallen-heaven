@@ -116,6 +116,14 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
 
         '''
         unit = self._world.deploying
+
+        # properties = unit.properties
+        # if unit.agentType == "Building":
+        #     self._world.construction = unit
+        #     self.placeBuilding(clickpoint):
+        #     self.cancelDeploy()
+        #     return
+
         clickLocation = self._world.getLocationAt(clickpoint)
         if not unit.teleport(clickLocation):
             # This is supposed to be an ilegal teleport position -> cancel
@@ -135,24 +143,32 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
         self._world.storage = None
         self._world.setMode(self._world.MODE_DEFAULT)
 
-
-
     def clickBuild(self, clickpoint):
+        buildingCost = int(self._world.construction.properties["Cost"])
+        if self._world.deductCredits(buildingCost):
+            if not self.placeBuilding(clickpoint):
+                self._world.deductCredits(-buildingCost)
+        ## TODO: Give feedback of why it can't be built.
+
+
+    def placeBuilding(self, clickpoint):
         '''
         Locate the building at clickpoint.
         '''
         # We don't need to do anything since the instance should be here already.
         location = self._world.getLocationAt(clickpoint)
         construction = self._world.construction
-        print "Namespace: " , construction.agentType
-        buildingCost = int(self._world.construction.properties["Cost"])
+        print "Agent Type: " , construction.agentType
 
-        if construction.teleport(location) and self._world.deductCredits(buildingCost):
+        if construction.teleport(location):
             self._world.scene.addBuilding(self._world.construction)
             self._world.construction = None
             self._world.cursorHandler.setCursor(self._world.cursorHandler.CUR_DEFAULT)
             self._world.setMode(self._world.MODE_DEFAULT)
             self._world.stopBuilding()
+            return True
+
+        return False
         ## TODO: If we are building a wall then don't close the builder widget.
 
 
@@ -744,4 +760,7 @@ class World(object):
             return True
 
         print "Not enough credits!"
-        return False
+        return
+
+    def startBuilding(self, buildingName):
+        pass

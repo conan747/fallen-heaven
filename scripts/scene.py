@@ -123,6 +123,7 @@ class UnitLoader(object):
             return "Found no building with that buildingName!"
         buildingProps = self.buildingProps[buildingName]
         buildingProps["unitName"] = buildingName
+
         newBuilding = Building(self.world, buildingProps)
         # newBuilding.properties = buildingProps
         return newBuilding
@@ -345,8 +346,7 @@ class Scene(object):
                 if agent.storage:
                     # Add this to the storages
                     if agent.storage.inProduction or agent.storage.unitsReady:
-                        thisStorage = {"inProduction" : agent.storage.inProduction,
-                                       "unitsReady" : agent.storage.unitsReady}
+                        thisStorage = agent.storage.getStorageDict()
                         storages[agent.agentName] = thisStorage
 
         print "Saving" , len(storages), "storages"

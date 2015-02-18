@@ -29,6 +29,10 @@ class Progress(object):
 
         self.playerName = ""
         self.waitingForResponse = False
+        self.attacking = [] # list containing the "Attacking info" of the dropships of this player.
+        ## It will contain: {"origin": <name of the planet of origin>,
+        ##                  "target": <name of the destination planet>
+        ##                  "storage": <storage dictionary that this dropship has>
 
 
     def update(self):
@@ -51,6 +55,9 @@ class Progress(object):
         self.progressDict["allPlanets"] = self.allPlanets
 
         self.progressDict["waitingForResponse"] = self.waitingForResponse
+
+        # Updating Attacking list
+        self.progressDict["attacking"] = self.attacking
 
 
     def save(self):

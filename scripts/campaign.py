@@ -133,8 +133,6 @@ class Campaign(object):
             self.universe.newGame(self)
 
 
-
-
     def newCampaign(self, campaignInfo= None):
 
         if not campaignInfo:

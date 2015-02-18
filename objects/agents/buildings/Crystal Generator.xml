@@ -1,5 +1,0 @@
-<?fife type="object"?>
-<object id="Crystal Generator" namespace="fallen" blocking="0" static="1">
-<!--<image source="Crystal Generator.png" direction="0" x_offset="0" y_offset="-58"\>-->
- <image source="Barrack.png" direction="0" x_offset="0" y_offset="-58"/> 
- </object>

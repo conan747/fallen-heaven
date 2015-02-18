@@ -56,19 +56,21 @@ class Storage(object):
         # if self.parent.agent:
         #     self.parentID = building.agent.getFifeId()  # Parent ID of the object that contains this storage.
         self.world = world
+        self.ableToProduce = None
 
         # Get the units that this is able to produce:
         productionType = self.parent.properties["ProductionType"]
-        unitList = self.world.scene.unitLoader.unitProps
-        self.ableToProduce = []
+        if productionType != "NONE":
+            unitList = self.world.scene.unitLoader.unitProps
+            self.ableToProduce = []
 
-        for unitName in unitList:
-            if unitList[unitName]["ProductionType"] == productionType:
-                if unitList[unitName]["faction"] == self.parent.properties["faction"]:
-                    self.ableToProduce.append(unitName)
+            for unitName in unitList:
+                if unitList[unitName]["ProductionType"] == productionType:
+                    if unitList[unitName]["faction"] == self.parent.properties["faction"]:
+                        self.ableToProduce.append(unitName)
 
-        print "Units able to be produced by this building: ", productionType
-        print self.ableToProduce
+            print "Units able to be produced by this building: ", productionType
+            print self.ableToProduce
 
         self.deployingID = None
 
@@ -148,6 +150,14 @@ class Storage(object):
         self.deployingID = None
         self.updateUI()
 
+    def getStorageDict(self):
+        '''
+        Returns a dictionary containing units in storage.
+        :return:
+        '''
+        thisStorage = {"inProduction" : self.inProduction,
+                                       "unitsReady" : self.unitsReady}
+        return thisStorage
 
 
 
@@ -170,9 +180,17 @@ class Building(Agent):
         self._SelectRenderer = None
         self.cellCache = None
         self.storage = None
+        self.action = None # Points to a method. It is used when the building can perform an action.
         ## HACK: I don't create the storage now but when the building is landed. It's better for memory purposes.
         # if self.properties["ProductionType"] != "NONE":
         #     self.storage = Storage(self, self.world)
+
+        ## If it is a special building, then link its action:
+        actionMap = {"Dropship" : self._takeoff,
+                     "STARPORT" : self._buildDropship}
+
+        if props["StructureCategory"] in actionMap.keys():
+            self.action = actionMap[props["StructureCategory"]]
 
         self.health = self.properties["Hp"]
 
@@ -286,8 +304,49 @@ class Building(Agent):
 
     def start(self):
         self.setFootprint()
-        if self.properties["ProductionType"] != "NONE":
-            self.storage = Storage(self, self.world)
+        if self.properties["StorageSize"] != "0":
+                self.storage = Storage(self, self.world)
 
     def run(self):
         pass
+
+    def _takeoff(self):
+        '''
+        Handles the lauch of this dropship to another planet..
+        :return:
+        '''
+
+        selectPlanet = SelectPlanet(self.world.universe)
+        targetPlanet = selectPlanet.execute()
+        if not targetPlanet:
+            return
+        # Construct a dictionary with the contents of the storage.
+        storageDict = self.storage.getStorageDict()
+        ## Add the information to the "Attacking" dictionary.
+        dropshipDict = {"storage" : storageDict,
+                        "origin" : self.world.planet.name,
+                        "target" : targetPlanet}
+        self.world.universe.progress.attacking.append(dropshipDict)
+
+        self.die()
+
+
+    def _buildDropship(self):
+        '''
+        Starts the dropship building
+        :return:
+        '''
+        if self.properties["faction"] == 'Human':
+            buildingName = "Dropship"
+        else:
+            buildingName = "Saucer"
+
+        self.world.startBuilding(buildingName)
+        #
+        # if self.world.construction:
+        #     # get rid of the already loaded instance:
+        #     self.world.stopBuilding()
+        #
+        # self.world.construction = self.scene.unitLoader.createBuilding(buildingName)
+        #
+        # self.world.setMode(self.world.MODE_DEPLOY)

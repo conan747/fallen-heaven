@@ -26,8 +26,8 @@ class Widget(object):
         "Cost" : "Cost"
         }
 
-    def hide(self):
-        self.widget.hide()
+    def hide(self, free=False):
+        self.widget.hide(free)
     def show(self):
         self.widget.show()
 
@@ -155,7 +155,8 @@ class ConstructingWidget(Widget):
         allStructureProps = self.HUD.world.scene.unitLoader.buildingProps
         for structureProps in allStructureProps.values():
             if structureProps["faction"] == self.HUD.world.faction.name:
-                self.structureList.append(structureProps)
+                if not "CanBuild" in structureProps.keys():
+                    self.structureList.append(structureProps)
 
         self.structureIndex = 0
 
@@ -222,8 +223,7 @@ class StructureWidget(Widget):
         activeUnitInfo = None
 
         if self.storageWidget:
-                self.storageWidget.hide()
-                del self.storageWidget
+                self.storageWidget.hide(free=True)
                 self.storageWidget = None
 
         if not activeUnitID:
@@ -250,6 +250,14 @@ class StructureWidget(Widget):
         imageFile = "objects/agents/buildings/" + buildingName + ".png"
         imageWidget = pychan.Icon(parent=imageContainer, name="image", image=imageFile )
         imageContainer.addChild(imageWidget)
+
+        actionButton = self.widget.findChildByName("action")
+        if activeUnit.action:
+            actionButton.capture(activeUnit.action)
+            actionButton.show()
+        else:
+            actionButton.hide()
+
         self.widget.adaptLayout()
 
 
@@ -311,7 +319,9 @@ class StorageUI(Widget):
         print "At this point the storage contains: "
         print "In production: " , self.storage.inProduction
         print "Ready: ", self.storage.unitsReady
-        if not self.availableinUnitsWidget:
+
+
+        if not self.availableinUnitsWidget and self.storage.ableToProduce:
             self.availableinUnitsWidget = self.widget.findChild(name="available_units")
 
             children = self.availableinUnitsWidget.findChildren()

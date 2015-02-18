@@ -11,6 +11,7 @@ from campaign import Campaign
 
 
 import Tkinter, tkFileDialog
+from gui.selectPlanet import SelectPlanet
 
 class Universe(object):
     '''
@@ -43,7 +44,9 @@ class Universe(object):
         self.faction = None
 
 
+
     def load(self):
+
         saveDir = "saves/test/"
         self.progress = Progress(self)
         root = Tkinter.Tk()
@@ -64,6 +67,7 @@ class Universe(object):
         # self.planetNames = self.progress.allPlanets.keys()
         self.continueGame()
         self.gui.updateUI()
+
 
 
     def newGame(self, campaign=None):

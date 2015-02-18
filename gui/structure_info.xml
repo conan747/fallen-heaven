@@ -13,6 +13,7 @@
             <Spacer/>
             <Icon name="image" />
         </HBox>
+        <Button name="action" text="Perfom Action"/>
 
 
 </VBox>
