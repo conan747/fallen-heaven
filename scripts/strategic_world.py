@@ -64,6 +64,8 @@ class StrategicListener(WorldListener):
                     cost = int(agent.properties["Cost"])
                     self._world.deductCredits(-cost)
                     self._world.HUD.updateUI()
+            ## TODO: Handle situation when recycling a building containing storage.
+            ## TODO: Reduce refund when building is built.
 
 
     def clickDefault(self, clickpoint):

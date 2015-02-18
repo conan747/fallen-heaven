@@ -1,21 +1,26 @@
 <?xml version="1.0" encoding="ascii"?>
 
-    <VBox hexpand="1">
+<VBox hexpand="1">
+    <HBox>
         <Label text="Here should go the credit info etc. "/>
-        <HBox vexpand="1">
-            <VBox name="planetBox" margins="0,0" hexpand="2">
-                <!--<Button name="toCapital" text="Planet 1: First Capital"/>-->
-                <!--<Button name="toPlanet" text="Planet 2: Conquered Planet"/>-->
-                <!--<Button name="toWar" text="Planet 3: Enemy Capital"/>-->
-            </VBox>
-            <ScrollArea>
-                <Label name="dummy" text="Planet info"/>
-                <ListBox name="InfoList"/>
-            </ScrollArea>
 
-        </HBox>
-        <HBox>
-            <Label name="otherButtons" text="Other Buttons"/>
-            <Button name="endTurn" text="End Turn"/>
-        </HBox>
-    </VBox>
+        <Label text="Year: "/>
+        <Label name="year" text=""/>
+    </HBox>
+    <HBox vexpand="1">
+        <VBox name="planetBox" margins="0,0" hexpand="2">
+            <!--<Button name="toCapital" text="Planet 1: First Capital"/>-->
+            <!--<Button name="toPlanet" text="Planet 2: Conquered Planet"/>-->
+            <!--<Button name="toWar" text="Planet 3: Enemy Capital"/>-->
+        </VBox>
+        <ScrollArea>
+            <Label name="dummy" text="Planet info"/>
+            <ListBox name="InfoList"/>
+        </ScrollArea>
+
+    </HBox>
+    <HBox name="buttonBox">
+        <Label name="otherButtons" text="Other Buttons"/>
+        <Button name="endTurn" text="End Turn"/>
+    </HBox>
+</VBox>

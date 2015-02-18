@@ -6,6 +6,10 @@ import cPickle as pickle
 import os
 from faction import Faction
 
+from fife.extensions import pychan
+
+import Tkinter, tkFileDialog
+
 
 
 class Enemy(object):
@@ -33,23 +37,130 @@ class Campaign(object):
         self.progress = None # Player progress.
         self.name = "ForeverWar" # Name of the campaign
         self.factionNames = []
+        self.paused = False # Tells if it is waiting a response to be loaded.
 
         if fileName:
             self.loadCampaign(fileName)
 
 
-    def newCampaign(self):
+    def createCampaign(self):
+        '''
+        Opens the createCampaign dialog
+        :return:
+        '''
+        dialog = pychan.loadXML("gui/dialogs/createCampaign.xml")
+        factionList = ["Human", "Tauran"]
+        dialog.distributeInitialData({"factionList" : factionList})
 
-        ## TODO: Make a gui to retrieve this information
-        ## Ask for the name of the campaign:
-        self.name = "ForeverWar"
-        mainPlayer = "Me"
-        mainFaction = "Human"
+        def okCallback(dialog=dialog):
+            campaignName, playerName, playerFaction = dialog.collectData('campaignNameText', 'playerNameText', 'factionList')
+            info = {"playerName" : playerName,
+                    "campaignName" : campaignName,
+                    "playerFaction" : factionList[playerFaction]}
+            # self.createInvitation(info)
+            pickle.dump(info, open("saves/" + campaignName +".inv" , 'wb'))
+            dialog.hide()
+            ## TODO: Show explanation.
 
-        otherPlayer = "You"
-        otherFaction = "Tauran"
-        self.playerNames = [mainPlayer, otherPlayer]
-        self.factionNames = [mainFaction, otherFaction]
+        dialog.mapEvents({'OkButton' : okCallback})
+        dialog.show()
+
+    # def createInvitation(self, info):
+    #     '''
+    #     Creates invitation file
+    #     :param info:
+    #     :return:
+    #     '''
+    #     print "CreateInvitation called with argument:"
+    #     print info
+    # 
+    #     pickle.dump(info, open("saves/invitation.inv" , 'wb'))
+        
+
+
+    def joinGame(self):
+        '''
+        Loads an invitation and creates a proper campaign.
+        :return:
+        '''
+
+        # Ask for file to load:
+        root = Tkinter.Tk()
+        file = tkFileDialog.askopenfile(parent=root,mode='rb',
+                                        title='Select *.inv or *.rsp file',
+                                        initialdir="saves",
+                                        filetypes=[("Invite", ("*.inv", "*.rsp"))])
+        info = None
+        if file != None:
+            info = pickle.load(file)
+            file.close()
+
+        root.destroy()
+
+
+
+        if not "LocalPlayer" in info.keys():
+
+            dialog = pychan.loadXML("gui/dialogs/createCampaign.xml")
+            factionList = ["Human", "Tauran"]
+            factionList.remove(info["playerFaction"])
+
+            dialog.distributeInitialData({"factionList" : factionList,
+                                          "campaignNameText" : info["campaignName"]})
+
+            campaignInfo = { "RemotePlayer" : info}
+
+            def okCallback(dialog=dialog, campaignInfo=campaignInfo):
+                campaignName, playerName, playerFaction = dialog.collectData('campaignNameText', 'playerNameText', 'factionList')
+                info = {"playerName" : playerName,
+                        "campaignName" : campaignName,
+                        "playerFaction" : factionList[playerFaction]}
+                campaignInfo["LocalPlayer"] = info
+                dialog.hide()
+
+                # Create response:
+                response = {"LocalPlayer" : campaignInfo["RemotePlayer"],
+                            "RemotePlayer" : campaignInfo["LocalPlayer"]}
+                pickle.dump(response, open("saves/"+ campaignName +".rsp", 'wb'))
+                self.newCampaign(campaignInfo)
+                self.universe.newGame(self)
+
+            dialog.mapEvents({'OkButton' : okCallback})
+            dialog.show()
+
+        elif len(info) == 2:
+            self.newCampaign(info)
+            self.universe.newGame(self)
+
+
+
+
+    def newCampaign(self, campaignInfo= None):
+
+        if not campaignInfo:
+            ## Ask for the name of the campaign:
+            self.name = "ForeverWar"
+            mainPlayer = "Me"
+            mainFaction = "Human"
+
+            otherPlayer = "You"
+            otherFaction = "Tauran"
+            self.playerNames = [mainPlayer, otherPlayer]
+            self.factionNames = [mainFaction, otherFaction]
+        else:
+            localPlayerInfo = campaignInfo["LocalPlayer"]
+            self.name = localPlayerInfo["campaignName"]
+            self.playerNames = [localPlayerInfo["playerName"]]
+            self.factionNames = [localPlayerInfo["playerFaction"]]
+            remotePlayerInfo = campaignInfo["RemotePlayer"]
+            self.playerNames.append(remotePlayerInfo["playerName"])
+            self.factionNames.append(localPlayerInfo["playerFaction"])
+
+
+            mainFaction = self.factionNames[0]
+            otherFaction = self.factionNames[1]
+            mainPlayer = self.playerNames[0]
+            otherPlayer = self.playerNames[1]
 
         progress = Progress(self.universe)
         progress.playerFactionName = mainFaction
@@ -92,18 +203,54 @@ class Campaign(object):
         # Attacking province.
         fileToSend["factionName"] = playerFactionName
         fileToSend["pwnedPlanets"] = faction.pwnedPlanets
+        fileToSend["year"] = self.year
+        fileToSend["turn"] = self.turn
+        fileToSend["AttackingProvince"] = ""
 
-        saveFile = progress.saveDir + playerFactionName +self.year + ".yer"
-        pickle.dump(self.progressDict, open(saveFile, 'wb'))
+        saveFile = progress.saveDir + playerFactionName + str(self.year) + ".yer"
+        pickle.dump(fileToSend, open(saveFile, 'wb'))
 
 
-    def loadYear(self, fileName):
+    def loadYear(self, fileName=None):
+
+        if not fileName:
+            root = Tkinter.Tk()
+            fileName = tkFileDialog.askopenfilename(parent=root,
+                                        title='Select *.yer or *.trn file',
+                                        initialdir="saves",
+                                        filetypes=[("Turn", ("*.trn", "*.yer"))])
+            root.destroy()
 
         info = pickle.load(open(fileName, 'rb'))
 
         progress = self.universe.progress
+
+        ## Verify packet
         factionName = info["factionName"]
-        info["pwnedPlanets"] = progress.faction["pwnedPlanets"]
+        year = info["year"]
+        turn = info["turn"]
+
+        packetOK = True
+
+        if year!= self.year:
+            packetOK = False
+        if turn != self.turn:
+            packetOK = False
+        if factionName != self.enemy.factionName:
+            packetOK = False
+
+        if not packetOK:
+            print "Packet invalid!"
+            return
+
+        self.enemy.pwnedPlanets  = info["pwnedPlanets"]
+        ## TODO: Handle the attacking provinces
+        self.year += 1
+
+        self.paused = False
+
+        self.universe.gui.updateUI()
+
 
     def saveCampaign(self):
         '''
@@ -117,7 +264,8 @@ class Campaign(object):
                          "turn" : self.turn,
                          "planetList" : self.planetList,
                          "factionNames" : self.factionNames,
-                         "name" : self.name}
+                         "name" : self.name,
+                         "paused" : self.paused}
 
         enemyInfo = {}
         for atr in dir(self.enemy):
@@ -142,6 +290,7 @@ class Campaign(object):
         self.turn = campaignDict["turn"]
         self.planetList = campaignDict["planetList"]
         self.factionNames = campaignDict["factionNames"]
+        self.paused = campaignDict["paused"]
 
         playerName = campaignDict["playerName"]
         rootFolder = os.path.dirname(fileName)

@@ -9,6 +9,9 @@ from faction import Faction
 from gui.universeUI import UniverseUI
 from campaign import Campaign
 
+
+import Tkinter, tkFileDialog
+
 class Universe(object):
     '''
     This will hold the overall campaign information.
@@ -40,11 +43,17 @@ class Universe(object):
         self.faction = None
 
 
-
     def load(self):
         saveDir = "saves/test/"
         self.progress = Progress(self)
-        self.campaign = Campaign(self, "saves/test/ForeverWar.cpn")
+        root = Tkinter.Tk()
+        file = tkFileDialog.askopenfilename(parent=root,
+                                        title='Select campaign to load',
+                                        initialdir=saveDir,
+                                        filetypes=[("Campaign", "*.cpn")])
+        root.destroy()
+
+        self.campaign = Campaign(self, file)
         self.progress = self.campaign.progress
 
         # self.progress.load(saveDir + name + ".sav")
@@ -57,7 +66,7 @@ class Universe(object):
         self.gui.updateUI()
 
 
-    def newGame(self):
+    def newGame(self, campaign=None):
         '''
         Creates a new campaign and starts it.
         :return:
@@ -70,8 +79,12 @@ class Universe(object):
 
         self.gui.show()
 
-        self.campaign = Campaign(self)
-        self.campaign.newCampaign()
+        if not campaign:
+            self.campaign = Campaign(self)
+            self.campaign.createCampaign()
+        else:
+            self.campaign = campaign
+        # self.campaign.newCampaign()
 
         self.progress = self.campaign.progress # to save the progress.
         self.faction = Faction()
@@ -216,6 +229,13 @@ class Universe(object):
         :return:
         '''
 
+        print "Skipping turn!"
         self.progress.faction = self.faction
         self.progress.save()
         self.campaign.compileYear()
+        self.campaign.paused = True
+
+        self.gui.updateUI()
+        # dialog = InfoDialog(message="Send the automatically generated .yer file and wait for the response.",
+        #                     title= "Turn skipped.")
+        # dialog.show()

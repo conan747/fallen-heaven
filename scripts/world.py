@@ -38,6 +38,7 @@ from fife.extensions.fife_settings import Setting
 from gui.huds import TacticalHUD
 from combat import Trajectory
 from scripts.tactic_scene import TacticScene
+from gui.dialogs import InfoDialog
 
 TDS = Setting(app_name="rio_de_hola")
 
@@ -629,15 +630,15 @@ class World(object):
         print "Skipping turn!"
 
         if not self._nextTurnWindow:
-            self._nextTurnWindow = pychan.loadXML('gui/dialogs/next_turn.xml')
-            self._nextTurnWindow.mapEvents({ 'closeButton' : self._nextTurnWindow.hide })
+            self._nextTurnWindow = InfoDialog(title="Next turn")
+
 
         text = "This is the turn of"
         if not self.scene.currentTurn:
             text += " Player 1"
         else:
             text += " Player 2"
-        self._nextTurnWindow.distributeData({ 'text' : text })
+        self._nextTurnWindow.setText(text)
         self._nextTurnWindow.show()
 
         self.scene.nextTurn()

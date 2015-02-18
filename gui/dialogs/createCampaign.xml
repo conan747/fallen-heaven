@@ -1,0 +1,26 @@
+<Window name="window" title="Create Campaign">
+    <VBox name="mainVLayout">
+        <HBox>
+            <Label text="Campaign name:"/>
+            <TextBox name="campaignNameText" min_size="100,20" />
+        </HBox>
+        <HBox>
+            <Label text="Player name:"/>
+            <TextBox name="playerNameText" min_size="100,20" />
+        </HBox>
+        <HBox>
+            <Label text="Select faction:"/>
+            <ScrollArea min_size="200,60">
+                <ListBox name="factionList" min_size="100,100" />
+            </ScrollArea>
+        </HBox>
+        <Spacer/>
+
+
+        <HBox name="buttonBox">
+            <Button name="cancelButton" text="Cancel"/>
+            <Button name="OkButton" text="OK"/>
+        </HBox>
+
+    </VBox>
+</Window>

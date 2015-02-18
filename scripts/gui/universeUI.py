@@ -4,6 +4,7 @@ __author__ = 'cos'
 import os
 from fife.extensions import pychan
 
+from dialogs import InfoDialog
 
 class UniverseUI(object):
     '''
@@ -76,4 +77,40 @@ class UniverseUI(object):
         newButton.capture(self.universe.toWarClicked)
         planetBox.addChild(newButton)
 
-        planetBox.adaptLayout()
+        # Update year:
+        yearLabel = self.gui.findChildByName("year")
+        year = self.universe.campaign.year
+        yearLabel.text = unicode(str(year))
+
+        self.handlePaused()
+
+        self.gui.adaptLayout()
+
+
+    def handlePaused(self):
+
+        if self.universe.campaign.paused:
+            if not self.gui.findChildByName("loadTurn"):
+                buttonBox = self.gui.findChildByName("buttonBox")
+                loadTurnButton = pychan.Button(parent=buttonBox,
+                                               name="loadTurn",
+                                               text="Load next turn")
+                buttonBox.addChild(loadTurnButton)
+                loadTurnButton.capture(self.universe.campaign.loadYear)
+
+            endTurnButton = self.gui.findChildByName("endTurn")
+            endTurnButton.hide()
+            loadTurnButton = self.gui.findChildByName("loadTurn")
+            loadTurnButton.show()
+            # self.gui.adaptLayout()
+
+            dialog = InfoDialog(message="Send the automatically generated .yer file and wait for the response.",
+                            title= "Game paused.")
+            dialog.show()
+
+        else:
+            loadTurnButton = self.gui.findChildByName("loadTurn")
+            if loadTurnButton:
+                loadTurnButton.hide()
+            endTurnButton = self.gui.findChildByName("endTurn")
+            endTurnButton.show()

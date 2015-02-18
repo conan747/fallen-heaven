@@ -1,0 +1,12 @@
+<Window name="window" title="Information">
+    <VBox name="mainVBox">
+        <Label name="messageLabel"/>
+        <Spacer/>
+
+
+        <HBox name="buttonBox">
+            <Button name="OkButton" text="OK"/>
+        </HBox>
+
+    </VBox>
+</Window>

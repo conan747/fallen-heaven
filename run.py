@@ -44,6 +44,7 @@ from fife.extensions.pychan.internal import get_manager
 from fife.extensions.fife_settings import Setting
 from fife.extensions.fife_utils import getUserDataDirectory
 
+
 TDS = FifePychanSettings(app_name="fallen")
 
 class ApplicationListener(eventlistenerbase.EventListenerBase):
@@ -92,8 +93,26 @@ class ApplicationListener(eventlistenerbase.EventListenerBase):
 
     def onNewGamePressed(self):
         self.hide()
-        self.universe.newGame()
-        self.cont = True
+        widget = pychan.VBox()
+        buttonCreate = pychan.Button(name="createCampaign", text="Create new campaign", parent=widget)
+        buttonJoin = pychan.Button(name="joinCampaign", text="Join a campaign", parent=widget)
+        widget.addChildren(buttonCreate, buttonJoin)
+        widget.show()
+        campaign = Campaign(self.universe)
+        def onButtonCreate(wid=widget, campaign=campaign):
+            wid.hide(free=True)
+            campaign.createCampaign()
+
+        def onButtonJoin(wid=widget, campaign=campaign):
+            wid.hide(free=True)
+            campaign.joinGame()
+            self.cont = True
+
+        widget.mapEvents({"createCampaign" : onButtonCreate,
+                          "joinCampaign" : onButtonJoin})
+
+        # self.universe.newGame()
+        # self.cont = True
 
     def onLoadPressed(self):
         self.hide()
