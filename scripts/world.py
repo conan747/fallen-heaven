@@ -458,15 +458,15 @@ class World(object):
 
         if int(self.settings.get("FIFE", "PlaySounds")):
             # play track as background music
-            self.music = self.soundmanager.createSoundEmitter('music/rio_de_hola.ogg')
+            self.music = self.soundmanager.createSoundEmitter('music/fallen.ogg')
             self.music.looping = True
             self.music.gain = 128.0
             self.music.play()
 
-            self.waves = self.soundmanager.createSoundEmitter('sounds/waves.ogg')
-            self.waves.looping = True
-            self.waves.gain = 16.0
-            self.waves.play()
+            # self.waves = self.soundmanager.createSoundEmitter('sounds/waves.ogg')
+            # self.waves.looping = True
+            # self.waves.gain = 16.0
+            # self.waves.play()
 
 
         self.listener.attach()
@@ -807,3 +807,7 @@ class World(object):
 
     def startBuilding(self, buildingName):
         pass
+
+    def startDeploy(self, storage):
+        self.storage = storage
+        self.setMode(self.MODE_DEPLOY)

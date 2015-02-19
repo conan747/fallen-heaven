@@ -153,8 +153,9 @@ class Storage(object):
         :return:
         '''
         print "Deploying unit" , unitID
-        self.world.setMode(self.world.MODE_DEPLOY)
-        self.world.storage = self
+        self.world.startDeploy(self)
+        # self.world.setMode(self.world.MODE_DEPLOY)
+        # self.world.storage = self
         unitName = unitID.split(":")[1]
         unit = self.world.scene.unitLoader.createUnit(unitName)
         self.world.deploying = unit

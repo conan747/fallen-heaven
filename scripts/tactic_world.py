@@ -94,6 +94,55 @@ class TacticListener(WorldListener):
                 self._world.selectUnit(None)
 
 
+    def clickDeploy(self, clickpoint):
+        '''
+        Specific deploying behavior for tactic situations: Units can only be deployed right next to the building.
+        '''
+        unit = self._world.deploying
+        buildingID = self._world.activeUnit
+        building = self._world.scene.instance_to_agent[buildingID]
+
+        ## Get center point of the building.
+        buildingLocation = building.agent.getLocation()
+        ## I commented this because it introduces little improvement and much complexity
+        # buildingX = building.properties["SizeX"]
+        # buildingY = building.properties["SizeY"]
+        # buildingCenter = buildingLocation.getExactLayerCoordinates()
+        # buildingCenter.x = buildingCenter.x + buildingX/2
+        # buildingCenter.y = buildingCenter.y + buildingY/2
+        # buildingCenterLocation = buildingLocation.setExactLayerCoordinates(buildingCenter)
+
+
+
+
+
+
+
+
+
+
+
+        # properties = unit.properties
+        # if unit.agentType == "Building":
+        #     self._world.construction = unit
+        #     self.placeBuilding(clickpoint):
+        #     self.cancelDeploy()
+        #     return
+
+        clickLocation = self._world.getLocationAt(clickpoint)
+        if not unit.teleport(clickLocation):
+            # This is supposed to be an ilegal teleport position -> cancel
+            self.cancelDeploy()
+            return
+
+        # Generate an instance for the unit.
+        unit.createInstance(clickLocation)
+        # unit.teleport(clickLocation)
+        self._world.scene.instance_to_agent[unit.agent.getFifeId()] = unit
+        self._world.storage.unitDeployed()
+        self.cancelDeploy()
+
+
 
 class TacticWorld(World):
     """
@@ -125,3 +174,41 @@ class TacticWorld(World):
     def onAttackButtonPressed(self):
         if self.activeUnit:
             self.setMode(self.MODE_ATTACK)
+
+
+    def startDeploy(self, storage):
+        self.storage = storage
+        self.setMode(self.MODE_DEPLOY)
+        building = storage.parent
+        properties = building.properties
+
+        ## Show the available cells:
+        buildingLocation = building.agent.getLocation()
+        # layer = location.getLayer()
+        # cellCache = layer.getCellCache()
+        # anchorPos = location.getLayerCoordinates()
+
+        camera = self.cameras['main']
+        self.deployRenderer = fife.CellSelectionRenderer.getInstance(camera)
+        self.deployRenderer.reset()
+        self.deployRenderer.setEnabled(True)
+        self.deployRenderer.setColor(0,255,0)
+
+        cellPos = buildingLocation.getLayerCoordinates()
+        cellPos.x += 1
+        cellPos.y += 1
+        loc = buildingLocation
+        loc = loc.setLayerCoordinates(cellPos)
+        self.deployRenderer.selectLocation(loc)
+
+        # for x in range(-1 , properties["SizeX"] +1):
+        #     for y in range(-1 , properties["SizeY"]+1):
+        #         cellPos = buildingLocation.getLayerCoordinates()
+        #         cellPos.x -= x
+        #         cellPos.y -= y
+        #
+        #         loc = buildingLocation
+        #         loc = loc.setLayerCoordinates(cellPos)
+        #
+        #         self.deployRenderer.selectLocation(loc)
+
