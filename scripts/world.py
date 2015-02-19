@@ -111,6 +111,39 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
             self._world.scene.instance_to_agent[self._world.activeUnit].teleport(self._world.getLocationAt(clickpoint))
 
 
+    def clickGetIn(self, clickpoint):
+        # self.hide_instancemenu()
+
+        if not self._world.activeUnit:
+            return
+        else:
+            activeUnit = self._world.scene.instance_to_agent[self._world.activeUnit]
+            if activeUnit.agentType == "Building":
+                return
+
+        instances = self._world.getInstancesAt(clickpoint)
+        print "selected instances on agent layer: ", [i.getObject().getId() for i in instances]
+        print "Found " , instances.__len__(), "instances"
+
+        if instances:
+            # self.activeUnit = None
+            for instance in instances:
+                id = instance.getFifeId()
+                print "Instance: ", id
+                if id in self._world.scene.instance_to_agent.keys():
+                    clickedAgent = self._world.scene.instance_to_agent[id]
+                    if clickedAgent.agentType == "Building":
+                        storage = clickedAgent.storage
+                        if storage:
+                            ##HACK: only accept on dropships
+                            if clickedAgent.properties["StructureCategory"] == "Dropship":
+                                if storage.addUnit(activeUnit):
+                                    ## storage added correctly -> remove unit from the map.
+                                    activeUnit.die()
+                                    self._world.selectUnit(None)
+
+
+
     def clickDeploy(self, clickpoint):
         '''
 
@@ -190,6 +223,8 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
                 self.clickBuild(clickpoint)
             elif self._world.mode == self._world.MODE_RECYCLE:
                 self.clickRecycle(clickpoint)
+            elif self._world.mode == self._world.MODE_GET_IN:
+                self.clickGetIn(clickpoint)
 
         if (evt.getButton() == fife.MouseEvent.RIGHT):
 
@@ -278,6 +313,7 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
                 self._world.cameras['main'].setZoom(1.0)
         elif keyval in (fife.Key.LEFT_CONTROL, fife.Key.RIGHT_CONTROL):
             self.ctrldown = True
+            self._world.setMode(self._world.MODE_GET_IN)
         # if keyval == fife.Key.ESCAPE:
         #     self.detach()
         #     self._world.guicontroller.showMainMenu()
@@ -289,6 +325,7 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
         keyval = evt.getKey().getValue()
         if keyval in (fife.Key.LEFT_CONTROL, fife.Key.RIGHT_CONTROL):
             self.ctrldown = False
+            self._world.setMode(self._world.MODE_DEFAULT)
 
 
 
@@ -300,7 +337,7 @@ class CursorHandler(object):
     '''
 
 
-    CUR_DEFAULT, CUR_ATTACK, CUR_CANNOT, CUR_RECYCLE = xrange(4)
+    CUR_DEFAULT, CUR_ATTACK, CUR_CANNOT, CUR_RECYCLE, CUR_GET_IN = xrange(5)
 
     def __init__(self, imageManager, cursor):
         self._imageManager = imageManager
@@ -320,12 +357,17 @@ class CursorHandler(object):
         recycle.setXShift(-32)
         recycle.setYShift(-32)
 
+        getIn = imageManager.load("/gui/pointers/getIn.png")
+        getIn.setXShift(-32)
+        getIn.setYShift(-32)
+
 
 
         self.cursorDict = {self.CUR_DEFAULT: normalCursor,
                            self.CUR_ATTACK: cursorAttack,
                            self.CUR_CANNOT: cannot,
-                           self.CUR_RECYCLE : recycle}
+                           self.CUR_RECYCLE : recycle,
+                           self.CUR_GET_IN : getIn}
 
         self.setCursor(self.CUR_DEFAULT)
 
@@ -344,7 +386,7 @@ class World(object):
       loading the scene
     """
 
-    MODE_DEFAULT, MODE_ATTACK, MODE_DROPSHIP, MODE_DEPLOY, MODE_BUILD, MODE_RECYCLE = xrange(6)
+    MODE_DEFAULT, MODE_ATTACK, MODE_DROPSHIP, MODE_DEPLOY, MODE_BUILD, MODE_RECYCLE, MODE_GET_IN = xrange(7)
 
 
     def __init__(self, universe, planet):
@@ -735,7 +777,8 @@ class World(object):
 
         elif self.mode == self.MODE_RECYCLE:
             self.cursorHandler.setCursor(self.cursorHandler.CUR_RECYCLE)
-
+        elif self.mode == self.MODE_GET_IN:
+            self.cursorHandler.setCursor(self.cursorHandler.CUR_GET_IN)
         else:
             self.cursorHandler.setCursor(self.cursorHandler.CUR_DEFAULT)
 

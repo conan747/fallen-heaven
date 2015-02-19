@@ -6,3 +6,4 @@ maps/shrine2.plt
 maps/shrine2.sto
 *.pyc
 saves/test/*
+saves/*

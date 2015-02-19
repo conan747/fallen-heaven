@@ -75,6 +75,7 @@ class Storage(object):
         self.deployingID = None
 
         self.updateUI = self.world.HUD.updateUI
+        self.storageSize = self.parent.properties["StorageSize"]
 
 
     def setStorage(self, infoDict):
@@ -113,6 +114,24 @@ class Storage(object):
 
         else:
             print "Not enough Credits!"
+
+    def addUnit(self, unit):
+        '''
+        Adds a unit into this storage.
+        :param unit: Unit object to be added.
+        :return: boolean if it succedes.
+        '''
+        #TODO: Check if this storage accepts this units.
+        if len(self.unitsReady) == self.storageSize:
+            return False
+            ## Give feedback of why it didn't work!
+        unitName = unit.agentName
+        prefix = uuid.uuid4().int
+        iconName = str(prefix)+':'+ unitName
+        self.unitsReady.append(iconName)
+        self.updateUI()
+        return True
+
 
 
     def completeUnits(self):
@@ -304,11 +323,13 @@ class Building(Agent):
 
     def start(self):
         self.setFootprint()
-        if self.properties["StorageSize"] != "0":
+        if self.properties["StorageSize"] != 0:
                 self.storage = Storage(self, self.world)
+
 
     def run(self):
         pass
+
 
     def _takeoff(self):
         '''
