@@ -69,6 +69,7 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
         self.ctrldown = False
 
         self._attached = False
+        self._cellSelectionRenderer = None
 
         self._lastmousepos = (0.0, 0.0)
 
@@ -241,6 +242,20 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
     def mouseMoved(self, evt):
 
         self._world.mousePos = (evt.getX(), evt.getY())
+
+        if self._world.mode == self._world.MODE_DEFAULT:
+            if not self._cellSelectionRenderer:
+                if self._world.cameras:
+                    camera = self._world.cameras['main']
+                    self._cellSelectionRenderer = fife.CellSelectionRenderer.getInstance(camera)
+                    self._cellSelectionRenderer.setEnabled(True)
+                    self._cellSelectionRenderer.activateAllLayers(self._world.scene.map)
+
+            if self._cellSelectionRenderer:
+                mousePoint = fife.ScreenPoint(evt.getX(), evt.getY())
+                self._cellSelectionRenderer.reset()
+                location = self._world.getLocationAt(mousePoint)
+                self._cellSelectionRenderer.selectLocation(location)
 
     def mouseReleased(self, event):
         pass

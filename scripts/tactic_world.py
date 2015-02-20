@@ -179,7 +179,7 @@ class TacticWorld(World):
     def startDeploy(self, storage):
         self.storage = storage
         self.setMode(self.MODE_DEPLOY)
-        building = storage.parent
+        building = self.scene.instance_to_agent[self.activeUnit]
         properties = building.properties
 
         ## Show the available cells:
@@ -188,27 +188,31 @@ class TacticWorld(World):
         # cellCache = layer.getCellCache()
         # anchorPos = location.getLayerCoordinates()
 
-        camera = self.cameras['main']
-        self.deployRenderer = fife.CellSelectionRenderer.getInstance(camera)
-        self.deployRenderer.reset()
-        self.deployRenderer.setEnabled(True)
-        self.deployRenderer.setColor(0,255,0)
+        # camera = self.cameras['main']
+        # if not self.listener._cellSelectionRenderer:
+        # self.deployRenderer = fife.CellSelectionRenderer.getInstance(camera)
+        # self.deployRenderer.setEnabled(True)
+        # self.listener._cellSelectionRenderer.setColor(255,255,0)
+        # self.deployRenderer.activateAllLayers(self.scene.map)
+        self.listener._cellSelectionRenderer.reset()
 
-        cellPos = buildingLocation.getLayerCoordinates()
-        cellPos.x += 1
-        cellPos.y += 1
-        loc = buildingLocation
-        loc = loc.setLayerCoordinates(cellPos)
-        self.deployRenderer.selectLocation(loc)
+        # cellPos = buildingLocation.getLayerCoordinates()
+        # cellPos.x += 1
+        # cellPos.y += 1
+        # loc = buildingLocation
+        # loc = loc.setLayerCoordinates(cellPos)
+        # self.deployRenderer.selectLocation(loc)
 
-        # for x in range(-1 , properties["SizeX"] +1):
-        #     for y in range(-1 , properties["SizeY"]+1):
-        #         cellPos = buildingLocation.getLayerCoordinates()
-        #         cellPos.x -= x
-        #         cellPos.y -= y
-        #
-        #         loc = buildingLocation
-        #         loc = loc.setLayerCoordinates(cellPos)
-        #
-        #         self.deployRenderer.selectLocation(loc)
+        startingPos = buildingLocation.getMapCoordinates()
+
+        for x in range(-1 , properties["SizeX"] +1):
+            for y in range(-1 , properties["SizeY"]+1):
+                cellPos = fife.DoublePoint3D(startingPos)
+                cellPos.x -= x
+                cellPos.y -= y
+
+                loc = fife.Location(buildingLocation)
+                loc.setMapCoordinates(cellPos)
+
+                self.listener._cellSelectionRenderer.selectLocation(loc)
 
