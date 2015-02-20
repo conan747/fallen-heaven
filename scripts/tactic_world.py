@@ -104,32 +104,35 @@ class TacticListener(WorldListener):
 
         ## Get center point of the building.
         buildingLocation = building.agent.getLocation()
-        ## I commented this because it introduces little improvement and much complexity
-        # buildingX = building.properties["SizeX"]
-        # buildingY = building.properties["SizeY"]
-        # buildingCenter = buildingLocation.getExactLayerCoordinates()
-        # buildingCenter.x = buildingCenter.x + buildingX/2
-        # buildingCenter.y = buildingCenter.y + buildingY/2
-        # buildingCenterLocation = buildingLocation.setExactLayerCoordinates(buildingCenter)
-
-
-
-
-
-
-
-
-
-
-
-        # properties = unit.properties
-        # if unit.agentType == "Building":
-        #     self._world.construction = unit
-        #     self.placeBuilding(clickpoint):
-        #     self.cancelDeploy()
-        #     return
 
         clickLocation = self._world.getLocationAt(clickpoint)
+        layer = buildingLocation.getLayer()
+        cellCache = layer.getCellCache()
+        clickCell = cellCache.getCell(clickLocation.getLayerCoordinates())
+
+        properties = building.properties
+
+        canTeleport = False
+
+        for x in range(properties["SizeX"]):
+            for y in range(properties["SizeY"]):
+                cellPos = buildingLocation.getLayerCoordinates()
+                cellPos.x -= x
+                cellPos.y -= y
+
+                cell = cellCache.getCell(cellPos)
+                if clickCell.isNeighbor(cell):
+                    canTeleport = True
+                    break
+
+            if canTeleport:
+                break
+
+        ## TODO: Give feedback!
+        if not canTeleport:
+            self.cancelDeploy()
+            return
+
         if not unit.teleport(clickLocation):
             # This is supposed to be an ilegal teleport position -> cancel
             self.cancelDeploy()
@@ -138,7 +141,11 @@ class TacticListener(WorldListener):
         # Generate an instance for the unit.
         unit.createInstance(clickLocation)
         # unit.teleport(clickLocation)
-        self._world.scene.instance_to_agent[unit.agent.getFifeId()] = unit
+        instanceID = unit.agent.getFifeId()
+        self._world.scene.instance_to_agent[instanceID] = unit
+        faction = unit.properties["faction"]
+        self._world.scene.factionUnits[faction].append(instanceID)
+        self._world.cellRenderer.addPathVisual(unit.agent)
         self._world.storage.unitDeployed()
         self.cancelDeploy()
 
@@ -184,24 +191,7 @@ class TacticWorld(World):
 
         ## Show the available cells:
         buildingLocation = building.agent.getLocation()
-        # layer = location.getLayer()
-        # cellCache = layer.getCellCache()
-        # anchorPos = location.getLayerCoordinates()
-
-        # camera = self.cameras['main']
-        # if not self.listener._cellSelectionRenderer:
-        # self.deployRenderer = fife.CellSelectionRenderer.getInstance(camera)
-        # self.deployRenderer.setEnabled(True)
-        # self.listener._cellSelectionRenderer.setColor(255,255,0)
-        # self.deployRenderer.activateAllLayers(self.scene.map)
         self.listener._cellSelectionRenderer.reset()
-
-        # cellPos = buildingLocation.getLayerCoordinates()
-        # cellPos.x += 1
-        # cellPos.y += 1
-        # loc = buildingLocation
-        # loc = loc.setLayerCoordinates(cellPos)
-        # self.deployRenderer.selectLocation(loc)
 
         startingPos = buildingLocation.getMapCoordinates()
 
