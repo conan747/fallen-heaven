@@ -448,6 +448,8 @@ class World(object):
         self.soundmanager = SoundManager(self.engine)
         self.music = None
 
+        self.busy = False
+
 
     def reset(self):
         """

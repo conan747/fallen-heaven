@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ascii"?>
+
+
+<VBox position="1,200" base_color="0,0,0" border_size="0" size="200,100">
+
+    <Label name="unitName" text="Select Unit" />
+    <HBox name="HPBox">
+        <Label text="HP"/>
+        <Label name="HPLabel" text="HP/HPMax"/>
+        <Container name="APContainer" size="150,20">
+        <PercentageBar name="HPBar" orientation="0" size="150,10" max_size="150,10" foreground_color="0,150,0" position="0,5"/>
+        </Container>
+    </HBox>
+
+    <HBox name="APBox">
+        <Label text="AP"/>
+        <Label name="APLabel" text="AP/APMax"/>
+        <Container name="APContainer" size="150,20">
+            <PercentageBar name="APBar" orientation="0" size="150,10" max_size="150,10" foreground_color="0,150,0" position="0,5"/>
+
+            <PercentageBar name="attackBar" orientation="0" size="150,20" max_size="150,20" foreground_color="0,255,255,128"/>
+        </Container>
+    </HBox>
+
+    <HBox name="attackBox">
+        <Label text="" name="attackName"/>
+        <Label name="damage"/>
+
+    </HBox>
+
+
+</VBox>

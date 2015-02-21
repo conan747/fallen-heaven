@@ -136,12 +136,16 @@ class Unit(Agent):
         movesLeft = self.AP / 10
 
         iPather = fife.RoutePather()
-        route = iPather.createRoute(self.agent.getLocation(),location, True)
+        route = iPather.createRoute(self.agent.getLocation(),location, False)
+        route.setObject(self.agent.getObject())
+        iPather.solveRoute(route, fife.HIGH_PRIORITY,True)
         route.cutPath(movesLeft) ## Cut the path short if too long
-        self.AP -= route.getPathLength() *10
-        print "Path length:", route.getPathLength()
-
-        self.agent.move('stand', route.getEndNode(), 5)
+        pathLength = route.getPathLength()-1
+        if pathLength >0:
+            self.AP -= pathLength *10
+            print "Path length:", route.getPathLength()-1
+            self.world.busy = True
+            self.agent.move('stand', route.getEndNode(), 5)
 
 
     def die(self):

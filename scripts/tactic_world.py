@@ -86,7 +86,7 @@ class TacticListener(WorldListener):
         elif self._world.activeUnit:
             # there was a unit selected and an empty cell has been clicked
             agent = self._world.scene.instance_to_agent[self._world.activeUnit]
-            if agent.agentType == "Unit":
+            if agent.agentType == "Unit" and not self._world.busy:
                 # move the unit if possible
                 self._world.scene.instance_to_agent[self._world.activeUnit].run(self._world.getLocationAt(clickpoint))
             else:
@@ -148,6 +148,48 @@ class TacticListener(WorldListener):
         self._world.cellRenderer.addPathVisual(unit.agent)
         self._world.storage.unitDeployed()
         self.cancelDeploy()
+
+
+    def mouseMoved(self, evt):
+        '''
+        Display feedback of the movement range of the unit
+        :return:
+        '''
+
+        unitID = self._world.activeUnit
+
+        if not unitID:
+            super(TacticListener, self).mouseMoved(evt)
+            return
+
+        unit = self._world.scene.instance_to_agent[unitID]
+        if unit.agentType != "Unit":
+            super(TacticListener, self).mouseMoved(evt)
+            return
+
+        self._world.mousePos = (evt.getX(), evt.getY())
+            ## If we reached this point we should show the maximum range of the movement.
+
+        ## TODO: Make this a path object for convenience.
+        ## TODO: Make a separate thread for this perhaps?
+
+        if self._world.mode == self._world.MODE_DEFAULT:
+
+            mousePoint = fife.ScreenPoint(evt.getX(), evt.getY())
+            location = self._world.getLocationAt(mousePoint)
+
+            iPather = fife.RoutePather()
+            route = iPather.createRoute(unit.agent.getLocation(), location, False)
+            route.setObject(unit.agent.getObject())
+            iPather.solveRoute(route, fife.HIGH_PRIORITY,True)
+            movesLeft = unit.AP / 10
+            route.cutPath(movesLeft) ## Cut the path short if too long
+            self._cellSelectionRenderer.reset()
+            while not route.reachedEnd():
+                node = route.getNextNode()
+                if not route.walkToNextNode():
+                    break
+                self._cellSelectionRenderer.selectLocation(node)
 
 
 

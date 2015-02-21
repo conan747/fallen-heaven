@@ -37,8 +37,6 @@ class Agent(fife.InstanceActionListener):
         self.agent = None
 
         self.properties = {}
-
-        self.agent = None
         self.movement = None
         self.lightWeapon = None
         self.heavyWeapon = None
@@ -77,7 +75,7 @@ class Agent(fife.InstanceActionListener):
             self.agent.setId(self.agentName)
             print "Created ", self.agent.getId()
 
-        # self.agent.addActionListener(self)
+        self.agent.addActionListener(self)
 
 
     def setWalkableAreas(self, object):
@@ -113,16 +111,19 @@ class Agent(fife.InstanceActionListener):
 
 
     def onInstanceActionFinished(self, instance, action):
-        pass
+        print "Action Finished!"
+        self.world.HUD.updateUI()
+        self.world.busy = False
+
     def onInstanceActionFrame(self, instance, action, frame):
-        pass
+        print "Action frame" , frame
 
     def start(self):
         pass
 
 
     def onInstanceActionCancelled(self, instance, action):
-        pass
+        print "Action cancelled!"
 
 
     def idle(self):

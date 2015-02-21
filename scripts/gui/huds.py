@@ -64,6 +64,7 @@ class TacticalHUD(HUD):
         })
 
         self.structureWidget = StructureWidget(self)
+        self.unitInfoWidget = UnitInfoWidget(self)
 
 
     def destroy(self):
@@ -78,6 +79,11 @@ class TacticalHUD(HUD):
 
     def updateUI(self):
         self.structureWidget.updateUI()
+        if self.world.activeUnit:
+            unit = self.world.scene.instance_to_agent[self.world.activeUnit]
+        else:
+            unit = None
+        self.unitInfoWidget.updateUI(unit)
 
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -498,3 +504,58 @@ class StrategicHUD(HUD):
         print "Hiding buildingwidget"
         self.constructionWidget.hide()
 
+
+
+
+# -----------------------------------------------------------------------------------------------------------------
+#       StorageUI
+# -----------------------------------------------------------------------------------------------------------------
+
+class UnitInfoWidget(Widget):
+    '''
+    In the tactical HUD shows the unit information.
+    '''
+
+    def __init__(self, unit=None):
+        self.widget = pychan.loadXML("gui/unit_info.xml")
+        self.unit = unit
+
+        self.nameLabel = self.widget.findChildByName("unitName")
+        self.HPLabel = self.widget.findChildByName("HPLabel")
+        self.HPBar = self.widget.findChildByName("HPBar")
+        self.APLabel = self.widget.findChildByName("APLabel")
+        self.APBar = self.widget.findChildByName("APBar")
+        
+        self.attackLabel = self.widget.findChildByName("attackName")
+        self.damageLabel = self.widget.findChildByName("damage")
+        self.attackBar = self.widget.findChildByName("attackBar")
+
+    def updateUI(self, unit=None):
+
+
+        self.unit = unit
+
+        if not self.unit:
+            print "Error, no unit selected!"
+            self.widget.hide()
+            return
+
+        if unit.agentType == "Building":
+            return
+
+        self.nameLabel.text = unit.unitName
+
+        currentHP = unit.health
+        maxHP = unit.properties["Hp"]
+        self.HPLabel.text = "%d/%d" % (currentHP, maxHP)
+        HPPercentage = 100 * currentHP/maxHP
+        self.HPBar.value = HPPercentage
+
+        currentAP = unit.AP
+        maxAP = unit.properties["TimeUnits"]
+        self.APLabel.text = "%d/%d" % (currentAP, maxAP)
+        APPercentage = 100 * currentAP/maxAP
+        self.APBar.value = APPercentage
+        self.widget.show()
+
+        self.attackBar.value = 50
