@@ -193,6 +193,82 @@ class TacticListener(WorldListener):
 
 
 
+    def clickGetIn(self, clickpoint):
+        # self.hide_instancemenu()
+
+        if not self._world.activeUnit:
+            return
+        else:
+            activeUnit = self._world.scene.instance_to_agent[self._world.activeUnit]
+            if activeUnit.agentType == "Building":
+                return
+
+        instances = self._world.getInstancesAt(clickpoint)
+        print "selected instances on agent layer: ", [i.getObject().getId() for i in instances]
+        print "Found " , instances.__len__(), "instances"
+
+        if instances:
+            # self.activeUnit = None
+            for instance in instances:
+                id = instance.getFifeId()
+                print "Instance: ", id
+                if id in self._world.scene.instance_to_agent.keys():
+                    clickedAgent = self._world.scene.instance_to_agent[id]
+                    if clickedAgent.properties["faction"] != self._world.scene.currentTurn:
+                        return
+                    if clickedAgent.agentType == "Building":
+                        storage = clickedAgent.storage
+                        if storage:
+                            ##HACK: only accept on dropships
+                            if clickedAgent.properties["StructureCategory"] == "Dropship":
+                                if self.canGetToPerimeter(activeUnit, clickedAgent):
+                                    if storage.addUnit(activeUnit):
+                                        ## storage added correctly -> remove unit from the map.
+                                        activeUnit.die()
+                                        self._world.selectUnit(None)
+
+
+    def canGetToPerimeter(self, activeUnit, building):
+        '''
+        Checks if the active unit is able to move itself to the perimeter of the building in order to be included.
+        :param activeUnit: A unit that wants to get inside a building
+        :param clickedAgent: Building that can accept the activeUnit.
+        :return:
+        '''
+        buildingLocation = building.agent.getLocation()
+
+        startingPos = buildingLocation.getMapCoordinates()
+
+        iPather = fife.RoutePather()
+        movesLeft = activeUnit.AP / 10
+
+        for x in range(-1 , building.properties["SizeX"] +1):
+            for y in range(-1 , building.properties["SizeY"]+1):
+                cellPos = fife.DoublePoint3D(startingPos)
+                cellPos.x -= x
+                cellPos.y -= y
+
+                loc = fife.Location(buildingLocation)
+                loc.setMapCoordinates(cellPos)
+
+                route = iPather.createRoute(activeUnit.agent.getLocation(), loc, False)
+                route.setObject(activeUnit.agent.getObject())
+                iPather.solveRoute(route, fife.HIGH_PRIORITY,True)
+                routeLength = route.getPathLength()
+                if routeLength < 1:
+                    print "Route length: " , routeLength
+                    continue
+                if movesLeft >= (routeLength-1):
+                    return True
+        ## TODO: give feedback.
+        return False
+
+
+
+
+
+
+
 class TacticWorld(World):
     """
     The world!
