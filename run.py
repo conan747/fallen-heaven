@@ -111,6 +111,7 @@ class ApplicationListener(eventlistenerbase.EventListenerBase):
         widget.mapEvents({"createCampaign" : onButtonCreate,
                           "joinCampaign" : onButtonJoin})
 
+        # print "Exiting from onNewGamePressed"
         # self.universe.newGame()
         # self.cont = True
 

@@ -5,6 +5,7 @@ from progress import Progress
 import cPickle as pickle
 import os
 from faction import Faction
+from gui.dialogs import InfoDialog
 
 from fife.extensions import pychan
 
@@ -59,11 +60,20 @@ class Campaign(object):
                     "playerFaction" : factionList[playerFaction]}
             # self.createInvitation(info)
             pickle.dump(info, open("saves/" + campaignName +".inv" , 'wb'))
-            dialog.hide()
+            # dialog.hide()
+            print "Dialog executed"
             ## TODO: Show explanation.
 
         dialog.mapEvents({'OkButton' : okCallback})
-        dialog.show()
+        result = dialog.execute({'OkButton': True, 'cancelButton' : False})
+        if result:
+            print "This returns true"
+            info = InfoDialog('Invitation for the campaign (".inv") created! Send it to the other player so that he can join. Press ESC to go back to main menu.')
+            info.start()
+        else:
+            print "It returned false!"
+            info = InfoDialog('Campaign creatinon cancelled! Press ESC to go back to main menu.')
+            info.start()
 
     # def createInvitation(self, info):
     #     '''
@@ -83,6 +93,11 @@ class Campaign(object):
         Loads an invitation and creates a proper campaign.
         :return:
         '''
+
+
+        # Information:
+        infoDialog = InfoDialog("Load a .inv file or a .rsp file to start playing the campaign.")
+        infoDialog.start()
 
         # Ask for file to load:
         root = Tkinter.Tk()
@@ -126,11 +141,22 @@ class Campaign(object):
                 self.universe.newGame(self)
 
             dialog.mapEvents({'OkButton' : okCallback})
-            dialog.show()
+            dialog.execute({'OkButton' : True})
+
+            # Information:
+            infoDialog = InfoDialog("Campaign properly joined! Now send the .rsp file to your opponent. You can now start playing the first turn.")
+            infoDialog.start()
 
         elif len(info) == 2:
+            # It seems it was a response packet. Double check!
+
+            # Information:
+            infoDialog = InfoDialog("Campaign properly joined! You can now start playing the first turn.")
+            infoDialog.start()
+
             self.newCampaign(info)
             self.universe.newGame(self)
+
 
 
     def newCampaign(self, campaignInfo= None):

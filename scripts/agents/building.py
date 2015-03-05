@@ -26,6 +26,7 @@ from agent import Agent
 from fife.extensions.fife_settings import Setting
 from fife.extensions import pychan
 from fife.extensions.pychan import widgets
+from scripts.gui.selectPlanet import SelectPlanet
 
 import uuid
 
@@ -123,6 +124,7 @@ class Storage(object):
         '''
         #TODO: Check if this storage accepts this units.
         if len(self.unitsReady) == self.storageSize:
+            print "Storage is full!"
             return False
             ## Give feedback of why it didn't work!
         unitName = unit.agentName

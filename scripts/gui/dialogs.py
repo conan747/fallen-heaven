@@ -35,3 +35,10 @@ class InfoDialog(pychan.Window):
         messageLabel = self.findChildByName("InfomessageLabel")
         messageLabel.text = text
         self.adaptLayout()
+
+    def start(self):
+        '''
+        Simply shows the dialog asynchronously.
+        :return:
+        '''
+        self.execute({"InfoOkButton" : True})
