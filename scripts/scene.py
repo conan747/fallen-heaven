@@ -141,9 +141,7 @@ class UnitLoader(object):
         weaponName = unitProps["HeavyWeapon"]
         hWeapon.properties = self.weaponProps[weaponName]
 
-        newUnit = Unit(self.world, unitProps)
-        newUnit.lightWeapon = lWeapon
-        newUnit.heavyWeapon = hWeapon
+        newUnit = Unit(self.world, unitProps, lWeapon=lWeapon, HWeapon=hWeapon)
 
         return newUnit
 

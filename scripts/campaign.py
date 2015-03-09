@@ -24,6 +24,13 @@ class Enemy(object):
         self.factionName = ""
         self.pwnedPlanets = []
 
+    def __getInfo__(self):
+        enemyInfo = {}
+        for atr in dir(self):
+            if not atr.startswith("__"):
+                enemyInfo[atr] = getattr(self, atr)
+        return enemyInfo
+
 
 class Campaign(object):
     '''
@@ -146,16 +153,17 @@ class Campaign(object):
             # Information:
             infoDialog = InfoDialog("Campaign properly joined! Now send the .rsp file to your opponent. You can now start playing the first turn.")
             infoDialog.start()
+            self.saveCampaign()
 
         elif len(info) == 2:
-            # It seems it was a response packet. Double check!
-
+            # It seems it was a response packet.
             # Information:
             infoDialog = InfoDialog("Campaign properly joined! You can now start playing the first turn.")
             infoDialog.start()
 
             self.newCampaign(info)
             self.universe.newGame(self)
+            self.saveCampaign()
 
 
 
@@ -186,8 +194,7 @@ class Campaign(object):
             mainPlayer = self.playerNames[0]
             otherPlayer = self.playerNames[1]
 
-        progress = Progress(self.universe)
-        progress.playerFactionName = mainFaction
+        progress = Progress(self.universe, playerFactionName= mainFaction)
         faction = Faction(mainFaction)
         progress.factionInfo = faction.__getInfo__()
         progress.playerName = mainPlayer
@@ -274,6 +281,7 @@ class Campaign(object):
         self.paused = False
 
         self.universe.gui.updateUI()
+        self.saveCampaign()
 
 
     def saveCampaign(self):
@@ -282,22 +290,18 @@ class Campaign(object):
         :return:
         '''
 
-
         campaignDict = { "playerName" : self.progress.playerName,
                          "year" : self.year,
                          "turn" : self.turn,
                          "planetList" : self.planetList,
                          "factionNames" : self.factionNames,
                          "name" : self.name,
-                         "paused" : self.paused}
+                         "paused" : self.paused
+                        }
 
-        enemyInfo = {}
-        for atr in dir(self.enemy):
-            if not atr.startswith("__"):
-                enemyInfo[atr] = getattr(self.enemy, atr)
-        campaignDict["enemyInfo"] = enemyInfo
+        campaignDict["enemyInfo"] = self.enemy.__getInfo__()
 
-        pickle.dump(campaignDict, open("saves/test/" + self.name + ".cpn", 'wb'))
+        pickle.dump(campaignDict, open("saves/test/" + self.name + "_" + self.progress.playerName + ".cpn", 'wb'))
 
         self.progress.save()
 

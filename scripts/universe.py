@@ -48,7 +48,7 @@ class Universe(object):
     def load(self):
 
         saveDir = "saves/test/"
-        self.progress = Progress(self)
+        # self.progress = Progress(self)
         root = Tkinter.Tk()
         file = tkFileDialog.askopenfilename(parent=root,
                                         title='Select campaign to load',
@@ -149,9 +149,6 @@ class Universe(object):
         self.selectedPlanet = Planet(planetName, planetInfo)
         self.startStrategic()
 
-    def endTurn(self):
-        pass
-
     def startTactic(self):
         '''
         Starts Tactic mode. Loads TacticWorld.
@@ -238,6 +235,7 @@ class Universe(object):
         self.progress.save()
         self.campaign.compileYear()
         self.campaign.paused = True
+        self.campaign.saveCampaign()
 
         self.gui.updateUI()
         # dialog = InfoDialog(message="Send the automatically generated .yer file and wait for the response.",

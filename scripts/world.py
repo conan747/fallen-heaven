@@ -786,7 +786,7 @@ class World(object):
             mouseLocation = self.getLocationAt(mousepoint)
             trajectory = Trajectory(self.scene.instance_to_agent[self.activeUnit], self,0)
             # print "Is is reachable?"
-            self.cursorHandler.setCursor(self.CUR_CANNOT)
+            self.cursorHandler.setCursor(self.cursorHandler.CUR_CANNOT)
             if trajectory.isInRange(mouseLocation):
                 if trajectory.hasClearPath(mouseLocation):
                     # print "Changing cursor"

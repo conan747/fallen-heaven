@@ -52,9 +52,9 @@ class Unit(Agent):
     ;EncyclopediaImg	--> Image to display in the encyclopedia
 '''
 
-    WALK, LAND, AIR = xrange(3)
-    INFANTRY, GROUND, HOOVER = xrange(3)
-    LWEAPON, HWEAPON = xrange(2)
+    # WALK, LAND, AIR = xrange(3)
+    # INFANTRY, GROUND, HOOVER = xrange(3)
+    # LWEAPON, HWEAPON = xrange(2)
 
     instance = None
 
@@ -72,7 +72,10 @@ class Unit(Agent):
         self.health = self.properties["Hp"]
         self.AP = self.properties["TimeUnits"]
 
-
+        if lWeapon:
+            self.lightWeapon = lWeapon
+        if HWeapon:
+            self.heavyWeapon = HWeapon
 
 
     def calculateDistance(self,location):
@@ -116,7 +119,6 @@ class Unit(Agent):
             if cellCache.isCellInArea("water", cell):
                 return False
 
-        ## TODO: Handle the teleport looking if the target cell is not occupied and the unit can stand there (e.g. not water).
         if not self.world.scene.getInstacesInTile(location):
             if self.agent:
                 self.agent.setLocation(location)
@@ -166,7 +168,6 @@ class Unit(Agent):
 
 
 
-
 class Weapon(object):
     """
     Weapon
@@ -182,6 +183,5 @@ class Weapon(object):
     def fire(self, location):
         """
         Fires the weapon in the specified direction.
-        To be rewritten
         """
         self._world.scene.applyDamage(location, self.properties["DamageContact"])

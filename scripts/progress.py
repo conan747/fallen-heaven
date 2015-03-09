@@ -11,14 +11,14 @@ class Progress(object):
 
 
 
-    def __init__(self, universe):
+    def __init__(self, universe, playerFactionName="Human"):
         '''
 
         :return:
         '''
         self.universe = universe # Points at the universe
 
-        self.playerFactionName = "Human"
+        self.playerFactionName = playerFactionName
         self.saveDir = "saves/test/"    # Directory where the file should be saved/loaded
         self.allPlanets = {} # Dictionary containing planet name:planetInfo
         self.factionInfo = None # Dictionary containing faction factionInfo.
@@ -53,11 +53,13 @@ class Progress(object):
                 self.allPlanets[planetDict["name"]] = planetDict
 
         self.progressDict["allPlanets"] = self.allPlanets
+        self.progressDict["playerName"] = self.playerName
 
         self.progressDict["waitingForResponse"] = self.waitingForResponse
 
         # Updating Attacking list
         self.progressDict["attacking"] = self.attacking
+        ## TODO: Check if we updated the fact that a planet was conquered -> Check pwnedPlanets!
 
 
     def save(self):

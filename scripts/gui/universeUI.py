@@ -82,6 +82,14 @@ class UniverseUI(object):
         year = self.universe.campaign.year
         yearLabel.text = unicode(str(year))
 
+        #Update faction+ player name
+        factionName = self.universe.faction.name
+        playerName = self.universe.progress.playerName
+        factionLabel = self.gui.findChildByName("faction")
+        factionLabel.text = unicode(factionName)
+        playerLabel = self.gui.findChildByName("playerName")
+        playerLabel.text = unicode(playerName)
+
         self.handlePaused()
 
         self.gui.adaptLayout()

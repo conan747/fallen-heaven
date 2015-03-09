@@ -6,6 +6,10 @@
 
         <Label text="Year: "/>
         <Label name="year" text=""/>
+        <Label text="Faction: "/>
+        <Label name="faction" text=""/>
+        <Label text="Player: "/>
+        <Label name="playerName" text=""/>
     </HBox>
     <HBox vexpand="1">
         <VBox name="planetBox" margins="0,0" hexpand="2">

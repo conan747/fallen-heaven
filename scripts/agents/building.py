@@ -290,8 +290,8 @@ class Building(Agent):
         cellCache = layer.getCellCache()
         # anchorPos = location.getLayerCoordinates()
 
-        for x in range(self.properties["SizeX"]):
-            for y in range(self.properties["SizeY"]):
+        for y in range(self.properties["SizeX"]):
+            for x in range(self.properties["SizeY"]):
                 cellPos = location.getLayerCoordinates()
                 cellPos.x -= x
                 cellPos.y -= y
@@ -312,8 +312,8 @@ class Building(Agent):
         layer = location.getLayer()
         cellCache = layer.getCellCache()
 
-        for x in range(self.properties["SizeX"]):
-            for y in range(self.properties["SizeY"]):
+        for y in range(self.properties["SizeX"]):
+            for x in range(self.properties["SizeY"]):
                 cellPos = location.getLayerCoordinates()
                 cellPos.x -= x
                 cellPos.y -= y

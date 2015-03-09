@@ -1,6 +1,6 @@
 <?fife type="object"?>
 
-<object blocking="1" id="Squad" namespace="http://www.fifengine.net/xml/rio_de_hola" static="0">
+<object blocking="1" id="Squad" namespace="fallen" static="0">
 
 
 

@@ -1,7 +1,7 @@
 
 [WEAPON_SQUADL]
 Name=MORTAR
-Type=1
+Parabolic=1
 Display=S-HMORTAR 
 Turreted=1
 Range=4
@@ -13,7 +13,7 @@ PercentTimeUnits=43
 
 [WEAPON_SQUADH]
 Name=THERMAL DETONATOR
-Type=0
+Parabolic=0
 Display=S-CLOSEATTACK
 Turreted=1
 Range=1
@@ -25,7 +25,7 @@ PercentTimeUnits=60
 
 [WEAPON_RANGERL]
 Name=LONG RANGE LASER
-Type=0
+Parabolic=0
 Display=S-HLIGHTLASER
 Turreted=1
 Range=9
@@ -37,7 +37,7 @@ PercentTimeUnits=50
 
 [WEAPON_RANGERH]
 Name=THERMAL DETONATOR
-Type=0
+Parabolic=0
 Display=S-CLOSEATTACK
 Turreted=1
 Range=1
@@ -49,7 +49,7 @@ PercentTimeUnits=60
 
 [WEAPON_LAVL]
 Name=LASER GUN
-Type=0
+Parabolic=0
 Display=S-HLIGHTLASER 
 Turreted=1
 Range=7
@@ -61,7 +61,7 @@ PercentTimeUnits=17
 
 [WEAPON_LAVH]
 Name=PULSE LASER
-Type=0
+Parabolic=0
 Display=S-HPULSELASER 
 Turreted=1
 Range=6
@@ -73,7 +73,7 @@ PercentTimeUnits=31
 
 [WEAPON_TANKL]
 Name=LIGHT LASER CANNON
-Type=0
+Parabolic=0
 Display=S-HLIGHTLASER 
 Turreted=1
 Range=6
@@ -85,7 +85,7 @@ PercentTimeUnits=33
 
 [WEAPON_TANKH]
 Name=HEAVY LASER CANNON
-Type=0
+Parabolic=0
 Display=S-HHEAVYLASER 
 Turreted=1
 Range=7
@@ -97,7 +97,7 @@ PercentTimeUnits=50
 
 [WEAPON_SPEEDERL]
 Name=TWIN LASER
-Type=0
+Parabolic=0
 Display=S-HTWINLASER 
 Turreted=1
 Range=5
@@ -109,7 +109,7 @@ PercentTimeUnits=28
 
 [WEAPON_SPEEDERH]
 Name=MEDIUM ROCKET
-Type=0
+Parabolic=0
 Display=S-HNMISSILE 
 Turreted=1
 Range=10
@@ -121,7 +121,7 @@ PercentTimeUnits=39
 
 [WEAPON_GRAVTANKL]
 Name=TWIN LASER
-Type=0
+Parabolic=0
 Display=S-HTWINLASER 
 Turreted=1
 Range=6
@@ -133,7 +133,7 @@ PercentTimeUnits=20
 
 [WEAPON_GRAVTANKH]
 Name=HEAVY ROCKET
-Type=0
+Parabolic=0
 Display=S-HROCKET  
 Turreted=1
 Range=7
@@ -145,7 +145,7 @@ PercentTimeUnits=50
 
 [WEAPON_ARTL]
 Name=LIGHT LASER CANNON
-Type=0
+Parabolic=0
 Display=S-HHEAVYLASER 
 Turreted=1
 Range=7
@@ -157,7 +157,7 @@ PercentTimeUnits=40
 
 [WEAPON_ARTH]
 Name=ARTILLERY CANNON
-Type=1
+Parabolic=1
 Display=S-HARTILLERY
 Turreted=1
 Range=13
@@ -169,7 +169,7 @@ PercentTimeUnits=100
 
 [WEAPON_GUNSHIPL]
 Name=TWIN LASER
-Type=0
+Parabolic=0
 Display=S-HTWINLASER
 Turreted=1
 Range=6
@@ -181,7 +181,7 @@ PercentTimeUnits=12
 
 [WEAPON_GUNSHIPH]
 Name=ARTILLERY CANNON
-Type=1
+Parabolic=1
 Display=S-HARTILLERY
 Turreted=1
 Range=8
@@ -193,7 +193,7 @@ PercentTimeUnits=60
 
 [WEAPON_BUGGYL]
 Name=LASER GUN
-Type=0
+Parabolic=0
 Display=S-HLIGHTLASER 
 Turreted=1
 Range=6
@@ -205,7 +205,7 @@ PercentTimeUnits=30
 
 [WEAPON_BUGGYH]
 Name=LONG RANGE LASER
-Type=0
+Parabolic=0
 Display=S-HHEAVYLASER 
 Turreted=1
 Range=10
@@ -217,7 +217,7 @@ PercentTimeUnits=51
 
 [WEAPON_TOWERH]
 Name=HEAVY LASER CANNON
-Type=0
+Parabolic=0
 Display=S-HHEAVYTWINLASER 
 Turreted=1
 Range=7
@@ -229,7 +229,7 @@ PercentTimeUnits=100
  
 [WEAPON_ZENL]
 Name=ENERGY TRANSFER
-Type=0
+Parabolic=0
 Display=S-SHOCKBOLT
 Turreted=1
 Range=6
@@ -241,7 +241,7 @@ PercentTimeUnits=20
 
 [WEAPON_ZENH]
 Name=KARATE CHOP
-Type=0
+Parabolic=0
 Display=S-FUSIONCANNON
 Turreted=1
 Range=1
@@ -253,7 +253,7 @@ PercentTimeUnits=30
 
 [WEAPON_MEGATWER]
 Name=BIG GUN
-Type=1
+Parabolic=1
 Display=S-TMEGATOWER
 Turreted=1
 Range=48
