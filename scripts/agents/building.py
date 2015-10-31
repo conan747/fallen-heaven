@@ -351,6 +351,7 @@ class Building(Agent):
                         "origin" : self.world.planet.name,
                         "target" : targetPlanet}
         self.world.universe.progress.attacking.append(dropshipDict)
+        self.world.selectUnit(None)
 
         self.die()
 

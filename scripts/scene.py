@@ -261,6 +261,7 @@ class Scene(object):
 
 
         ## Load storages:
+        '''
         storageFile = filename.replace(".xml",".sto")
         if os.path.isfile(storageFile):
             pic = pickle.load(open(storageFile, 'rb'))
@@ -269,6 +270,7 @@ class Scene(object):
                     info = pic[building.agentName]
                     print "Setting up", info
                     building.storage.setStorage(info)
+        '''
 
 
     def initAgents(self):
@@ -307,8 +309,9 @@ class Scene(object):
             # Apply storage:
             if agentID in self.planet.storages.keys():
                 storage = self.planet.storages[agentID]
-                newUnit.storage.setStorage(storage)
-                self.planet.storages[agentID] = None
+                if storage:
+                    newUnit.storage.setStorage(storage)
+                    self.planet.storages[agentID] = None
 
 
 

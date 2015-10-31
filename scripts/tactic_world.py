@@ -163,7 +163,7 @@ class TacticListener(WorldListener):
             return
 
         unit = self._world.scene.instance_to_agent[unitID]
-        if unit.agentType != "Unit":
+        if unit.agentType != "Unit": # It's a building
             super(TacticListener, self).mouseMoved(evt)
             return
 

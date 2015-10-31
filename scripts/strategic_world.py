@@ -81,8 +81,8 @@ class StrategicListener(WorldListener):
                 print "Instance: ", id
                 if id in self._world.scene.instance_to_agent.keys():
                     self._world.selectUnit(id)
-                    agent = self._world.scene.instance_to_agent[id]
-                    print "Namespace: " , agent.agentType
+                    # agent = self._world.scene.instance_to_agent[id]
+                    # print "Namespace: " , agent.agentType
                     self._world.HUD.updateUI()
 
         if self._world.activeUnit:

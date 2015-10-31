@@ -474,11 +474,13 @@ class World(object):
         self.scene.load(filename)
 
         if int(self.settings.get("FIFE", "PlaySounds")):
-            # play track as background music
-            self.music = self.soundmanager.createSoundEmitter('music/fallen.ogg')
-            self.music.looping = True
-            self.music.gain = 128.0
-            self.music.play()
+
+            if int(self.settings.get("FIFE", "PlayMusic")):
+                # play track as background music
+                self.music = self.soundmanager.createSoundEmitter('music/fallen.ogg')
+                self.music.looping = True
+                self.music.gain = 128.0
+                self.music.play()
 
             # self.waves = self.soundmanager.createSoundEmitter('sounds/waves.ogg')
             # self.waves.looping = True
