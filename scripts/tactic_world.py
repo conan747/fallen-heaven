@@ -72,16 +72,7 @@ class TacticListener(WorldListener):
         print "Found " , instances.__len__(), "instances"
 
         if instances:
-            # self.activeUnit = None
-            print "Current turn:" , self._world.scene.currentTurn
-            for instance in instances:
-                id = instance.getFifeId()
-                print "Instance: ", id
-                print "Is it in: ", self._world.scene.factionUnits[self._world.scene.currentTurn]
-                if id in self._world.scene.factionUnits[self._world.scene.currentTurn]:
-                    print "Instance: " , id, " is owned by this player!"
-                    #self.activeUnit = id
-                    self._world.selectUnit(id)
+            self.cycleThroughInstances(instances)
 
         elif self._world.activeUnit:
             # there was a unit selected and an empty cell has been clicked

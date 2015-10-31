@@ -110,11 +110,19 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
         if id == 0:
             id = ids[0]
 
+
+        if self._world.scene.factionUnits:
+            if id in self._world.scene.factionUnits[self._world.scene.currentTurn]:
+                print "Instance: " , id, " is owned by this player!"
+                self._world.selectUnit(id)
+            else:
+                return
+
         print "Instance: ", id
         if id in self._world.scene.instance_to_agent.keys():
             self._world.selectUnit(id)
             print "Agent Name: " , self._world.scene.instance_to_agent[id].agentName
-            self._world.HUD.updateUI()
+
 
 
     def clickDefault(self, clickpoint):
