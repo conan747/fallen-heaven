@@ -92,6 +92,30 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
             self._eventmanager.removeKeyListener(self)
             self._attached = False
 
+    def cycleThroughInstances(self, instances):
+        '''
+        Checks what instances are under the cursor and selects the unselected one.
+        '''
+        if not instances:
+            return
+
+        id=0
+        ids = [instance.getFifeId() for instance in instances]
+        if self._world.activeUnit:
+            activeID = self._world.scene.instance_to_agent[self._world.activeUnit].agent.getFifeId()
+            if activeID in ids:
+                if len(ids) > 1:
+                    ids.sort()
+                    id = ids[ids.index(activeID) -1] #Cycle through the instances
+        if id == 0:
+            id = ids[0]
+
+        print "Instance: ", id
+        if id in self._world.scene.instance_to_agent.keys():
+            self._world.selectUnit(id)
+            print "Agent Name: " , self._world.scene.instance_to_agent[id].agentName
+            self._world.HUD.updateUI()
+
 
     def clickDefault(self, clickpoint):
         # self.hide_instancemenu()
@@ -101,24 +125,7 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
         print "Found " , instances.__len__(), "instances"
 
         if instances:
-            # self.activeUnit = None
-            id=0
-            ids = [instance.getFifeId() for instance in instances]
-            if self._world.activeUnit:
-                print "There is an active unit"
-                activeID = self._world.scene.instance_to_agent[self._world.activeUnit].agent.getFifeId()
-                if activeID in ids:
-                    if len(ids) > 1:
-                        ids.sort()
-                        id = ids[ids.index(activeID) -1] #Cycle through the instances
-            if id == 0:
-                id = ids[0]
-
-            print "Instance: ", id
-            if id in self._world.scene.instance_to_agent.keys():
-                self._world.selectUnit(id)
-                print "Agent Name: " , self._world.scene.instance_to_agent[id].agentName
-                self._world.HUD.updateUI()
+            self.cycleThroughInstances(instances)
         if self._world.activeUnit:
             self._world.scene.instance_to_agent[self._world.activeUnit].teleport(self._world.getLocationAt(clickpoint))
 

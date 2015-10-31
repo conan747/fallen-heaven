@@ -67,26 +67,14 @@ class StrategicListener(WorldListener):
             ## TODO: Handle situation when recycling a building containing storage.
             ## TODO: Reduce refund when building is built.
 
-    #
-    # def clickDefault(self, clickpoint):
-    #     # self.hide_instancemenu()
-    #
-    #     instances = self._world.getInstancesAt(clickpoint)
-    #     print "selected instances on agent layer: ", [i.getObject().getId() for i in instances]
-    #     print "Found " , instances.__len__(), "instances"
-    #
-    #     if instances:
-    #         for instance in instances:
-    #             id = instance.getFifeId()
-    #             print "Instance: ", id
-    #             if id in self._world.scene.instance_to_agent.keys():
-    #                 self._world.selectUnit(id)
-    #                 # agent = self._world.scene.instance_to_agent[id]
-    #                 # print "Namespace: " , agent.agentType
-    #                 self._world.HUD.updateUI()
-    #
-    #     if self._world.activeUnit:
-    #         self._world.scene.instance_to_agent[self._world.activeUnit].teleport(self._world.getLocationAt(clickpoint))
+
+    def clickDefault(self, clickpoint):
+
+        super(StrategicListener, self).clickDefault(clickpoint)
+        self._world.HUD.updateUI()
+
+        if self._world.activeUnit:
+            self._world.scene.instance_to_agent[self._world.activeUnit].teleport(self._world.getLocationAt(clickpoint))
 
 
 
