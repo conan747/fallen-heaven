@@ -201,8 +201,9 @@ class Universe(object):
 
         self.world.listener.detach()
         del self.world.listener
-        self.world.music.stop()
-        del self.world.music
+        if self.world.music:
+            self.world.music.stop()
+            del self.world.music
         # self.world.waves.stop()
         # del self.world.waves
         # self.world.soundmanager.releaseEmitter(id)

@@ -102,12 +102,23 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
 
         if instances:
             # self.activeUnit = None
-            for instance in instances:
-                id = instance.getFifeId()
-                print "Instance: ", id
-                if id in self._world.scene.instance_to_agent.keys():
-                    self._world.selectUnit(id)
-                    print "Agent Name: " , self._world.activeUnit.agentName
+            id=0
+            ids = [instance.getFifeId() for instance in instances]
+            if self._world.activeUnit:
+                print "There is an active unit"
+                activeID = self._world.scene.instance_to_agent[self._world.activeUnit].agent.getFifeId()
+                if activeID in ids:
+                    if len(ids) > 1:
+                        ids.sort()
+                        id = ids[ids.index(activeID) -1] #Cycle through the instances
+            if id == 0:
+                id = ids[0]
+
+            print "Instance: ", id
+            if id in self._world.scene.instance_to_agent.keys():
+                self._world.selectUnit(id)
+                print "Agent Name: " , self._world.scene.instance_to_agent[id].agentName
+                self._world.HUD.updateUI()
         if self._world.activeUnit:
             self._world.scene.instance_to_agent[self._world.activeUnit].teleport(self._world.getLocationAt(clickpoint))
 
@@ -600,6 +611,9 @@ class World(object):
         Query the main camera for instances on our active(agent) layer.
         """
         return self.cameras['main'].getMatchingInstances(clickpoint, self.scene.agentLayer)
+
+    def getInstanceAtLocation(self, location, use_exactcoordinates=False):
+        return self.cameras['main'].getMatchingInstances(location, use_exactcoordinates)
 
     def getLocationAt(self, clickpoint):
         """

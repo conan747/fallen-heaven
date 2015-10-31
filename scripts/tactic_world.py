@@ -178,6 +178,12 @@ class TacticListener(WorldListener):
             mousePoint = fife.ScreenPoint(evt.getX(), evt.getY())
             location = self._world.getLocationAt(mousePoint)
 
+            # ## Try to see if we are clicking on an empty cell that happens to be covered by an instance.
+            # instanceAtLocation = self._world.getInstanceAtLocation(location)
+            # if len(instanceAtLocation) > 0:
+            #     print "There was another instance in this location!"
+            #     print instanceAtLocation
+
             iPather = fife.RoutePather()
             route = iPather.createRoute(unit.agent.getLocation(), location, False)
             route.setObject(unit.agent.getObject())
