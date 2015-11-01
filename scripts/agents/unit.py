@@ -150,8 +150,13 @@ class Unit(Agent):
         return False
 
 
-    def run(self, location):
-
+    def run(self, location, runAfterFinish=None):
+        '''
+        Moves the unit "legally" to the selected position. After it ends, it runs "runAfterFinish" command.
+        :param location:  Location
+        :param runAfterFinish: Command to be run after finish
+        :return: None
+        '''
         # if not self._renderer:
         #     self._renderer = fife.CellSelectionRenderer.getInstance(self.world.cameras['main'])
 
@@ -170,6 +175,9 @@ class Unit(Agent):
             print "Path length:", route.getPathLength()-1
             self.world.busy = True
             self.agent.move('stand', route.getEndNode(), 5)
+
+        if runAfterFinish:
+            runAfterFinish()
 
 
     def die(self):

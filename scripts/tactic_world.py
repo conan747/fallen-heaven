@@ -82,7 +82,7 @@ class TacticListener(WorldListener):
                 # move the unit if possible
                 location = self._world.getLocationAt(clickpoint)
                 if agent.canTeleportTo(location):
-                    self._world.scene.instance_to_agent[self._world.activeUnit].run(location)
+                    self._world.scene.instance_to_agent[self._world.activeUnit].run(location, self._cellSelectionRenderer.reset)
                 else:
                     agent.playError()
             else:
