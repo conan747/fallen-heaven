@@ -570,15 +570,18 @@ class UnitInfoWidget(Widget):
 
         currentHP = unit.health
         maxHP = unit.properties["Hp"]
-        self.HPLabel.text = "%d/%d" % (currentHP, maxHP)
+        self.HPLabel.text = u"%d/%d" % (currentHP, maxHP)
         HPPercentage = 100 * currentHP/maxHP
         self.HPBar.value = HPPercentage
 
         currentAP = unit.AP
         maxAP = unit.properties["TimeUnits"]
-        self.APLabel.text = "%d/%d" % (currentAP, maxAP)
+        self.APLabel.text = u"%d/%d" % (currentAP, maxAP)
         APPercentage = 100 * currentAP/maxAP
         self.APBar.value = APPercentage
         self.widget.show()
 
-        self.attackBar.value = 50
+        # Temporal: Always show LWEAPON as weapon.
+        attackAPs = unit.lightWeapon.properties["PercentTimeUnits"]
+
+        self.attackBar.value = attackAPs

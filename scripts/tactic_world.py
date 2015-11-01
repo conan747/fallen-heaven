@@ -62,6 +62,7 @@ class TacticListener(WorldListener):
         # print "Calculating Clear path:"
             if trajectory.hasClearPath(clickLocation):
                 activeUnit.attack(clickLocation)
+                self._world.HUD.updateUI()
 
 
     def clickDefault(self, clickpoint):

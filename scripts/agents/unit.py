@@ -76,26 +76,6 @@ class Unit(Agent):
         if HWeapon:
             self.heavyWeapon = HWeapon
 
-
-    def canAttack(self, weaponType):
-        '''
-        Returns if the unit has enough APs to attack.
-        :param weaponType:  int: either LWEAPON OR HWEAPON
-        :return:
-        '''
-
-        if weaponType == self.LWEAPON:
-            percentTimeUnits = self.lightWeapon.properties["PercentTimeUnits"]
-        else:
-            percentTimeUnits = self.heavyWeapon.properties["PercentTimeUnits"]
-
-        percentageRemaining = self.AP * 100 / float( self.properties["TimeUnits"])
-        if percentTimeUnits < percentageRemaining:
-            return True
-        else:
-            return False
-
-
     def calculateDistance(self,location):
         # print "Current Location", self.agent.getLocation().getMapCoordinates()
         # print "Target Location", location.getMapCoordinates()
@@ -203,10 +183,34 @@ class Unit(Agent):
 
 
 
+    def canAttack(self, weaponType):
+        '''
+        Returns if the unit has enough APs to attack.
+        :param weaponType:  int: either LWEAPON OR HWEAPON
+        :return:
+        '''
+
+        if weaponType == self.LWEAPON:
+            percentTimeUnits = self.lightWeapon.properties["PercentTimeUnits"]
+        else:
+            percentTimeUnits = self.heavyWeapon.properties["PercentTimeUnits"]
+
+        percentageRemaining = self.AP * 100 / self.properties["TimeUnits"]
+        if percentTimeUnits <= percentageRemaining:
+            return True
+        else:
+            return False
+
     def attack(self, location, weaponType=None):
 
         if self.canAttack(self.LWEAPON):
             self.lightWeapon.fire(location)
+
+            # Reduce APs
+            percentTimeUnits = self.lightWeapon.properties["PercentTimeUnits"]
+            deducing = percentTimeUnits * self.properties["TimeUnits"] / 100
+            self.AP -= deducing
+
         else:
             print "Not enough APs!"
             #TODO: Add error sound feedback.
