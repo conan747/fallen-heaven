@@ -80,7 +80,11 @@ class TacticListener(WorldListener):
             agent = self._world.scene.instance_to_agent[self._world.activeUnit]
             if agent.agentType == "Unit" and not self._world.busy:
                 # move the unit if possible
-                self._world.scene.instance_to_agent[self._world.activeUnit].run(self._world.getLocationAt(clickpoint))
+                location = self._world.getLocationAt(clickpoint)
+                if agent.canTeleportTo(location):
+                    self._world.scene.instance_to_agent[self._world.activeUnit].run(location)
+                else:
+                    agent.playError()
             else:
                 # we assume it's a building -> deselect it.
                 self._world.selectUnit(None)
@@ -173,6 +177,7 @@ class TacticListener(WorldListener):
             # See if the unit could possibly move to this location due to the cell type.
             # If it can't move, then we don't need to calculate or draw the path.
             if not unit.canTeleportTo(location):
+                self._cellSelectionRenderer.reset()
                 return
 
             iPather = fife.RoutePather()
