@@ -72,6 +72,8 @@ class Unit(Agent):
         self.health = self.properties["Hp"]
         self.AP = self.properties["TimeUnits"]
 
+        self.soundError = self.world.soundmanager.createSoundEmitter("sounds/error.ogg")
+
         if lWeapon:
             self.lightWeapon = lWeapon
         if HWeapon:
@@ -122,16 +124,19 @@ class Unit(Agent):
 
         return True
 
-
+    def playError(self):
+        self.soundError.play()
 
     def teleport(self, location):
         print "Teleporting unit"
-        ## Is this really necessary?
-        # exactcoords = location.getLayerCoordinates()
-        # layercoords = fife.DoublePoint3D(int(exactcoords.x), int(exactcoords.y), int(exactcoords.z) )
-        # location.setExactLayerCoordinates(layercoords)
+
+        # Check if we are pointing at the same location as the current unit.
+        # activeUnitLocation = self.world.scene.instance_to_agent[self.world.activeUnit].getLocation()
+        # if activeUnitLocation == location:
+        #     return True
 
         if not self.canTeleportTo(location):
+            self.playError()
             return False
 
         if not self.world.cameras['main'].getMatchingInstances(location, False):
@@ -140,6 +145,8 @@ class Unit(Agent):
             print "It was able to teleport"
             return True
         print "Not able to teleport!"
+
+        self.playError()
         return False
 
 

@@ -73,10 +73,6 @@ class StrategicListener(WorldListener):
         super(StrategicListener, self).clickDefault(clickpoint)
         self._world.HUD.updateUI()
 
-        if self._world.activeUnit:
-            self._world.scene.instance_to_agent[self._world.activeUnit].teleport(self._world.getLocationAt(clickpoint))
-
-
 
     def mouseMoved(self, evt):
 

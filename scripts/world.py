@@ -128,6 +128,8 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
     def clickDefault(self, clickpoint):
         # self.hide_instancemenu()
 
+        initialUnit = self._world.activeUnit
+
         instances = self._world.getInstancesAt(clickpoint)
 
         print "selected instances on agent layer: ", [i.getObject().getId() for i in instances]
@@ -136,7 +138,8 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
         self.cycleThroughInstances(instances)
 
         if self._world.activeUnit:
-            self._world.scene.instance_to_agent[self._world.activeUnit].teleport(self._world.getLocationAt(clickpoint))
+            if self._world.activeUnit == initialUnit:
+                self._world.scene.instance_to_agent[self._world.activeUnit].teleport(self._world.getLocationAt(clickpoint))
 
 
     def clickGetIn(self, clickpoint):
