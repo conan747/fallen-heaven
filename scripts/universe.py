@@ -119,7 +119,7 @@ class Universe(object):
         print "Going to war!"
         self.gui.hide()
         planetName = "firstCapital"
-        self.progress.allPlanets[planetName]
+        #self.progress.allPlanets[planetName]
         self.selectedPlanet = Planet(planetName, self.progress.allPlanets[planetName])
         self.startTactic()
 

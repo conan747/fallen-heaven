@@ -48,6 +48,25 @@ class HUD(Widget):
     def updateUI(self):
         pass
 
+    def adjustPos(self):
+        '''
+        Adjusts the widget position to match the screen resolution.
+        :return:
+        '''
+        defaultSize = (1024., 768.)
+
+        # Get the size of the window:
+        engineSettings = self.world.universe._engine.getSettings()
+        screenSize = (engineSettings.getScreenWidth(), engineSettings.getScreenHeight())
+
+        coef = (screenSize[0] / defaultSize[0], screenSize[1] / defaultSize[1])
+
+        pos = self.widget.getAbsolutePos()
+
+        self.widget._setX(int(pos[0] * coef[0]))
+        self.widget._setY(int(pos[1] * coef[1]))
+
+
 
 # -----------------------------------------------------------------------------------------------------------------
 #       TacticalHUD
@@ -65,6 +84,8 @@ class TacticalHUD(HUD):
 
         self.structureWidget = StructureWidget(self)
         self.unitInfoWidget = UnitInfoWidget(self)
+
+        self.adjustPos()
 
 
     def destroy(self):
@@ -419,6 +440,8 @@ class StrategicHUD(HUD):
                 'toUniverseButton' : self.world.backToUniverse,
                 'recycle' : self.onRecyclePressed
         })
+
+        self.adjustPos()
 
         self.updateUI()
 

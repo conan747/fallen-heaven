@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ascii"?>
 
-    <Container position="1,667" base_color="255,0,0" border_size="0" background_image="./gui/HUDs/tactical/combat_bottom.png" size="636,76">
+    <Container position="1,691" base_color="255,0,0" border_size="0" background_image="./gui/HUDs/tactical/combat_bottom.png" size="636,76">
 
 	<!--<HBox name="high_score" base_color="188,0,0" opaque="0" min_size="639,82">-->
             <ImageButton name="nextUnitButton" up_image="./gui/HUDs/tactical/nextUnitButton.png" position="67,7" size="61,69" border_size="0"/>
