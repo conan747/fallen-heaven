@@ -102,12 +102,13 @@ class Unit(Agent):
     def resetAP(self):
         self.AP = self.properties["TimeUnits"]
 
-    def teleport(self, location):
-        print "Teleportin unit"
-        exactcoords = location.getLayerCoordinates()
-        layercoords = fife.DoublePoint3D(int(exactcoords.x), int(exactcoords.y), int(exactcoords.z) )
-        location.setExactLayerCoordinates(layercoords)
 
+    def canTeleportTo(self, location):
+        '''
+        Tells if the location would be legal for this unit.
+        :param location:
+        :return: Boolean
+        '''
         layer = location.getLayer()
         cellCache = layer.getCellCache()
         cellPos = location.getLayerCoordinates()
@@ -119,7 +120,21 @@ class Unit(Agent):
             if cellCache.isCellInArea("water", cell):
                 return False
 
-        if not self.world.scene.getInstacesInTile(location):
+        return True
+
+
+
+    def teleport(self, location):
+        print "Teleporting unit"
+        ## Is this really necessary?
+        # exactcoords = location.getLayerCoordinates()
+        # layercoords = fife.DoublePoint3D(int(exactcoords.x), int(exactcoords.y), int(exactcoords.z) )
+        # location.setExactLayerCoordinates(layercoords)
+
+        if not self.canTeleportTo(location):
+            return False
+
+        if not self.world.cameras['main'].getMatchingInstances(location, False):
             if self.agent:
                 self.agent.setLocation(location)
             print "It was able to teleport"
