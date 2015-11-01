@@ -129,8 +129,6 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
         # self.hide_instancemenu()
 
         instances = self._world.getInstancesAt(clickpoint)
-        if not instances:
-            instances = self._world.getInstanceAtLocation(clickpoint)
 
         print "selected instances on agent layer: ", [i.getObject().getId() for i in instances]
         print "Found " , instances.__len__(), "instances"
@@ -628,11 +626,13 @@ class World(object):
         """
         Query the main camera for instances on our active(agent) layer.
         """
-        return self.cameras['main'].getMatchingInstances(clickpoint, self.scene.agentLayer)
+        instances = self.cameras['main'].getMatchingInstances(clickpoint, self.scene.agentLayer)
 
-    def getInstanceAtLocation(self, clickpoint, use_exactcoordinates=False):
-        location = self.getLocationAt(clickpoint)
-        return self.cameras['main'].getMatchingInstances(location, use_exactcoordinates)
+        if not instances:
+            location = self.getLocationAt(clickpoint)
+            return self.cameras['main'].getMatchingInstances(location, False)
+
+        return instances
 
     def getLocationAt(self, clickpoint):
         """

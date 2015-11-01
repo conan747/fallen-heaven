@@ -68,8 +68,6 @@ class TacticListener(WorldListener):
         # self.hide_instancemenu()
 
         instances = self._world.getInstancesAt(clickpoint)
-        if not instances:
-            instances = self._world.getInstanceAtLocation(clickpoint)
 
         print "selected instances on agent layer: ", [i.getObject().getId() for i in instances]
         print "Found " , instances.__len__(), "instances"
