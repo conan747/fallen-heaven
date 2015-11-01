@@ -114,6 +114,7 @@ class Agent(fife.InstanceActionListener):
         print "Action Finished!"
         self.world.HUD.updateUI()
         self.world.busy = False
+        #TODO: Add here the trajectory erasing instead after run?
 
     def onInstanceActionFrame(self, instance, action, frame):
         print "Action frame" , frame

@@ -54,14 +54,14 @@ class TacticListener(WorldListener):
             print "No active unit selected!"
             return
 
+        activeUnit = self._world.scene.instance_to_agent[self._world.activeUnit]
         clickLocation = self._world.getLocationAt(clickpoint)
-        trajectory = Trajectory(self._world.scene.instance_to_agent[self._world.activeUnit], self._world,0)
+        trajectory = Trajectory(activeUnit , self._world,0)
         # print "Is is reachable?"
         if trajectory.isInRange(clickLocation):
-
         # print "Calculating Clear path:"
             if trajectory.hasClearPath(clickLocation):
-                self._world.scene.instance_to_agent[self._world.activeUnit].attack(clickLocation)
+                activeUnit.attack(clickLocation)
 
 
     def clickDefault(self, clickpoint):

@@ -170,8 +170,8 @@ class Unit(Agent):
         iPather.solveRoute(route, fife.HIGH_PRIORITY,True)
         route.cutPath(movesLeft) ## Cut the path short if too long
         pathLength = route.getPathLength()-1
-        if pathLength >0:
-            self.AP -= pathLength *10
+        if pathLength > 0:
+            self.AP -= pathLength * 10
             print "Path length:", route.getPathLength()-1
             self.world.busy = True
             self.agent.move('stand', route.getEndNode(), 5)
@@ -188,12 +188,17 @@ class Unit(Agent):
 
 
     def attack(self, location, weaponType=None):
-        if not weaponType:
-            weaponType = self.LWEAPON
-        if weaponType == self.LWEAPON:
-            self.lightWeapon.fire(location)
-        elif weaponType == self.HWEAPON:
-            self.heavyWeapon.fire(location)
+
+        attackCost = self.lightWeapon.properties[""]
+        self.lightWeapon.fire(location)
+        #TODO: manage weapon choosing.
+
+        # if not weaponType:
+        #
+        # if weaponType == self.LWEAPON:
+        #     self.lightWeapon.fire(location)
+        # elif weaponType == self.HWEAPON:
+        #     self.heavyWeapon.fire(location)
 
 
 
@@ -207,8 +212,6 @@ class Weapon(object):
     def __init__(self, world):
         self._world = world
         self.properties = {}
-
-
 
     def fire(self, location):
         """
