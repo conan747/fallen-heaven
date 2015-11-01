@@ -447,6 +447,7 @@ class World(object):
         self.dynamic_widgets = {}
         self.faction = universe.faction
         self.planet = planet
+        self.attackType = None
 
         self.settings = universe._settings
 

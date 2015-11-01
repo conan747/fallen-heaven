@@ -104,7 +104,7 @@ class TacticalHUD(HUD):
             unit = self.world.scene.instance_to_agent[self.world.activeUnit]
         else:
             unit = None
-        self.unitInfoWidget.updateUI(unit)
+        self.unitInfoWidget.updateUI(unit, world=self.world)
 
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -553,7 +553,7 @@ class UnitInfoWidget(Widget):
         self.damageLabel = self.widget.findChildByName("damage")
         self.attackBar = self.widget.findChildByName("attackBar")
 
-    def updateUI(self, unit=None):
+    def updateUI(self, unit=None, world=None):
 
 
         self.unit = unit
@@ -582,6 +582,8 @@ class UnitInfoWidget(Widget):
         self.widget.show()
 
         # Temporal: Always show LWEAPON as weapon.
-        attackAPs = unit.lightWeapon.properties["PercentTimeUnits"]
-
-        self.attackBar.value = attackAPs
+        if world:
+            if world.mode == world.MODE_ATTACK:
+                if world.attackType == unit.LWEAPON:
+                    attackAPs = unit.lightWeapon.properties["PercentTimeUnits"]
+                    self.attackBar.value = attackAPs

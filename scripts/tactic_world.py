@@ -28,6 +28,8 @@ from gui.huds import TacticalHUD
 from combat import Trajectory
 from scripts.tactic_scene import TacticScene
 
+from agents.unit import Unit
+
 
 
 
@@ -302,6 +304,11 @@ class TacticWorld(World):
     def onAttackButtonPressed(self):
         if self.activeUnit:
             self.setMode(self.MODE_ATTACK)
+            self.attackType = Unit.LWEAPON
+            self.HUD.updateUI()
+        else:
+            pass
+            # TODO: Reproduce error sound.
 
 
     def startDeploy(self, storage):
