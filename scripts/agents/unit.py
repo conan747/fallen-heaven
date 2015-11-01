@@ -51,23 +51,20 @@ class Unit(Agent):
     ;Embedded			--> Only used for Towers, optionnal field --> TRUE / FALSE
     ;EncyclopediaImg	--> Image to display in the encyclopedia
 '''
+        #TODO: Idea: sniper tower!
 
     # WALK, LAND, AIR = xrange(3)
     # INFANTRY, GROUND, HOOVER = xrange(3)
-    # LWEAPON, HWEAPON = xrange(2)
+    LWEAPON, HWEAPON = xrange(2)
 
-    instance = None
-
-    # movement = None
-    lightWeapon = None
-    heavyWeapon = None
-    AP = None
 
     def __init__(self, world, properties, lWeapon = None, HWeapon = None):
 
         super(Unit, self).__init__(properties["unitName"], "Unit", world)
         self.agentType = "Unit"
         self.properties = properties
+
+        self.instance = None
 
         self.health = self.properties["Hp"]
         self.AP = self.properties["TimeUnits"]
@@ -78,6 +75,25 @@ class Unit(Agent):
             self.lightWeapon = lWeapon
         if HWeapon:
             self.heavyWeapon = HWeapon
+
+
+    def canAttack(self, weaponType):
+        '''
+        Returns if the unit has enough APs to attack.
+        :param weaponType:  int: either LWEAPON OR HWEAPON
+        :return:
+        '''
+
+        if weaponType == self.LWEAPON:
+            percentTimeUnits = self.lightWeapon.properties["PercentTimeUnits"]
+        else:
+            percentTimeUnits = self.heavyWeapon.properties["PercentTimeUnits"]
+
+        percentageRemaining = self.AP * 100 / float( self.properties["TimeUnits"])
+        if percentTimeUnits < percentageRemaining:
+            return True
+        else:
+            return False
 
 
     def calculateDistance(self,location):
@@ -189,8 +205,12 @@ class Unit(Agent):
 
     def attack(self, location, weaponType=None):
 
-        attackCost = self.lightWeapon.properties[""]
-        self.lightWeapon.fire(location)
+        if self.canAttack(self.LWEAPON):
+            self.lightWeapon.fire(location)
+        else:
+            print "Not enough APs!"
+            #TODO: Add error sound feedback.
+
         #TODO: manage weapon choosing.
 
         # if not weaponType:
@@ -206,7 +226,18 @@ class Unit(Agent):
 class Weapon(object):
     """
     Weapon
+    ------
 
+    Name=EXPLOSIVE MINE
+    Parabolic=0
+    Display=S-CLOSEATTACK
+    Turreted=1
+    Range=1
+    Precision=-2
+    DamageContact=30
+    DamageClose=0
+    DamageFar=0
+    PercentTimeUnits=60
     """
 
     def __init__(self, world):
