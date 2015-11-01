@@ -8,6 +8,7 @@ from planet import Planet
 from faction import Faction
 from gui.universeUI import UniverseUI
 from campaign import Campaign
+from scene import UnitLoader
 
 
 import Tkinter, tkFileDialog
@@ -42,6 +43,8 @@ class Universe(object):
         }
 
         self.faction = None
+
+        self.unitLoader = UnitLoader(self._settings)
 
 
 
@@ -80,6 +83,7 @@ class Universe(object):
             self.world.model.deleteMaps()
             self.world.model.deleteObjects()
             self.world = None
+            self.unitLoader.setWorld(None)
 
         self.gui.show()
 
@@ -207,7 +211,7 @@ class Universe(object):
         # self.world.waves.stop()
         # del self.world.waves
         # self.world.soundmanager.releaseEmitter(id)
-        del self.world.soundmanager
+        del self.world.soundmanager ## TODO: Should soundManager be part of universe?
         # del self.world.waves
         self.world.scene = None
         self.world.HUD.destroy()
@@ -215,6 +219,7 @@ class Universe(object):
 
         self.world.scene = None
         self.world = None
+        self.unitLoader.setWorld(None)
 
         if self.selectedPlanet:
             self.selectedPlanet = None

@@ -31,7 +31,7 @@ class UnitLoader(object):
     '''
 
 
-    def __init__(self, world, settings):
+    def __init__(self, settings, world=None):
 
         self.unitProps = {}
         self.weaponProps = {}
@@ -47,6 +47,9 @@ class UnitLoader(object):
         self.parseWeaponFile("objects/agents/human.weapons", "Human")
         self.parseBuildingFile("objects/agents/human.buildings", "Human")
 
+
+    def setWorld(self, world):
+        self.world = world
 
     def parseFile(self, filename):
         returnDict = {}
@@ -119,6 +122,10 @@ class UnitLoader(object):
 
     def createBuilding(self, buildingName):
 
+        if not self.world:
+            print "Error: No world associated with UnitCreator!"
+            return
+
         if buildingName not in self.buildingProps.keys():
             return "Found no building with that buildingName!"
         buildingProps = self.buildingProps[buildingName]
@@ -130,6 +137,11 @@ class UnitLoader(object):
 
 
     def createUnit(self, unitName):
+
+        if not self.world:
+            print "Error: No world associated with UnitCreator!"
+            return
+
         if unitName not in self.unitProps.keys():
             return "Found no unit with that unitName!"
 
@@ -189,7 +201,7 @@ class Scene(object):
         self.faction = self._world.faction
         self.planet = self._world.planet
 
-        self.unitLoader = UnitLoader(self._world, self._world.settings)
+        self.unitLoader = self._world.universe.unitLoader
 
     def destroy(self):
         """

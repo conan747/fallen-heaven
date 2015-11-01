@@ -480,6 +480,9 @@ class World(object):
 
         self.busy = False
 
+        ## There can only be one world -> assign unitLoader to this world.
+        self.universe.unitLoader.setWorld(self)
+
 
     def reset(self):
         """
