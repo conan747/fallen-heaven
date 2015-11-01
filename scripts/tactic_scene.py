@@ -43,7 +43,7 @@ class TacticScene(Scene):
         ## Added by Jon:
         playerFactionName = world.universe.progress.playerFactionName
         self.currentTurn = playerFactionName
-        self.factionNames = [playerFactionName, "Enemy"]
+        self.factionNames = [playerFactionName, "Tauran"]
 
     def load(self, filename):
         super(TacticScene, self).load(filename)
