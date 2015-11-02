@@ -69,7 +69,7 @@ class Unit(Agent):
         self.health = self.properties["Hp"]
         self.AP = self.properties["TimeUnits"]
 
-        self.soundError = self.world.soundmanager.createSoundEmitter("sounds/error.ogg")
+        self.speaker = self.world.universe.sound.playFX
 
         if lWeapon:
             self.lightWeapon = lWeapon
@@ -121,7 +121,7 @@ class Unit(Agent):
         return True
 
     def playError(self):
-        self.soundError.play()
+        self.speaker("error")
 
     def teleport(self, location):
         print "Teleporting unit"
@@ -213,7 +213,7 @@ class Unit(Agent):
 
         else:
             print "Not enough APs!"
-            #TODO: Add error sound feedback.
+            self.playError()
 
         #TODO: manage weapon choosing.
 
@@ -247,9 +247,13 @@ class Weapon(object):
     def __init__(self, world):
         self._world = world
         self.properties = {}
+        self.speaker = self._world.universe.sound.playFX
 
     def fire(self, location):
         """
         Fires the weapon in the specified direction.
         """
+        #Handle animation
+        self.speaker("explosion")
         self._world.scene.applyDamage(location, self.properties["DamageContact"])
+

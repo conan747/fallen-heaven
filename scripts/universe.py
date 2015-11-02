@@ -15,6 +15,7 @@ from agents.building import *
 import Tkinter, tkFileDialog
 from gui.selectPlanet import SelectPlanet
 
+from engine.sound import Sound
 
 
 class UnitLoader(object):
@@ -195,6 +196,8 @@ class Universe(object):
         }
 
         self.faction = None
+
+        self.sound = Sound(self._engine, self._settings)
 
         self.unitLoader = UnitLoader(self._settings)
 

@@ -476,7 +476,7 @@ class World(object):
         self.light_sources = 0
         self.lightmodel = int(TDS.get("FIFE", "Lighting"))
 
-        self.soundmanager = SoundManager(self.engine)
+        self.sound = self.universe.sound
         self.music = None
 
         self.busy = False
@@ -511,7 +511,7 @@ class World(object):
 
             if int(self.settings.get("FIFE", "PlayMusic")):
                 # play track as background music
-                self.music = self.soundmanager.createSoundEmitter('music/fallen.ogg')
+                self.music = self.sound.soundmanager.createSoundEmitter('music/fallen.ogg')
                 self.music.looping = True
                 self.music.gain = 128.0
                 self.music.play()
