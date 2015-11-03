@@ -196,6 +196,9 @@ class TacticListener(WorldListener):
                     break
                 self._cellSelectionRenderer.selectLocation(node)
 
+        #elif self._world.mode == self._world.MODE_ATTACK:
+
+
 
 
     def clickGetIn(self, clickpoint):

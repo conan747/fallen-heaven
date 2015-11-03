@@ -448,6 +448,7 @@ class World(object):
         self.faction = universe.faction
         self.planet = planet
         self.attackType = None
+        self.scene=None
 
         self.settings = universe._settings
 
@@ -828,11 +829,10 @@ class World(object):
             mouseLocation = self.getLocationAt(mousepoint)
             trajectory = Trajectory(self.scene.instance_to_agent[self.activeUnit], self,0)
             # print "Is is reachable?"
-            self.cursorHandler.setCursor(self.cursorHandler.CUR_CANNOT)
-            if trajectory.isInRange(mouseLocation):
-                if trajectory.hasClearPath(mouseLocation):
-                    # print "Changing cursor"
-                    self.cursorHandler.setCursor(self.cursorHandler.CUR_ATTACK)
+            if trajectory.hasClearPath(mouseLocation, display=True) and trajectory.isInRange(mouseLocation) :
+                self.cursorHandler.setCursor(self.cursorHandler.CUR_ATTACK)
+            else:
+                self.cursorHandler.setCursor(self.cursorHandler.CUR_CANNOT)
 
         elif self.mode == self.MODE_RECYCLE:
             self.cursorHandler.setCursor(self.cursorHandler.CUR_RECYCLE)

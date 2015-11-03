@@ -34,6 +34,8 @@ class Trajectory(object):
         # self._renderer.setColor(100,0,0)
         camera = world.cameras['main']
         self._renderer = fife.CellSelectionRenderer.getInstance(camera)
+        self._genericrenderer = fife.GenericRenderer.getInstance(camera)
+        self._genericrenderer.activateAllLayers(self._world.scene.map)
 
     def canShoot(self, location):
         '''
@@ -78,12 +80,16 @@ class Trajectory(object):
         # print "To" , location.getLayerCoordinates()
         # return (route.getPathLength() <= self._weaponRange)
 
-    def hasClearPath(self, location):
+    def hasClearPath(self, location, display=False):
         '''
         Returns if there is anything between the unit and the target.
         :param location: target
         :return: bool
         '''
+
+        instancerenderer = fife.InstanceRenderer.getInstance(self._world.cameras["main"])
+        instancerenderer.removeAllColored()
+        instancerenderer.removeAllOutlines()
 
         self._renderer.reset()
         fromLocation = self._unit.agent.getLocation()
@@ -95,13 +101,23 @@ class Trajectory(object):
         exclude += target
         exclude = [agent.getFifeId() for agent in exclude]
 
-        instances = layer.getInstancesInLine(origin, destination)
+
+        self._genericrenderer.removeAll("LineOfSight")
+
+        if display:
+            fromNode = fife.RendererNode(fromLocation)
+            toNode = fife.RendererNode(location)
+            self._genericrenderer.addLine("LineOfSight", fromNode, toNode, 255, 225, 225, 255)
+            self._genericrenderer.setEnabled(True)
         # self._renderer.setEnabled(True)
         # self._renderer.setColor(0,0,255)
+
+        instances = layer.getInstancesInLine(origin, destination)
 
         for instance in instances:
             if instance.getFifeId() not in exclude:
                 #print "Instance found on path: ", instance.getFifeId()
+                instancerenderer.addColored(instance, 250, 50, 100)
                 return False
 
         return True
