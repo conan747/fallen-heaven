@@ -5,7 +5,7 @@ __author__ = 'cos'
 from agents.unit import *
 
 
-_HEAVY, _LIGHT = xrange(2)
+#_LIGHT, _HEAVY = xrange(2)
 
 class Trajectory(object):
     '''
@@ -16,7 +16,7 @@ class Trajectory(object):
         '''
 
         :param unit: Unit that will shoot
-        :param weapon: Heavy or Light _HEAVY OR _LIGHT
+        :param weapon: Heavy or Light unit.LWEAPON OR unit.HWEAPON
         :return:
         '''
 
@@ -24,7 +24,12 @@ class Trajectory(object):
         self._weaponMode = weapon
         self._world = world
         self._unitLocation = unit.agent.getLocation()
-        self._weaponRange = 5 # to be changed!
+        if self._weaponMode == self._unit.LWEAPON:
+            self.weapon = self._unit.lightWeapon
+        elif self._weaponMode ==  self._unit.HWEAPON:
+            self.weapon = self._unit.heavyWeapon
+
+        self._weaponRange = self.weapon.properties["Range"]
         # self._renderer = self.cameras['main'].getRenderer('CellSelectionRenderer')
         # self._renderer.setColor(100,0,0)
         camera = world.cameras['main']
@@ -52,7 +57,7 @@ class Trajectory(object):
         :return: bool
         '''
 
-        ## Let's try calculating a route on a fifferent layers: instead of the agentlayer, the maplayer.
+        ## Let's try calculating a route on a fifferent layer: instead of the agentlayer, the maplayer.
         map = location.getMap()
         trajectoryLayer = map.getLayer("TrajectoryLayer")
         location.setLayer(trajectoryLayer)
@@ -81,69 +86,22 @@ class Trajectory(object):
         '''
 
         self._renderer.reset()
-
-        iPather = fife.RoutePather()
-
-        loc = location
-        map = location.getMap()
-        groundLayer = map.getLayer("Ground")
-        trajectoryLayer = map.getLayer("TrajectoryLayer")
         fromLocation = self._unit.agent.getLocation()
+        layer = fromLocation.getLayer()
+        origin = fromLocation.getLayerCoordinates(layer)
+        destination = location.getLayerCoordinates(layer)
+        exclude = [self._unit.agent]
+        target = layer.getInstancesAt(location)
+        exclude += target
+        exclude = [agent.getFifeId() for agent in exclude]
 
-        ## For the ground layer
-        loc.setLayer(groundLayer)
-        fromLocation.setLayer(groundLayer)
-        groundRoute = iPather.createRoute(fromLocation,loc, True)
-        groundLocationList = groundRoute.getPath()
+        instances = layer.getInstancesInLine(origin, destination)
+        # self._renderer.setEnabled(True)
+        # self._renderer.setColor(0,0,255)
 
-        ## For trajectory Layer:
-        fromLocation.setLayer(trajectoryLayer)
-        loc.setLayer(trajectoryLayer)
-        trajectoryRoute = iPather.createRoute(fromLocation,loc, True)
-        trajectoryLocationList = trajectoryRoute.getPath()
-
-        # Check if the route is the same
-        if trajectoryLocationList.size() != groundLocationList.size():
-            print "Routes have different length!"
-            return False
-
-        while not trajectoryLocationList.empty():
-            tLoc = trajectoryLocationList.pop()
-            gLoc = groundLocationList.pop()
-            tPoint = tLoc.getMapCoordinates()
-            gPoint = gLoc.getMapCoordinates()
-
-            if tPoint != gPoint:
-                print "Routes are different!"
+        for instance in instances:
+            if instance.getFifeId() not in exclude:
+                #print "Instance found on path: ", instance.getFifeId()
                 return False
 
-
-        self._renderer.setEnabled(True)
-
-        unitLayer = self._unit.agent.getLocation().getLayer()
-        blocked = False
-        # print "Unit layer:", unitLayer.getId()
-        ## Don't use the last locations (i.e. the target) to check if it is reachable.
-        locationList = trajectoryRoute.getPath()
-        if locationList.__len__() >= 2:
-            locationList.pop()
-
-        while locationList.__len__()>0:
-            location = locationList.pop()
-            if not location:
-                continue
-            location.setLayer(unitLayer)
-
-            unitFound = unitLayer.getInstancesAt(location)
-            for instance in unitFound:
-                # print "Found instance: " , instance.getFifeId()
-                if instance.getId() != self._unit.agent.getId():
-                    blocked = True
-                    # renderColor = self._renderer.getColor()
-                    # self._renderer.setColor(255,0,0)
-                    self._renderer.selectLocation(location)
-
-            # self._renderer.selectLocation(location)
-            # self._renderer.setColor(0,0,255)
-
-        return not blocked
+        return True
