@@ -261,6 +261,9 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
 
             if self._world.mode == self._world.MODE_BUILD:
                 self._world.stopBuilding()
+            elif  self._world.mode == self._world.MODE_ATTACK:
+                if self._world.activeUnitRenderer:
+                    self._world.activeUnitRenderer.removeAllColored()
             else:
                 self._world.selectUnit(None)
             self._world.HUD.closeExtraWindows()
@@ -807,6 +810,10 @@ class World(object):
         :param mode: MODE_DEFAULT, MODE_ATTACK, MODE_DROPSHIP, MODE_DEPLOY
         :return:
         '''
+
+        if self.mode == self.MODE_ATTACK:
+            renderer = fife.GenericRenderer.getInstance(self.cameras["main"])
+            renderer.removeAll("LineOfSight")
 
         self.mode = mode
         if mode == self.MODE_BUILD:
