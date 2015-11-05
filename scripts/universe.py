@@ -40,7 +40,6 @@ class UnitLoader(object):
         self.parseWeaponFile("objects/agents/human.weapons", "Human")
         self.parseBuildingFile("objects/agents/human.buildings", "Human")
 
-
     def setWorld(self, world):
         self.world = world
 

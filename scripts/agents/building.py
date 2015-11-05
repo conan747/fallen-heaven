@@ -181,8 +181,35 @@ class Storage(object):
                                        "unitsReady" : self.unitsReady}
         return thisStorage
 
+class DummyInstance(fife.Instance):
+    '''
+    Dummy instance to fill up the empty cells on a building. It will refer to the parent building.
+    '''
+
+    @staticmethod
+    def getDummyObject():
+        obj = fife.Object("dummy", "fallen")
+        obj.setBlocking(True)
+        obj.setStatic(True)
+        return obj
+
+    def __init__(self, parent, location):
+        obj = self.getDummyObject()
+        self._parent = parent
+        self.parentID = self._parent.agent.getFifeId()
+        identifier = "dummy_%s" % self.parentID
+        #point = location.getLayerCoordinates()
+        super(DummyInstance, self).__init__(obj, location, identifier)
 
 
+    def getParentAgent(self):
+        return self._parent
+
+    def getFifeId(self):
+        self.parentID
+
+    def getId(self):
+        return "dummy"
 
 class Building(Agent):
 
@@ -216,6 +243,7 @@ class Building(Agent):
 
         self.health = self.properties["Hp"]
 
+        self.dummyInstances=fife.InstanceVector()
 
 
     def calculateDistance(self, location):
@@ -278,6 +306,30 @@ class Building(Agent):
         # self.layer.deleteInstance(self.agent)
 
 
+    def createFootprint(self):
+        '''
+        Creates a series of dummy objects to symbolize the free cells.
+        :return:
+        '''
+        location = self.agent.getLocation()
+        layer = location.getLayer()
+        newlocation = self.agent.getLocation()
+        for y in range(self.properties["SizeX"]):
+            for x in range(self.properties["SizeY"]):
+                if (x == 0) and (y == 0):
+                    continue
+                cellPos = location.getLayerCoordinates()
+                cellPos.x -= x
+                cellPos.y -= y
+
+                newlocation.setLayerCoordinates(cellPos)
+                dummyInstance = DummyInstance(self, newlocation)
+                if layer.addInstance(dummyInstance, newlocation.getExactLayerCoordinates()):
+                    print "Dummy Instance added! at pos %d, %d" % x, y
+
+                self.dummyInstances.append(dummyInstance)
+
+
 
     def setFootprint(self):
         '''
@@ -321,11 +373,15 @@ class Building(Agent):
                 cell = cellCache.getCell(cellPos)
                 cell.setCellType(fife.CTYPE_NO_BLOCKER)
 
+        while self.dummyInstances.size() != 0:
+            dummy = self.dummyInstances.pop()
+            layer.deleteInstance(dummy)
+
         self.landed = False
 
 
     def start(self):
-        self.setFootprint()
+        self.createFootprint()
         if self.properties["StorageSize"] != 0:
                 self.storage = Storage(self, self.world)
 

@@ -203,6 +203,8 @@ class Unit(Agent):
 
     def attack(self, location, weaponType=None):
 
+        ## TODO: add self.agent.setFacingLocation
+
         if self.canAttack(self.LWEAPON):
             self.lightWeapon.fire(location)
 

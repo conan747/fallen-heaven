@@ -64,6 +64,7 @@ class Agent(fife.InstanceActionListener):
             print "Error! No ", self.unitName ,"found in the object library"
 
         object = self.setWalkableAreas(object)
+        object.setBlocking(True)
 
         self.agent = self.world.scene.agentLayer.createInstance(object, point)
         self.agent.setCellStackPosition(0)
