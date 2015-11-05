@@ -194,8 +194,10 @@ class DummyInstance(fife.Instance):
         return obj
 
     def __init__(self, parent, location):
-        obj = self.getDummyObject()
+
+        #obj = self.getDummyObject()
         self._parent = parent
+        obj = self._parent.world.model.getObject("dummy", "fallen")
         self.parentID = self._parent.agent.getFifeId()
         identifier = "dummy_%s" % self.parentID
         #point = location.getLayerCoordinates()
@@ -323,9 +325,9 @@ class Building(Agent):
                 cellPos.y -= y
 
                 newlocation.setLayerCoordinates(cellPos)
-                dummyInstance = DummyInstance(self, newlocation)
-                if layer.addInstance(dummyInstance, newlocation.getExactLayerCoordinates()):
-                    print "Dummy Instance added! at pos %d, %d" % x, y
+                #dummyInstance = DummyInstance(self, newlocation)
+                object = self.world.model.getObject("dummy", "fallen")
+                dummyInstance = layer.createInstance(object, newlocation.getExactLayerCoordinates())
 
                 self.dummyInstances.append(dummyInstance)
 
