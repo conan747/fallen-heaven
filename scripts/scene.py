@@ -13,6 +13,7 @@ from combat import Trajectory
 
 from fife.extensions.savers import saveMapFile
 import cPickle as pickle
+from agents.agent import Agent
 
 
 # Temp:
@@ -21,6 +22,169 @@ import os
 
 _MODE_DEFAULT, _MODE_ATTACK, _MODE_DROPSHIP = xrange(3)
 
+
+
+class UnitManager(object):
+    '''
+    This object will hold a reference to all the Agents on map and help access them.
+    '''
+
+    def __init__(self):
+
+        self.fife2Agent = {} # What before was instance to agent.
+        self.ID2fife = {}  # Maps IDs with their corresponding fifeID.
+        #self.world = world
+        #self.unitLoader = self._world.universe.unitLoader
+
+        self.getAgents = self.fife2Agent.values
+        self.getFifeIds = self.fife2Agent.keys
+
+        self.getIDs = self.ID2fife.keys
+
+
+    def destroy(self):
+        """
+        Removes all objects from the scene and deletes them from the layer.
+        """
+        #TODO: Re-check this method
+        for id in self.fife2Agent.keys():
+            self.unitDied(id)
+
+        for agent in self.fife2Agent.values():
+            if hasattr(agent, "storage"):
+                del agent.storage
+            del agent
+
+    def fife2Agent(self, id):
+        '''
+        Returns the agent that has a certain FifeId.  Substitutes instance_to_agent
+        :param id: FifeID of the instance
+        :return: Agent.
+        '''
+        return self.fife2Agent[id]
+
+    def addAgent(self, newAgent, location):
+            newAgent.createInstance(location)
+            fifeID = newAgent.agent.getFifeId()
+            self.fife2Agent[fifeID] = newAgent
+            self.ID2fife[newAgent.agent.getId()] = fifeID
+
+    def getAgent(self, argument):
+        '''
+        Returns the agent corresponding to Instance or fifeID
+        :param argument: Instance or fifeID
+        :return: Agent
+        '''
+        if isinstance(argument, fife.Instance):
+            argument = argument.getFifeId()
+        if argument in self.getFifeIds():
+            return self.fife2Agent[argument]
+
+    def initAgents(self, map, agentList, unitLoader, planet):
+        """
+        Setup agents.
+
+        Loads the "agents" (i.e. units and structures) from the planet object and initialises them.
+        """
+        #self.map # Can I get away with not defining this?
+        self.agentLayer = map.getLayer('TechdemoMapGroundObjectLayer')
+        if not self.agentLayer:
+            print "Using the first layer that was found: ", map.getLayers()[0].getId()
+            self.agentLayer = map.getLayers()[0]
+
+        for agentID in agentList.keys():
+            agentType = agentID.split(":")[0] # Holds the unit or stucture name
+
+            if unitLoader.isUnit(agentType):
+                newAgent = unitLoader.createUnit(agentType)
+                newAgent.AP = agentList[agentID]["AP"]
+            elif unitLoader.isBuilding(agentType):
+                newAgent = unitLoader.createBuilding(agentType)
+            else:
+                print "Error: unit is not building nor unit! ??"
+                continue
+
+            location = agentList[agentID]["Location"]
+            self.addAgent(newAgent, location)
+
+            if newAgent.agent.getId() == newAgent.agent.getFifeId():
+                print "Watch out! the ID is the same as the fifeID for %s" % agentName
+            newAgent.start()
+
+            # Apply storage:
+            if agentID in planet.storages.keys():
+                storage = planet.storages[agentID]
+                if storage:
+                    newAgent.storage.setStorage(storage)
+                    planet.storages[agentID] = None
+
+            # Apply health:
+            newAgent.health = agentList[agentID]["HP"]
+
+            print agentID , "loaded!"
+
+    def addBuilding(self, building):
+        building.start()
+        self.fife2Agent[building.agent.getFifeId()] = building
+
+    def saveAllAgents(self, planet):
+        '''
+        Saves all the intances.
+        :param planet: The planet object.
+        :return:
+        '''
+        for angent in self.getAgents():
+            planet.saveInstance(angent)
+
+    def getStorageDicts(self):
+        '''
+        Return a dictionary containing the storages of the buildings in this scene.
+        :return:
+        '''
+        storages = {}
+
+        for agent in self.getAgents():
+            if agent.agentType == "Building":
+                if agent.storage:
+                    # Add this to the storages
+                    if agent.storage.inProduction or agent.storage.unitsReady:
+                        thisStorage = agent.storage.getStorageDict()
+                        storages[agent.agentName] = thisStorage
+        return storages
+
+    def removeInstance(self, fifeID):
+        '''
+        Process the destruction of a unit
+        :param fifeID: FifeID or instace or agent of the destroyed unit
+        :return:
+        '''
+        if isinstance(fifeID, Agent):
+            agent = fifeID
+            fifeID = fifeID.agent.getFifeId()
+        else:
+            agent = self.getAgent(fifeID)
+            if isinstance(fifeID, fife.Instance):
+                fifeID = fifeID.agent.getFifeId()
+
+        if agent:
+            self.fife2Agent.__delitem__(fifeID)
+            agent.agent.removeActionListener(agent)
+
+            self.agentLayer.deleteInstance(agent.agent)
+            agent.agent = None
+
+        else:
+            print "Could not delete instance: " , fifeID
+
+
+    def teleport(self, id, location):
+        '''
+        Teleports given unit to a certain location
+        :param id: FifeID of the unit.
+        :param location: location to teleport to.
+        :return:
+        '''
+        self.getAgent(id).teleport(location)
 
 
 class Scene(object):
@@ -45,7 +209,6 @@ class Scene(object):
         self.agentLayer = None
 
         self._music = None
-        self.instance_to_agent = {}
         self.factionUnits = {}
         self._player1 = True
         self._player2 = False
@@ -53,15 +216,13 @@ class Scene(object):
         self.planet = self._world.planet
 
         self.unitLoader = self._world.universe.unitLoader
+        self.unitManager = None
 
     def destroy(self):
         """
         Removes all objects from the scene and deletes them from the layer.
         """
-        for agent in self.instance_to_agent.values():
-            if hasattr(agent, "storage"):
-                del agent.storage
-            del agent
+        self.unitManager.destroy()
 
     def getInstacesInTile(self, tileLocation):
         '''
@@ -73,27 +234,26 @@ class Scene(object):
         tilePos = tileLocation.getLayerCoordinates()
         unitIDs = []
         all_instances = self.agentLayer.getInstances()
-        for instance in all_instances:
-            instanceLocation = instance.getLocation().getLayerCoordinates()
-            if tilePos == instanceLocation:
-                unitIDs.append(instance.getFifeId())
+        ## TODO: Check if it was a good idea commenting these lines
+        #for instance in all_instances:
+        #    instanceLocation = instance.getLocation().getLayerCoordinates()
+        #    if tilePos == instanceLocation:
+        #        unitIDs.append(instance.getFifeId())
 
-        print "Found ", unitIDs.__len__(), " units on this tile."
+        unitIDs = [instance.getFifeId() for instance in all_instances]
+
+        print "Found ", len(unitIDs), " units on this tile."
         print unitIDs
 
         return unitIDs
 
 
     def getInstance(self, id):
-        # TODO See if we can get rid of this by replacing it with instance_to_agent .agent
         '''
         :param id: FIFEID of the agent you want to obtain
         :return: Instance
         '''
-        ids = self.agentLayer.getInstances()
-        instance = [i for i in ids if i.getFifeId() == id]
-        if instance:
-            return instance[0]
+        return self.unitManager.getAgent(id)
 
     def pump(self):
         pass
@@ -115,6 +275,10 @@ class Scene(object):
 
         self.map = loader.load(filename)
 
+        self.agentLayer = self.map.getLayer('TechdemoMapGroundObjectLayer')
+
+        self.unitManager = UnitManager()
+
         self._world.initCameras()
         self.initAgents()
         # self.initCameras()
@@ -124,16 +288,16 @@ class Scene(object):
 
 
         ## Load storages:
-        '''
-        storageFile = filename.replace(".xml",".sto")
-        if os.path.isfile(storageFile):
-            pic = pickle.load(open(storageFile, 'rb'))
-            for building in self.instance_to_agent.values():
-                if building.agentName in pic.keys():
-                    info = pic[building.agentName]
-                    print "Setting up", info
-                    building.storage.setStorage(info)
-        '''
+        # '''
+        # storageFile = filename.replace(".xml",".sto")
+        # if os.path.isfile(storageFile):
+        #     pic = pickle.load(open(storageFile, 'rb'))
+        #     for building in self.instance_to_agent.values():
+        #         if building.agentName in pic.keys():
+        #             info = pic[building.agentName]
+        #             print "Setting up", info
+        #             building.storage.setStorage(info)
+        # '''
 
 
     def initAgents(self):
@@ -143,48 +307,10 @@ class Scene(object):
         Loads the "agents" (i.e. units and structures) from the planet object and initialises them.
         """
 
-        self.agentLayer = self.map.getLayer('TechdemoMapGroundObjectLayer')
-        if not self.agentLayer:
-            print "Using the first layer that was found: ", self.map.getLayers()[0].getId()
-            self.agentLayer = self.map.getLayers()[0]
-
         agentList = self.planet.agentInfo
+        self.unitManager.initAgents(self.map, agentList, self._world.universe.unitLoader, self.planet)
         self.planet.agentInfo = {}
-
-        for agentID in agentList.keys():
-            id = agentID
-            agentType = id.split(":")[0] # Holds the unit or stucture name
-
-            if self.unitLoader.isUnit(agentType):
-                newUnit = self.unitLoader.createUnit(agentType)
-                newUnit.AP = agentList[agentID]["AP"]
-            elif self.unitLoader.isBuilding(agentType):
-                newUnit = self.unitLoader.createBuilding(agentType)
-            else:
-                print "Error: unit is not building nor unit! ??"
-                continue
-
-            location = agentList[agentID]["Location"]
-            newUnit.createInstance(location)
-            self.instance_to_agent[newUnit.agent.getFifeId()] = newUnit
-            newUnit.start()
-
-            # Apply storage:
-            if agentID in self.planet.storages.keys():
-                storage = self.planet.storages[agentID]
-                if storage:
-                    newUnit.storage.setStorage(storage)
-                    self.planet.storages[agentID] = None
-
-
-
-            # Apply health:
-            newUnit.health = agentList[agentID]["HP"]
-
-            print id , "loaded!"
-
-                    # if newUnit.nameSpace == "Building":
-                    #     newUnit.setFootprint()
+        
 
     def updatePlanetAgents(self):
         '''
@@ -192,9 +318,7 @@ class Scene(object):
         :return:
         '''
         self.planet.agentInfo = {}
-        for angent in self.instance_to_agent.values():
-            self.planet.saveInstance(angent)
-
+        self.unitManager.saveAllAgents(self.planet)
 
 
     def getStorageDicts(self):
@@ -202,36 +326,14 @@ class Scene(object):
         Return a dictionary containing the storages of the buildings in this scene.
         :return:
         '''
+        return self.unitManager.getStorageDicts()
         storages = {}
 
-        for agentName in self.instance_to_agent.keys():
-            agent = self.instance_to_agent[agentName]
-            if agent.agentType == "Building":
-                if agent.storage:
-                    # Add this to the storages
-                    if agent.storage.inProduction or agent.storage.unitsReady:
-                        thisStorage = agent.storage.getStorageDict()
-                        storages[agent.agentName] = thisStorage
 
-        print "Saving" , len(storages), "storages"
-
-        return storages
-
-
-    def unitDied(self, unitID):
+    def unitDied(self, fifeID):
         '''
         Process the destruction of a unit
-        :param unitID: ID of the destroyed unit
+        :param fifeID: ID of the destroyed unit
         :return:
         '''
-
-        if unitID in self.instance_to_agent.keys():
-            unit = self.instance_to_agent[unitID]
-            self.instance_to_agent.__delitem__(unitID)
-            unit.agent.removeActionListener(unit)
-
-            self.agentLayer.deleteInstance(unit.agent)
-            unit.agent = None
-
-        else:
-            print "Could not delete instance: " , unitID
+        self.unitManager.removeInstance(fifeID)

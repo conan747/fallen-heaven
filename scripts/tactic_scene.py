@@ -2,20 +2,21 @@ __author__ = 'cos'
 
 
 
-from fife import fife
-import tactic_world
-from agents.hero import Hero
-from agents.girl import Girl
-from agents.cloud import Cloud
-from agents.unit import *
+# from fife import fife
+# import tactic_world
+# from agents.hero import Hero
+# from agents.girl import Girl
+# from agents.cloud import Cloud
+# from agents.unit import *
+# from fife.extensions.fife_settings import Setting
+#
+# from gui.huds import TacticalHUD
+# from combat import Trajectory
+#
+# from fife.extensions.savers import saveMapFile
+
+
 from scene import Scene
-from fife.extensions.fife_settings import Setting
-
-from gui.huds import TacticalHUD
-from combat import Trajectory
-
-from fife.extensions.savers import saveMapFile
-
 
 
 _MODE_DEFAULT, _MODE_ATTACK, _MODE_DROPSHIP = xrange(3)
@@ -49,17 +50,16 @@ class TacticScene(Scene):
         super(TacticScene, self).load(filename)
 
         ## Start cellRenderer to show instance paths:
-        [self._world.cellRenderer.addPathVisual(instance.agent) for instance in self.instance_to_agent.values()]
+        [self._world.cellRenderer.addPathVisual(unit.agent) for unit in self.unitManager.getAgents()]
         self._world.cellRenderer.setEnabledPathVisual(True)
         self._world.cellRenderer.setEnabled(True)
 
         # Setup factionUnits
         for factionName in self.factionNames:
             self.factionUnits[factionName] = []
-            for instanceID in self.instance_to_agent.keys():
-                agent = self.instance_to_agent[instanceID]
+            for agent in self.unitManager.getAgents():
                 if agent.properties["faction"] == factionName:
-                    self.factionUnits[factionName].append(instanceID)
+                    self.factionUnits[factionName].append(agent.getFifeId())
 
         self._world.selectUnit(None)
 
@@ -71,7 +71,7 @@ class TacticScene(Scene):
         '''
         for unitID in self.factionUnits[self.currentTurn]:
             print "Reseting: ", unitID
-            unit = self.instance_to_agent[unitID]
+            unit = self.unitManager.getAgent(unitID)
             unit.resetAP()
 
     def nextTurn(self):
@@ -101,8 +101,7 @@ class TacticScene(Scene):
         '''
         targetIDs = self.getInstacesInTile(location)
         for unitID in targetIDs:
-            if unitID in self.instance_to_agent.keys():
-                self.instance_to_agent[unitID].getDamage(damage)
+            self.unitManager.getAgent(unitID)
 
     def unitDied(self, unitID):
         '''
@@ -111,23 +110,20 @@ class TacticScene(Scene):
         :return:
         '''
 
-        if unitID in self.instance_to_agent.keys():
-            unit = self.instance_to_agent[unitID]
-            self.instance_to_agent.__delitem__(unitID)
-            unit.agent.removeActionListener(unit)
-            self._world.cellRenderer.removePathVisual(unit.agent)
+        self._world.cellRenderer.removePathVisual(self.unitManager.getAgent(unitID).agent)
 
-            self.agentLayer.deleteInstance(unit.agent)
-            unit.agent = None
+        self.unitManager.removeInstance(unitID)
+
         for factionName in self.factionUnits.keys():
             if unitID in self.factionUnits[factionName]:
                 self.factionUnits[factionName].remove(unitID)
                 return
+
 
         print "Could not delete instance: " , unitID
 
 
     def reset(self):
         ### TODO This should be fixed!!!
-        self.instance_to_agent = {}
+        pass
 

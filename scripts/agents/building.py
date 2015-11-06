@@ -313,6 +313,8 @@ class Building(Agent):
         Creates a series of dummy objects to symbolize the free cells.
         :return:
         '''
+        self.setFootprint()
+        return
         location = self.agent.getLocation()
         layer = location.getLayer()
         newlocation = self.agent.getLocation()
@@ -324,12 +326,12 @@ class Building(Agent):
                 cellPos.x -= x
                 cellPos.y -= y
 
-                newlocation.setLayerCoordinates(cellPos)
+                #newlocation.setLayerCoordinates(cellPos)
                 #dummyInstance = DummyInstance(self, newlocation)
-                object = self.world.model.getObject("dummy", "fallen")
-                dummyInstance = layer.createInstance(object, newlocation.getExactLayerCoordinates())
+                #object = self.world.model.getObject("dummy", "fallen")
+                #dummyInstance = layer.createInstance(object, newlocation.getExactLayerCoordinates())
 
-                self.dummyInstances.append(dummyInstance)
+                #self.dummyInstances.append(dummyInstance)
 
 
 

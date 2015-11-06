@@ -44,6 +44,9 @@ class Agent(fife.InstanceActionListener):
 
         self.health = 0
 
+    def getFifeId(self):
+        if self.agent:
+            return self.agent.getFifeId()
 
 
     def createInstance(self, location):

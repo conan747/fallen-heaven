@@ -56,14 +56,14 @@ class TacticListener(WorldListener):
             print "No active unit selected!"
             return
 
-        activeUnit = self._world.scene.instance_to_agent[self._world.activeUnit]
+        activeAgent = self._world.getActiveAgent()
         clickLocation = self._world.getLocationAt(clickpoint)
-        trajectory = Trajectory(activeUnit , self._world,0)
+        trajectory = Trajectory(activeAgent , self._world, 0)
         # print "Is is reachable?"
         if trajectory.isInRange(clickLocation):
         # print "Calculating Clear path:"
             if trajectory.hasClearPath(clickLocation):
-                activeUnit.attack(clickLocation)
+                activeAgent.attack(clickLocation)
                 self._world.HUD.updateUI()
 
 
@@ -80,12 +80,13 @@ class TacticListener(WorldListener):
 
         elif self._world.activeUnit:
             # there was a unit selected and an empty cell has been clicked
-            agent = self._world.scene.instance_to_agent[self._world.activeUnit]
+
+            agent = self._world.getActiveAgent()
             if agent.agentType == "Unit" and not self._world.busy:
                 # move the unit if possible
                 location = self._world.getLocationAt(clickpoint)
                 if agent.canTeleportTo(location):
-                    self._world.scene.instance_to_agent[self._world.activeUnit].run(location, self._cellSelectionRenderer.reset)
+                    agent.run(location, self._cellSelectionRenderer.reset)
                 else:
                     agent.playError()
             else:
@@ -97,9 +98,9 @@ class TacticListener(WorldListener):
         '''
         Specific deploying behavior for tactic situations: Units can only be deployed right next to the building.
         '''
+
         unit = self._world.deploying
-        buildingID = self._world.activeUnit
-        building = self._world.scene.instance_to_agent[buildingID]
+        building = self._world.getActiveAgent()
 
         ## Get center point of the building.
         buildingLocation = building.agent.getLocation()
@@ -138,10 +139,7 @@ class TacticListener(WorldListener):
             return
 
         # Generate an instance for the unit.
-        unit.createInstance(clickLocation)
-        # unit.teleport(clickLocation)
         instanceID = unit.agent.getFifeId()
-        self._world.scene.instance_to_agent[instanceID] = unit
         faction = unit.properties["faction"]
         self._world.scene.factionUnits[faction].append(instanceID)
         self._world.cellRenderer.addPathVisual(unit.agent)
@@ -155,19 +153,21 @@ class TacticListener(WorldListener):
         :return:
         '''
 
-        unitID = self._world.activeUnit
+        if not self.unitManager:
+            self.unitManager = self._world.scene.unitManager
 
-        if not unitID:
+        unit = self._world.getActiveAgent()
+
+        if not unit:
             super(TacticListener, self).mouseMoved(evt)
             return
 
-        unit = self._world.scene.instance_to_agent[unitID]
         if unit.agentType != "Unit": # It's a building
             super(TacticListener, self).mouseMoved(evt)
             return
 
         self._world.mousePos = (evt.getX(), evt.getY())
-            ## If we reached this point we should show the maximum range of the movement.
+        ## If we reached this point we should show the maximum range of the movement.
 
         ## TODO: Make this a path object for convenience.
         ## TODO: Make a separate thread for this perhaps?
@@ -206,34 +206,31 @@ class TacticListener(WorldListener):
 
         if not self._world.activeUnit:
             return
-        else:
-            activeUnit = self._world.scene.instance_to_agent[self._world.activeUnit]
-            if activeUnit.agentType == "Building":
-                return
+
+        if not self.unitManager:
+            self.unitManager = self._world.scene.unitManager
+        activeUnit = self._world.getActiveAgent()
+        if activeUnit.agentType == "Building":
+            return
 
         instances = self._world.getInstancesAt(clickpoint)
         print "selected instances on agent layer: ", [i.getObject().getId() for i in instances]
         print "Found " , instances.__len__(), "instances"
 
-        if instances:
-            # self.activeUnit = None
-            for instance in instances:
-                id = instance.getFifeId()
-                print "Instance: ", id
-                if id in self._world.scene.instance_to_agent.keys():
-                    clickedAgent = self._world.scene.instance_to_agent[id]
-                    if clickedAgent.properties["faction"] != self._world.scene.currentTurn:
+        for instance in instances:
+                clickedAgent = self.unitManager.getAgent(instance)
+                if not clickedAgent or clickedAgent.properties["faction"] != self._world.scene.currentTurn:
                         return
-                    if clickedAgent.agentType == "Building":
-                        storage = clickedAgent.storage
-                        if storage:
-                            ##HACK: only accept on dropships
-                            if clickedAgent.properties["StructureCategory"] == "Dropship":
-                                if self.canGetToPerimeter(activeUnit, clickedAgent):
-                                    if storage.addUnit(activeUnit):
-                                        ## storage added correctly -> remove unit from the map.
-                                        activeUnit.die()
-                                        self._world.selectUnit(None)
+                if clickedAgent.agentType == "Building":
+                    storage = clickedAgent.storage
+                    if storage:
+                        ##HACK: only accept on dropships
+                        if clickedAgent.properties["StructureCategory"] == "Dropship":
+                            if self.canGetToPerimeter(activeUnit, clickedAgent):
+                                if storage.addUnit(activeUnit):
+                                    ## storage added correctly -> remove unit from the map.
+                                    activeUnit.die() #TODO: This shouldn't be die.
+                                    self._world.selectUnit(None)
 
 
     def canGetToPerimeter(self, activeUnit, building):
@@ -270,10 +267,6 @@ class TacticListener(WorldListener):
                     return True
         ## TODO: give feedback.
         return False
-
-
-
-
 
 
 
@@ -317,7 +310,9 @@ class TacticWorld(World):
     def startDeploy(self, storage):
         self.storage = storage
         self.setMode(self.MODE_DEPLOY)
-        building = self.scene.instance_to_agent[self.activeUnit]
+        if not self.unitManager:
+            self.unitManager = self._world.scene.unitManager
+        building = self.getActiveAgent()
         properties = building.properties
 
         ## Show the available cells:

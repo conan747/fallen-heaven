@@ -53,17 +53,16 @@ class StrategicListener(WorldListener):
         print "Found " , instances.__len__(), "instances"
 
         if instances:
+            if not self.unitManager:
+                self.unitManager = self._world.scene.unitManager
             for instance in instances:
-                id = instance.getFifeId()
-                print "Instance: ", id
-                if id in self._world.scene.instance_to_agent.keys():
-                    agent = self._world.scene.instance_to_agent[id]
-                    print "Recycling: ", agent.agentName
-                    agent.die()
-                    # refund the cost
-                    cost = int(agent.properties["Cost"])
-                    self._world.deductCredits(-cost)
-                    self._world.HUD.updateUI()
+                agent = self.unitManager.getAgent(instance)
+                print "Recycling: ", agent.agentName
+                agent.die() ## TODO: Shouldn't we do unitManager delete instead?
+                # refund the cost
+                cost = int(agent.properties["Cost"])
+                self._world.deductCredits(-cost)
+                self._world.HUD.updateUI()
             ## TODO: Handle situation when recycling a building containing storage.
             ## TODO: Reduce refund when building is built.
 

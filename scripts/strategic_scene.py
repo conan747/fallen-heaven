@@ -2,21 +2,19 @@ __author__ = 'cos'
 
 
 
-from fife import fife
-import tactic_world
-from agents.hero import Hero
-from agents.girl import Girl
-from agents.cloud import Cloud
-from agents.unit import *
-from agents.building import *
+# from fife import fife
+# import tactic_world
+# from agents.hero import Hero
+# from agents.girl import Girl
+# from agents.cloud import Cloud
+# from agents.unit import *
+# from agents.building import *
+# from fife.extensions.fife_settings import Setting
+# from gui.huds import TacticalHUD
+# from combat import Trajectory
+# from fife.extensions.savers import saveMapFile
+
 from scene import Scene
-from fife.extensions.fife_settings import Setting
-
-from gui.huds import TacticalHUD
-from combat import Trajectory
-
-from fife.extensions.savers import saveMapFile
-
 
 
 
@@ -51,7 +49,4 @@ class StrategicScene(Scene):
         :param building:
         :return:
         '''
-        building.start()
-        self.instance_to_agent[building.agent.getFifeId()] = building
-        # self.planet.saveInstance(building)
-        # building.nameSpace = "Building" ## FIXME: This is a bit messy.
+        self.unitManager.addBuilding(building)

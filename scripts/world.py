@@ -29,9 +29,9 @@ from fife.extensions.pychan.internal import get_manager
 
 from scripts.common.eventlistenerbase import EventListenerBase
 from fife.extensions.soundmanager import SoundManager
-from agents.hero import Hero
-from agents.girl import Girl
-from agents.cloud import Cloud
+# from agents.hero import Hero
+# from agents.girl import Girl
+# from agents.cloud import Cloud
 from agents.unit import *
 from fife.extensions.fife_settings import Setting
 
@@ -55,8 +55,6 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
     the main menu is visible).  It is NOT attached by default.
     """
 
-    ## TODO: Handle selection by cell not by image. (In order to select ocluded instances.) What about the case of buildings?
-
     def __init__(self, world):
         self._engine = world.engine
         self._world = world
@@ -70,6 +68,7 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
 
         self._attached = False
         self._cellSelectionRenderer = None
+        self.unitManager = None
 
         self._lastmousepos = (0.0, 0.0)
 
@@ -102,7 +101,7 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
         id=0
         ids = [instance.getFifeId() for instance in instances]
         if self._world.activeUnit:
-            activeID = self._world.scene.instance_to_agent[self._world.activeUnit].agent.getFifeId()
+            activeID = self._world.activeUnit
             if activeID in ids:
                 if len(ids) > 1:
                     ids.sort()
@@ -118,10 +117,13 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
             else:
                 return
 
+        if not self.unitManager:
+            self.unitManager = self._world.scene.unitManager
+
         print "Instance: ", id
-        if id in self._world.scene.instance_to_agent.keys():
+        if id in self.unitManager.getFifeIds():
             self._world.selectUnit(id)
-            print "Agent Name: " , self._world.scene.instance_to_agent[id].agentName
+            print "Agent Name: " , self.unitManager.getAgent(id).agentName
 
 
 
@@ -137,9 +139,12 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
 
         self.cycleThroughInstances(instances)
 
+        if not self.unitManager:
+            self.unitManager = self._world.scene.unitManager
+
         if self._world.activeUnit:
             if self._world.activeUnit == initialUnit:
-                self._world.scene.instance_to_agent[self._world.activeUnit].teleport(self._world.getLocationAt(clickpoint))
+                self._world.getActiveAgent().teleport(self._world.getLocationAt(clickpoint))
 
 
     def clickGetIn(self, clickpoint):
@@ -148,7 +153,7 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
         if not self._world.activeUnit:
             return
         else:
-            activeUnit = self._world.scene.instance_to_agent[self._world.activeUnit]
+            activeUnit = self._world.getActiveAgent()
             if activeUnit.agentType == "Building":
                 return
 
@@ -156,22 +161,20 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
         print "selected instances on agent layer: ", [i.getObject().getId() for i in instances]
         print "Found " , instances.__len__(), "instances"
 
-        if instances:
-            # self.activeUnit = None
-            for instance in instances:
-                id = instance.getFifeId()
-                print "Instance: ", id
-                if id in self._world.scene.instance_to_agent.keys():
-                    clickedAgent = self._world.scene.instance_to_agent[id]
-                    if clickedAgent.agentType == "Building":
-                        storage = clickedAgent.storage
-                        if storage:
-                            ##HACK: only accept on dropships
-                            if clickedAgent.properties["StructureCategory"] == "Dropship":
-                                if storage.addUnit(activeUnit):
-                                    ## storage added correctly -> remove unit from the map.
-                                    activeUnit.die()
-                                    self._world.selectUnit(None)
+        if not self.unitManager:
+            self.unitManager = self._world.scene.unitManager
+
+        for instance in instances:
+            clickedAgent = self.unitManager.getAgent(instance)
+            if clickedAgent and clickedAgent.agentType == "Building":
+                storage = clickedAgent.storage
+                if storage:
+                    ##HACK: only accept on dropships
+                    if clickedAgent.properties["StructureCategory"] == "Dropship":
+                        if storage.addUnit(activeUnit):
+                            ## storage added correctly -> remove unit from the map.
+                            activeUnit.die()
+                            self._world.selectUnit(None)
 
 
 
@@ -181,26 +184,19 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
         '''
         unit = self._world.deploying
 
-        # properties = unit.properties
-        # if unit.agentType == "Building":
-        #     self._world.construction = unit
-        #     self.placeBuilding(clickpoint):
-        #     self.cancelDeploy()
-        #     return
-
         clickLocation = self._world.getLocationAt(clickpoint)
         if not unit.teleport(clickLocation):
             # This is supposed to be an ilegal teleport position -> cancel
             self.cancelDeploy()
             return
 
+        if not self.unitManager:
+            self.unitManager = self._world.scene.unitManager
+
         # Generate an instance for the unit.
-        unit.createInstance(clickLocation)
-        # unit.teleport(clickLocation)
-        self._world.scene.instance_to_agent[unit.agent.getFifeId()] = unit
+        self.unitManager.addAgent(unit, clickLocation)
         self._world.storage.unitDeployed()
         self.cancelDeploy()
-
 
     def cancelDeploy(self):
         self._world.deploying = None
@@ -452,6 +448,7 @@ class World(object):
         self.planet = planet
         self.attackType = None
         self.scene=None
+        self.unitManager = None
 
         self.settings = universe._settings
 
@@ -488,6 +485,16 @@ class World(object):
         ## There can only be one world -> assign unitLoader to this world.
         self.universe.unitLoader.setWorld(self)
 
+    def getActiveAgent(self):
+        '''
+        Returns the active agent.
+        :return: Agent
+        '''
+        if self.activeUnit:
+            if not self.unitManager:
+                self.unitManager = self.scene.unitManager
+
+            return self.unitManager.getAgent(self.activeUnit)
 
     def reset(self):
         """
@@ -610,17 +617,17 @@ class World(object):
         #renderer.setEnabledBlocking(True)
         self.target_rotation = self.cameras['main'].getRotation()
 
-        ## Coordinate Renderer
-        '''
-        # self.rend = self.cameras['main'].getRenderer('CoordinateRenderer')
-        # self.rend.setEnabled(True)
-        renderer = fife.CoordinateRenderer.getInstance(self.cameras['main'])
+        # ## Coordinate Renderer
+        # '''
+        # # self.rend = self.cameras['main'].getRenderer('CoordinateRenderer')
+        # # self.rend.setEnabled(True)
+        # renderer = fife.CoordinateRenderer.getInstance(self.cameras['main'])
+        # # renderer.setFont(textfont)
+        # renderer.clearActiveLayers()
         # renderer.setFont(textfont)
-        renderer.clearActiveLayers()
-        renderer.setFont(textfont)
-        renderer.addActiveLayer(self.scene.map.getLayer("TrajectoryLayer"))
-        renderer.setEnabled(True)
-        '''
+        # renderer.addActiveLayer(self.scene.map.getLayer("TrajectoryLayer"))
+        # renderer.setEnabled(True)
+        # '''
 
 
         ## Start cellRenderer to show instance paths:
@@ -668,12 +675,12 @@ class World(object):
         ## Clear previously selected unit
         if self.activeUnit != id:
             if self.activeUnit:
-                self.activeUnitRenderer.removeOutlined(self.scene.getInstance(self.activeUnit))
+                self.activeUnitRenderer.removeOutlined(self.scene.getInstance(self.activeUnit).agent)
                 ### !!!! CHekc if we can improve this!
 
         self.activeUnit = id
         if id:
-            self.activeUnitRenderer.addOutlined(self.scene.getInstance(id), 173, 255, 47, 2)
+            self.activeUnitRenderer.addOutlined(self.scene.getInstance(id).agent, 173, 255, 47, 2)
         #
         #     ## Get rid of all this because we don't have it on the original game.
         #     ## Show it on the mini-camera:
@@ -834,7 +841,8 @@ class World(object):
 
             mousepoint = fife.ScreenPoint(self.mousePos[0], self.mousePos[1])
             mouseLocation = self.getLocationAt(mousepoint)
-            trajectory = Trajectory(self.scene.instance_to_agent[self.activeUnit], self,0)
+
+            trajectory = Trajectory( self.getActiveAgent(), self,0)
             # print "Is is reachable?"
             if trajectory.hasClearPath(mouseLocation, display=True) and trajectory.isInRange(mouseLocation) :
                 self.cursorHandler.setCursor(self.cursorHandler.CUR_ATTACK)

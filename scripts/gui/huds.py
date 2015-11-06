@@ -100,10 +100,7 @@ class TacticalHUD(HUD):
 
     def updateUI(self):
         self.structureWidget.updateUI()
-        if self.world.activeUnit:
-            unit = self.world.scene.instance_to_agent[self.world.activeUnit]
-        else:
-            unit = None
+        unit = self.world.getActiveAgent()
         self.unitInfoWidget.updateUI(unit, world=self.world)
 
 
@@ -245,21 +242,19 @@ class StructureWidget(Widget):
 
     def updateUI(self):
 
-        activeUnit = None
-        activeUnitID = self.HUD.world.activeUnit
-        activeUnitInfo = None
+        activeUnit = self.HUD.world.getActiveAgent()
 
         if self.storageWidget:
                 self.storageWidget.hide(free=True)
                 self.storageWidget = None
 
-        if not activeUnitID:
+        if not activeUnit:
             # No unit was selected therefore hide this widget.
             self.hide()
             return
 
-        activeUnit = self.HUD.world.scene.instance_to_agent[activeUnitID]
         activeUnitInfo = activeUnit.properties
+
         print activeUnitInfo
 
         if activeUnit.agentType != "Building":
