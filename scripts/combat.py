@@ -23,7 +23,7 @@ class Trajectory(object):
         self._unit = unit
         self._weaponMode = weapon
         self._world = world
-        self._unitLocation = unit.agent.getLocation()
+        self._unitLocation = unit.instance.getLocation()
         if self._weaponMode == self._unit.LWEAPON:
             self.weapon = self._unit.lightWeapon
         elif self._weaponMode ==  self._unit.HWEAPON:
@@ -92,11 +92,11 @@ class Trajectory(object):
         instancerenderer.removeAllOutlines()
 
         self._renderer.reset()
-        fromLocation = self._unit.agent.getLocation()
+        fromLocation = self._unit.instance.getLocation()
         layer = fromLocation.getLayer()
         origin = fromLocation.getLayerCoordinates(layer)
         destination = location.getLayerCoordinates(layer)
-        exclude = [self._unit.agent]
+        exclude = [self._unit.instance]
         target = layer.getInstancesAt(location)
         exclude += target
         exclude = [agent.getFifeId() for agent in exclude]

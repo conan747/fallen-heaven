@@ -103,7 +103,7 @@ class TacticListener(WorldListener):
         building = self._world.getActiveAgent()
 
         ## Get center point of the building.
-        buildingLocation = building.agent.getLocation()
+        buildingLocation = building.instance.getLocation()
 
         clickLocation = self._world.getLocationAt(clickpoint)
         layer = buildingLocation.getLayer()
@@ -139,10 +139,10 @@ class TacticListener(WorldListener):
             return
 
         # Generate an instance for the unit.
-        instanceID = unit.agent.getFifeId()
+        instanceID = unit.instance.getFifeId()
         faction = unit.properties["faction"]
         self._world.scene.factionUnits[faction].append(instanceID)
-        self._world.cellRenderer.addPathVisual(unit.agent)
+        self._world.cellRenderer.addPathVisual(unit.instance)
         self._world.storage.unitDeployed()
         self.cancelDeploy()
 
@@ -184,8 +184,8 @@ class TacticListener(WorldListener):
                 return
 
             iPather = fife.RoutePather()
-            route = iPather.createRoute(unit.agent.getLocation(), location, False)
-            route.setObject(unit.agent.getObject())
+            route = iPather.createRoute(unit.instance.getLocation(), location, False)
+            route.setObject(unit.instance.getObject())
             iPather.solveRoute(route, fife.HIGH_PRIORITY,True)
             movesLeft = unit.AP / 10
             route.cutPath(movesLeft) ## Cut the path short if too long
@@ -240,7 +240,7 @@ class TacticListener(WorldListener):
         :param clickedAgent: Building that can accept the activeUnit.
         :return:
         '''
-        buildingLocation = building.agent.getLocation()
+        buildingLocation = building.instance.getLocation()
 
         startingPos = buildingLocation.getMapCoordinates()
 
@@ -256,8 +256,8 @@ class TacticListener(WorldListener):
                 loc = fife.Location(buildingLocation)
                 loc.setMapCoordinates(cellPos)
 
-                route = iPather.createRoute(activeUnit.agent.getLocation(), loc, False)
-                route.setObject(activeUnit.agent.getObject())
+                route = iPather.createRoute(activeUnit.instance.getLocation(), loc, False)
+                route.setObject(activeUnit.instance.getObject())
                 iPather.solveRoute(route, fife.HIGH_PRIORITY,True)
                 routeLength = route.getPathLength()
                 if routeLength < 1:
@@ -316,7 +316,7 @@ class TacticWorld(World):
         properties = building.properties
 
         ## Show the available cells:
-        buildingLocation = building.agent.getLocation()
+        buildingLocation = building.instance.getLocation()
         self.listener._cellSelectionRenderer.reset()
 
         startingPos = buildingLocation.getMapCoordinates()

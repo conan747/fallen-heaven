@@ -97,7 +97,7 @@ class StrategicListener(WorldListener):
                 return
             mousePoint = fife.ScreenPoint(evt.getX(), evt.getY())
             location = self._world.getLocationAt(mousePoint)
-            if not construction.agent:
+            if not construction.instance:
                 ## Initialize instance
                 construction.createInstance(location)
 
@@ -163,8 +163,8 @@ class StrategicWorld(World):
         if self.construction:
             # Destroy the construction first!
             # self._world.construction.remove()
-            if self.construction.agent:
-                self.scene.agentLayer.deleteInstance(self.construction.agent)
+            if self.construction.instance:
+                self.scene.agentLayer.deleteInstance(self.construction.instance)
                 self.construction.__del__()
             self.construction = None
             self.selectUnit(None)

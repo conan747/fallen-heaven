@@ -675,12 +675,12 @@ class World(object):
         ## Clear previously selected unit
         if self.activeUnit != id:
             if self.activeUnit:
-                self.activeUnitRenderer.removeOutlined(self.scene.getInstance(self.activeUnit).agent)
+                self.activeUnitRenderer.removeOutlined(self.scene.getInstance(self.activeUnit).instance)
                 ### !!!! CHekc if we can improve this!
 
         self.activeUnit = id
         if id:
-            self.activeUnitRenderer.addOutlined(self.scene.getInstance(id).agent, 173, 255, 47, 2)
+            self.activeUnitRenderer.addOutlined(self.scene.getInstance(id).instance, 173, 255, 47, 2)
         #
         #     ## Get rid of all this because we don't have it on the original game.
         #     ## Show it on the mini-camera:

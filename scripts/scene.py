@@ -65,9 +65,9 @@ class UnitManager(object):
 
     def addAgent(self, newAgent, location):
             newAgent.createInstance(location)
-            fifeID = newAgent.agent.getFifeId()
+            fifeID = newAgent.instance.getFifeId()
             self.fife2Agent[fifeID] = newAgent
-            self.ID2fife[newAgent.agent.getId()] = fifeID
+            self.ID2fife[newAgent.instance.getId()] = fifeID
 
     def getAgent(self, argument):
         '''
@@ -107,7 +107,7 @@ class UnitManager(object):
             location = agentList[agentID]["Location"]
             self.addAgent(newAgent, location)
 
-            if newAgent.agent.getId() == newAgent.agent.getFifeId():
+            if newAgent.instance.getId() == newAgent.instance.getFifeId():
                 print "Watch out! the ID is the same as the fifeID for %s" % agentName
             newAgent.start()
 
@@ -125,7 +125,7 @@ class UnitManager(object):
 
     def addBuilding(self, building):
         building.start()
-        self.fife2Agent[building.agent.getFifeId()] = building
+        self.fife2Agent[building.instance.getFifeId()] = building
 
     def saveAllAgents(self, planet):
         '''
@@ -160,18 +160,18 @@ class UnitManager(object):
         '''
         if isinstance(fifeID, Agent):
             agent = fifeID
-            fifeID = fifeID.agent.getFifeId()
+            fifeID = fifeID.instance.getFifeId()
         else:
             agent = self.getAgent(fifeID)
             if isinstance(fifeID, fife.Instance):
-                fifeID = fifeID.agent.getFifeId()
+                fifeID = fifeID.instance.getFifeId()
 
         if agent:
             self.fife2Agent.__delitem__(fifeID)
-            agent.agent.removeActionListener(agent)
+            agent.instance.removeActionListener(agent)
 
             self.agentLayer.deleteInstance(agent.agent)
-            agent.agent = None
+            agent.instance = None
 
         else:
             print "Could not delete instance: " , fifeID

@@ -77,15 +77,15 @@ class Unit(Agent):
             self.heavyWeapon = HWeapon
 
     def calculateDistance(self,location):
-        # print "Current Location", self.agent.getLocation().getMapCoordinates()
+        # print "Current Location", self.instance.getLocation().getMapCoordinates()
         # print "Target Location", location.getMapCoordinates()
         iPather = fife.RoutePather()
-        route = iPather.createRoute(self.agent.getLocation(),location, True)
+        route = iPather.createRoute(self.instance.getLocation(),location, True)
         # print "Beginning of the route", route.getStartNode().getMapCoordinates()
         # print "End of the route", route.getEndNode().getMapCoordinates()
         # if iPather.solveRoute(route):
             # print "Route solved!"
-        # route = fife.Route(self.agent.getLocation(),location)
+        # route = fife.Route(self.instance.getLocation(),location)
         # path = route.getPath()
         distance = route.getPathLength()
         # print "Distance to walk:", distance
@@ -136,8 +136,8 @@ class Unit(Agent):
             return False
 
         if not self.world.cameras['main'].getMatchingInstances(location, False):
-            if self.agent:
-                self.agent.setLocation(location)
+            if self.instance:
+                self.instance.setLocation(location)
             print "It was able to teleport"
             return True
         print "Not able to teleport!"
@@ -161,8 +161,8 @@ class Unit(Agent):
         movesLeft = self.AP / 10
 
         iPather = fife.RoutePather()
-        route = iPather.createRoute(self.agent.getLocation(),location, False)
-        route.setObject(self.agent.getObject())
+        route = iPather.createRoute(self.instance.getLocation(),location, False)
+        route.setObject(self.instance.getObject())
         iPather.solveRoute(route, fife.HIGH_PRIORITY,True)
         route.cutPath(movesLeft) ## Cut the path short if too long
         pathLength = route.getPathLength()-1
@@ -170,7 +170,7 @@ class Unit(Agent):
             self.AP -= pathLength * 10
             print "Path length:", route.getPathLength()-1
             self.world.busy = True
-            self.agent.move('stand', route.getEndNode(), 5)
+            self.instance.move('stand', route.getEndNode(), 5)
 
         if runAfterFinish:
             runAfterFinish()
@@ -178,7 +178,7 @@ class Unit(Agent):
 
     def die(self):
         print "This unit is dead!"
-        self.world.scene.unitDied(self.agent.getFifeId())
+        self.world.scene.unitDied(self.instance.getFifeId())
         # self.layer.deleteInstance(self.agent)
 
 
@@ -203,7 +203,7 @@ class Unit(Agent):
 
     def attack(self, location, weaponType=None):
 
-        ## TODO: add self.agent.setFacingLocation
+        ## TODO: add self.instance.setFacingLocation
 
         if self.canAttack(self.LWEAPON):
             self.lightWeapon.fire(location)

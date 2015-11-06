@@ -55,7 +55,7 @@ class Storage(object):
     def __init__(self, building, world):
         self.parent = building
         # if self.parent.agent:
-        #     self.parentID = building.agent.getFifeId()  # Parent ID of the object that contains this storage.
+        #     self.parentID = building.instance.getFifeId()  # Parent ID of the object that contains this storage.
         self.world = world
         self.ableToProduce = None
 
@@ -198,7 +198,7 @@ class DummyInstance(fife.Instance):
         #obj = self.getDummyObject()
         self._parent = parent
         obj = self._parent.world.model.getObject("dummy", "fallen")
-        self.parentID = self._parent.agent.getFifeId()
+        self.parentID = self._parent.instance.getFifeId()
         identifier = "dummy_%s" % self.parentID
         #point = location.getLayerCoordinates()
         super(DummyInstance, self).__init__(obj, location, identifier)
@@ -250,7 +250,7 @@ class Building(Agent):
 
     def calculateDistance(self, location):
         iPather = fife.RoutePather()
-        route = iPather.createRoute(self.agent.getLocation(), location, True)
+        route = iPather.createRoute(self.instance.getLocation(), location, True)
         distance = route.getPathLength()
         return distance
 
@@ -264,11 +264,11 @@ class Building(Agent):
         layercoords = fife.DoublePoint3D(int(exactcoords.x), int(exactcoords.y), int(exactcoords.z))
         location.setExactLayerCoordinates(layercoords)
 
-        if location == self.agent.getLocation():
+        if location == self.instance.getLocation():
             return True
 
 
-        layer = self.agent.getLocation().getLayer()
+        layer = self.instance.getLocation().getLayer()
         cellCache = layer.getCellCache()
 
         # unblocked = True
@@ -276,7 +276,7 @@ class Building(Agent):
             for y in range(self.properties["SizeY"]):
                 # if (x or y) == 0:
                 #     continue
-                # loc = self.agent.getLocation()
+                # loc = self.instance.getLocation()
                 cellPos = location.getLayerCoordinates()
                 cellPos.x -= x
                 cellPos.y -= y
@@ -296,7 +296,7 @@ class Building(Agent):
 
         # ## Check if the location is empty:
         # if not self.world.scene.getInstacesInTile(location):
-        self.agent.setLocation(location)
+        self.instance.setLocation(location)
         return True
 
 
@@ -304,7 +304,7 @@ class Building(Agent):
         print "This unit is destroyed!"
         self.removeFootprint()
         #TODO: Enable attacking footprint area!
-        self.world.scene.unitDied(self.agent.getFifeId())
+        self.world.scene.unitDied(self.instance.getFifeId())
         # self.layer.deleteInstance(self.agent)
 
 
@@ -315,9 +315,9 @@ class Building(Agent):
         '''
         self.setFootprint()
         return
-        location = self.agent.getLocation()
+        location = self.instance.getLocation()
         layer = location.getLayer()
-        newlocation = self.agent.getLocation()
+        newlocation = self.instance.getLocation()
         for y in range(self.properties["SizeX"]):
             for x in range(self.properties["SizeY"]):
                 if (x == 0) and (y == 0):
@@ -341,7 +341,7 @@ class Building(Agent):
         :return:
         '''
 
-        location = self.agent.getLocation()
+        location = self.instance.getLocation()
         layer = location.getLayer()
         cellCache = layer.getCellCache()
         # anchorPos = location.getLayerCoordinates()
@@ -364,7 +364,7 @@ class Building(Agent):
         :return:
         '''
 
-        location = self.agent.getLocation()
+        location = self.instance.getLocation()
         layer = location.getLayer()
         cellCache = layer.getCellCache()
 

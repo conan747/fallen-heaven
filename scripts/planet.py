@@ -36,7 +36,7 @@ class Planet(object):
         info["HP"] = agent.health
 
         # Location
-        location = agent.agent.getLocation()
+        location = agent.instance.getLocation()
         point = location.getLayerCoordinates()
         info["Location"] = (point.x , point.y, point.z)
 

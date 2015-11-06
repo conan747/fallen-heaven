@@ -50,7 +50,7 @@ class TacticScene(Scene):
         super(TacticScene, self).load(filename)
 
         ## Start cellRenderer to show instance paths:
-        [self._world.cellRenderer.addPathVisual(unit.agent) for unit in self.unitManager.getAgents()]
+        [self._world.cellRenderer.addPathVisual(unit.instance) for unit in self.unitManager.getAgents()]
         self._world.cellRenderer.setEnabledPathVisual(True)
         self._world.cellRenderer.setEnabled(True)
 
@@ -110,7 +110,7 @@ class TacticScene(Scene):
         :return:
         '''
 
-        self._world.cellRenderer.removePathVisual(self.unitManager.getAgent(unitID).agent)
+        self._world.cellRenderer.removePathVisual(self.unitManager.getAgent(unitID).instance)
 
         self.unitManager.removeInstance(unitID)
 

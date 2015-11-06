@@ -34,7 +34,7 @@ class Agent(fife.InstanceActionListener):
         self.agentType = agentType
         # self.layer = layer
         self.world = world
-        self.agent = None
+        self.instance = None
 
         self.properties = {}
         self.movement = None
@@ -45,8 +45,8 @@ class Agent(fife.InstanceActionListener):
         self.health = 0
 
     def getFifeId(self):
-        if self.agent:
-            return self.agent.getFifeId()
+        if self.instance:
+            return self.instance.getFifeId()
 
 
     def createInstance(self, location):
@@ -69,17 +69,17 @@ class Agent(fife.InstanceActionListener):
         object = self.setWalkableAreas(object)
         object.setBlocking(True)
 
-        self.agent = self.world.scene.agentLayer.createInstance(object, point)
-        self.agent.setCellStackPosition(0)
+        self.instance = self.world.scene.agentLayer.createInstance(object, point)
+        self.instance.setCellStackPosition(0)
 
         if self.unitName:
-            fifeID = self.agent.getFifeId()
+            fifeID = self.instance.getFifeId()
             self.agentName = self.unitName + ":" + str(fifeID)
 
-            self.agent.setId(self.agentName)
-            print "Created ", self.agent.getId()
+            self.instance.setId(self.agentName)
+            print "Created ", self.instance.getId()
 
-        self.agent.addActionListener(self)
+        self.instance.addActionListener(self)
 
 
     def setWalkableAreas(self, object):
@@ -103,12 +103,12 @@ class Agent(fife.InstanceActionListener):
         :return: bool, true if it could be loaded.
         '''
         layer = self.world.scene.agentLayer
-        self.agent = layer.getInstance(instanceName)
-        object = self.agent.getObject()
+        self.instance = layer.getInstance(instanceName)
+        object = self.instance.getObject()
 
-        if self.agent:
+        if self.instance:
             self.agentName = instanceName
-            self.agent.addActionListener(self)
+            self.instance.addActionListener(self)
             return True
         else:
             return False
@@ -133,7 +133,7 @@ class Agent(fife.InstanceActionListener):
 
     def idle(self):
         pass
-        # self.agent.actOnce('stand')
+        # self.instance.actOnce('stand')
 
 
 
