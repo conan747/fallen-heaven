@@ -73,13 +73,18 @@ class HUD(Widget):
 # -----------------------------------------------------------------------------------------------------------------
 
 class TacticalHUD(HUD):
+
+
+    LWEAPON, HWEAPON = xrange(2)
+
     def __init__(self, world):
         super(TacticalHUD,self).__init__(world)
         self.widget = pychan.loadXML('gui/tactical_hud.xml')
 
         self.widget.mapEvents({
                 'nextTurnButton' : self.world.onSkipTurnPress,
-                'attackLightButton' : self.world.onAttackButtonPressed
+                'attackLightButton' : self.onAttackLightPressed,
+                'attackHeavyButton' : self.onAttackHeavyPressed
         })
 
         self.structureWidget = StructureWidget(self)
@@ -87,6 +92,11 @@ class TacticalHUD(HUD):
 
         self.adjustPos()
 
+    def onAttackLightPressed(self):
+        self.world.onAttackButtonPressed(self.LWEAPON)
+
+    def onAttackHeavyPressed(self):
+        self.world.onAttackButtonPressed(self.HWEAPON)
 
     def destroy(self):
         self.widget.hide()
