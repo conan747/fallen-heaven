@@ -310,13 +310,15 @@ class StorageUI(Widget):
         self.storage = storage # This will point at the storage object that it represents.
         self.widget = pychan.loadXML('gui/storage.xml')
         self.widget.mapEvents({
-            'completeUnits': self.storage.completeUnits
+            'completeUnits': self.completeUnits
         })
         self.hide()
 
         self.producinUnitsWidget = None
         self.availableinUnitsWidget = None
 
+    def completeUnits(self):
+        self.storage.completeUnits()
 
     def destroy(self):
         self.widget.mapEvents({

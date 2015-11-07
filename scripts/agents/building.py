@@ -37,9 +37,7 @@ class Storage(object):
     This class will handle units inside a building/dropship. Also, it will handle units being produced.
     '''
 
-    ableToProduce = []  # Contains the unit names of the units that can be produced in this building
-    unitsReady = []  # List containing the unitID that are ready to be deployed.
-    inProduction = []  # List of names containing the units that have been "bought" but they are in production.
+
 
     # typeDict = {"NONE" : "None"
     #     , "TROOP"
@@ -50,10 +48,14 @@ class Storage(object):
 
     def __init__(self, building, world):
         self.parent = building
+
+        self.ableToProduce = []  # Contains the unit names of the units that can be produced in this building
+        self.unitsReady = []  # List containing the unitID that are ready to be deployed.
+        self.inProduction = []  # List of names containing the units that have been "bought" but they are in production.
+
         # if self.parent.agent:
         #     self.parentID = building.instance.getFifeId()  # Parent ID of the object that contains this storage.
         self.world = world
-        self.ableToProduce = None
 
         # Get the units that this is able to produce:
         productionType = self.parent.properties["ProductionType"]
@@ -332,7 +334,7 @@ class Building(Agent):
                 #    print "Instance added!"
 
                 self.dummyInstances.append(dummyInstance)
-
+        self.landed = True
 
 
     def setFootprint(self):
