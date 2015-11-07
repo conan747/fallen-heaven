@@ -32,10 +32,6 @@ import uuid
 
 
 
-
-
-
-
 class Storage(object):
     '''
     This class will handle units inside a building/dropship. Also, it will handle units being produced.
@@ -202,6 +198,7 @@ class DummyInstance(fife.Instance):
         identifier = "dummy_%s" % self.parentID
         #point = location.getLayerCoordinates()
         super(DummyInstance, self).__init__(obj, location, identifier)
+        self.instanceVisual = fife.InstanceVisual.create(self)
 
 
     def getParentAgent(self):
@@ -210,8 +207,8 @@ class DummyInstance(fife.Instance):
     def getFifeId(self):
         self.parentID
 
-    def getId(self):
-        return "dummy"
+    # def getId(self):
+    #     return "dummy"
 
 class Building(Agent):
 
@@ -245,7 +242,7 @@ class Building(Agent):
 
         self.health = self.properties["Hp"]
 
-        self.dummyInstances=fife.InstanceVector()
+        self.dummyInstances=[]
 
 
     def calculateDistance(self, location):
@@ -313,11 +310,10 @@ class Building(Agent):
         Creates a series of dummy objects to symbolize the free cells.
         :return:
         '''
-        self.setFootprint()
-        return
         location = self.instance.getLocation()
         layer = location.getLayer()
         newlocation = self.instance.getLocation()
+        dummyID = "dummy_%d" % self.getFifeId()
         for y in range(self.properties["SizeX"]):
             for x in range(self.properties["SizeY"]):
                 if (x == 0) and (y == 0):
@@ -326,12 +322,16 @@ class Building(Agent):
                 cellPos.x -= x
                 cellPos.y -= y
 
-                #newlocation.setLayerCoordinates(cellPos)
+                newlocation.setLayerCoordinates(cellPos)
                 #dummyInstance = DummyInstance(self, newlocation)
-                #object = self.world.model.getObject("dummy", "fallen")
-                #dummyInstance = layer.createInstance(object, newlocation.getExactLayerCoordinates())
+                object = self.world.model.getObject("dummy", "fallen")
+                #object = DummyInstance.getDummyObject()
+                dummyInstance = layer.createInstance(object, newlocation.getExactLayerCoordinates())
+                dummyInstance.setId(dummyID)
+                #if layer.addInstance(dummyInstance, newlocation.getExactLayerCoordinates()  ):
+                #    print "Instance added!"
 
-                #self.dummyInstances.append(dummyInstance)
+                self.dummyInstances.append(dummyInstance)
 
 
 

@@ -639,18 +639,30 @@ class World(object):
         self.cellRenderer.setEnabled(True)
 
 
-
-    def getInstancesAt(self, clickpoint):
+    def getInstancesAt(self, arg):
         """
         Query the main camera for instances on our active(agent) layer.
+        :param arg: Location or Point3D.
+        :return: List of instance IDs.
         """
-        instances = self.cameras['main'].getMatchingInstances(clickpoint, self.scene.agentLayer)
+        if isinstance(arg, fife.Point3D) or isinstance(arg, fife.ScreenPoint):
+            return self.cameras['main'].getMatchingInstances(arg, self.scene.agentLayer)
+        elif isinstance(arg, fife.Location):
+            return self.scene.agentLayer.getInstancesAt(arg)
 
-        if not instances:
-            location = self.getLocationAt(clickpoint)
-            return self.cameras['main'].getMatchingInstances(location, False)
 
-        return instances
+    # def getInstancesAt(self, clickpoint):
+    #     """
+    #     Query the main camera for instances on our active(agent) layer.
+    #     """
+    #     if isinstance(clickpoint)
+    #     instances = self.cameras['main'].getMatchingInstances(clickpoint, self.scene.agentLayer)
+    #
+    #     if not instances:
+    #         location = self.getLocationAt(clickpoint)
+    #         return self.cameras['main'].getMatchingInstances(location, False)
+    #
+    #     return instances
 
     def getLocationAt(self, clickpoint):
         """

@@ -99,9 +99,13 @@ class TacticScene(Scene):
         :param damage: Ammount of damage dealt
         :return:
         '''
-        targetIDs = self.getInstacesInTile(location)
+        targetIDs = self._world.getInstancesAt(location)
         for unitID in targetIDs:
-            self.unitManager.getAgent(unitID)
+            agent = self.unitManager.getAgent(unitID)
+            agent.getDamage(damage)
+            print "Dealt %s damage to %s" % (damage, agent.instance.getId())
+
+
 
     def unitDied(self, unitID):
         '''

@@ -36,6 +36,7 @@ class Trajectory(object):
         self._renderer = fife.CellSelectionRenderer.getInstance(camera)
         self._genericrenderer = fife.GenericRenderer.getInstance(camera)
         self._genericrenderer.activateAllLayers(self._world.scene.map)
+        self.unitManager = self._world.unitManager
 
     def canShoot(self, location):
         '''
@@ -99,7 +100,7 @@ class Trajectory(object):
         exclude = [self._unit.instance]
         target = layer.getInstancesAt(location)
         exclude += target
-        exclude = [agent.getFifeId() for agent in exclude]
+        exclude = [self.unitManager.getFifeId(agent) for agent in exclude]
 
 
         self._genericrenderer.removeAll("LineOfSight")
@@ -115,6 +116,9 @@ class Trajectory(object):
         instances = layer.getInstancesInLine(origin, destination)
 
         for instance in instances:
+            agent = self.unitManager.getAgent(instance)
+            if agent:
+                instance = agent.instance
             if instance.getFifeId() not in exclude:
                 #print "Instance found on path: ", instance.getFifeId()
                 instancerenderer.addColored(instance, 250, 50, 100)

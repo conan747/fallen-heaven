@@ -41,6 +41,8 @@ class UnitManager(object):
 
         self.getIDs = self.ID2fife.keys
 
+        self.dummyIDs = {}
+
 
     def destroy(self):
         """
@@ -69,6 +71,22 @@ class UnitManager(object):
             self.fife2Agent[fifeID] = newAgent
             self.ID2fife[newAgent.instance.getId()] = fifeID
 
+            newAgent.start()
+            if hasattr(newAgent, "dummyInstances"):
+                dummyList = [dummy.getFifeId() for dummy in  newAgent.dummyInstances]
+                self.dummyIDs[fifeID] = dummyList
+
+    def getFifeId(self, argument):
+        '''
+        Returns the fife id of the relevant instance.
+        :param argument: Instance, fifeID or Agent
+        :return: fifeID (long)
+        '''
+        if isinstance(argument, Agent):
+            argument = argument.instance.getFifeId()
+        if argument:
+            return self.getAgent(argument).instance.getFifeId()
+
     def getAgent(self, argument):
         '''
         Returns the agent corresponding to Instance or fifeID
@@ -77,8 +95,14 @@ class UnitManager(object):
         '''
         if isinstance(argument, fife.Instance):
             argument = argument.getFifeId()
+
         if argument in self.getFifeIds():
             return self.fife2Agent[argument]
+        else:
+            parentID = [key for key, value in self.dummyIDs.items() \
+                      if argument in value]
+            if parentID:
+                return self.fife2Agent[parentID[0]]
 
     def initAgents(self, map, agentList, unitLoader, planet):
         """
@@ -106,10 +130,6 @@ class UnitManager(object):
 
             location = agentList[agentID]["Location"]
             self.addAgent(newAgent, location)
-
-            if newAgent.instance.getId() == newAgent.instance.getFifeId():
-                print "Watch out! the ID is the same as the fifeID for %s" % agentName
-            newAgent.start()
 
             # Apply storage:
             if agentID in planet.storages.keys():
@@ -173,6 +193,9 @@ class UnitManager(object):
             self.agentLayer.deleteInstance(agent.agent)
             agent.instance = None
 
+            if fifeID in self.dummyIDs.keys():
+                self.fife2Agent.__delitem__(fifeID)
+
         else:
             print "Could not delete instance: " , fifeID
 
@@ -223,29 +246,6 @@ class Scene(object):
         Removes all objects from the scene and deletes them from the layer.
         """
         self.unitManager.destroy()
-
-    def getInstacesInTile(self, tileLocation):
-        '''
-        Returns a list of instance IDs that are located in the specific tile.
-        :param tileLocation: Exact Location of a tile.
-        :return: List of instance IDs.
-        '''
-
-        tilePos = tileLocation.getLayerCoordinates()
-        unitIDs = []
-        all_instances = self.agentLayer.getInstances()
-        ## TODO: Check if it was a good idea commenting these lines
-        #for instance in all_instances:
-        #    instanceLocation = instance.getLocation().getLayerCoordinates()
-        #    if tilePos == instanceLocation:
-        #        unitIDs.append(instance.getFifeId())
-
-        unitIDs = [instance.getFifeId() for instance in all_instances]
-
-        print "Found ", len(unitIDs), " units on this tile."
-        print unitIDs
-
-        return unitIDs
 
 
     def getInstance(self, id):

@@ -72,11 +72,10 @@ class TacticListener(WorldListener):
 
         instances = self._world.getInstancesAt(clickpoint)
 
-        print "selected instances on agent layer: ", [i.getObject().getId() for i in instances]
-        print "Found " , instances.__len__(), "instances"
-
         if instances:
             self.cycleThroughInstances(instances)
+            print "selected instances on agent layer: ", [i.getObject().getId() for i in instances]
+            print "Found " , instances.__len__(), "instances"
 
         elif self._world.activeUnit:
             # there was a unit selected and an empty cell has been clicked
