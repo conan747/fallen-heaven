@@ -240,6 +240,7 @@ class Scene(object):
 
         self.unitLoader = self._world.universe.unitLoader
         self.unitManager = None
+        self.view = self._world.view
 
     def destroy(self):
         """
@@ -282,12 +283,8 @@ class Scene(object):
 
         self.unitManager = UnitManager()
 
-        self._world.initCameras()
+        self._world.initView(self.map)
         self.initAgents()
-        # self.initCameras()
-
-        #Set background color
-        self.engine.getRenderBackend().setBackgroundColor(0,0,0)
 
 
         ## Load storages:

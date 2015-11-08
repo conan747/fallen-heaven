@@ -39,6 +39,7 @@ from gui.huds import TacticalHUD
 from combat import Trajectory
 from scripts.tactic_scene import TacticScene
 from gui.dialogs import InfoDialog
+from view import View
 
 TDS = Setting(app_name="rio_de_hola")
 
@@ -466,6 +467,7 @@ class World(object):
         self.storage = None # Points at the storage object in Deploy mode.
         self.deploying = None
 
+        self.view = View(self, self.engine)
 
         self.cursorHandler = CursorHandler(self.engine.getImageManager(), self.engine.getCursor())
 
@@ -495,6 +497,10 @@ class World(object):
                 self.unitManager = self.scene.unitManager
 
             return self.unitManager.getAgent(self.activeUnit)
+
+
+    def moveCamera(self, speedVector):
+        self.view.moveCamera(speedVector)
 
     def reset(self):
         """
@@ -540,103 +546,9 @@ class World(object):
         # self._soundmanager.playClip(self._music)
 
 
-    def initCameras(self):
-        """
-        Before we can actually see something on screen we have to specify the render setup.
-        This is done through Camera objects which offer a viewport on the map.
-
-        For this techdemo two cameras are used. One follows the hero(!) via 'attach'
-        the other one scrolls around a bit (see the pump function).
-        """
-        camera_prefix = self.filename.rpartition('.')[0] # Remove file extension
-        camera_prefix = camera_prefix.rpartition('/')[2] # Remove path
-        camera_prefix += '_'
-
-        for cam in self.scene.map.getCameras():
-            camera_id = cam.getId().replace(camera_prefix, '')
-            self.cameras[camera_id] = cam
-            cam.resetRenderers()
-
-        # Floating text renderers currently only support one font.
-        # ... so we set that up.
-        # You'll se that for our demo we use a image font, so we have to specify the font glyphs
-        # for that one.
-        # renderer = fife.FloatingTextRenderer.getInstance(self.cameras['main'])
-        textfont = get_manager().createFont('fonts/rpgfont.png', 0, str(TDS.get("FIFE", "FontGlyphs")));
-        # renderer.setFont(textfont)
-        # renderer.activateAllLayers(self.scene.map)
-        # renderer.setBackground(100, 255, 100, 165)
-        # renderer.setBorder(50, 255, 50)
-        # renderer.setEnabled(True)
-
-        # Activate the grid renderer on all layers
-        # renderer = self.cameras['main'].getRenderer('GridRenderer')
-        # renderer.activateAllLayers(self.scene.map)
-        # renderer.setEnabled(True)
-
-        #Added by Jon
-        rend = fife.CellSelectionRenderer.getInstance(self.cameras['main'])
-        rend.setColor(0,0,0)
-        rend.activateAllLayers(self.scene.map)
-
-        # The following renderers are used for debugging.
-        # Note that by default ( that is after calling View.resetRenderers or Camera.resetRenderers )
-        # renderers will be handed all layers. That's handled here.
-        # renderer = fife.CoordinateRenderer.getInstance(self.cameras['main'])
-        # renderer.setFont(textfont)
-        # renderer.clearActiveLayers()
-        # renderer.addActiveLayer(self.scene.map.getLayer(str(TDS.get("rio", "CoordinateLayerName"))))
-        #
-        # renderer = self.cameras['main'].getRenderer('QuadTreeRenderer')
-        # renderer.activateAllLayers(self.scene.map)
-        # renderer.setEnabled(True)
-        # if str(TDS.get("rio", "QuadTreeLayerName")):
-        #     renderer.addActiveLayer(self.scene.map.getLayer(str(TDS.get("rio", "QuadTreeLayerName"))))
-
-        # If Light is enabled in settings then init the lightrenderer.
-        # if self.lightmodel != 0:
-        #     renderer = fife.LightRenderer.getInstance(self.cameras['main'])
-        #     renderer.setEnabled(True)
-        #     renderer.clearActiveLayers()
-        #     renderer.addActiveLayer(self.scene.map.getLayer('TechdemoMapGroundObjectLayer'))
-
-        # Fog of War stuff
-        # renderer = fife.CellRenderer.getInstance(self.cameras['main'])
-        # renderer.setEnabled(True)
-        # renderer.clearActiveLayers()
-        # renderer.addActiveLayer(self.scene.map.getLayer('TechdemoMapGroundObjectLayer'))
-        # concimg = self.engine.getImageManager().load("misc/black_cell.png")
-        # maskimg = self.engine.getImageManager().load("misc/mask_cell.png")
-        # renderer.setConcealImage(concimg)
-        # renderer.setMaskImage(maskimg)
-        # renderer.setFogOfWarLayer(self.scene.map.getLayer('TechdemoMapGroundObjectLayer'))
-
-        #disable FoW by default.  Users can turn it on with the 'f' key.
-        # renderer.setEnabledFogOfWar(False)
-
-        #renderer.setEnabledBlocking(True)
-        self.target_rotation = self.cameras['main'].getRotation()
-
-        # ## Coordinate Renderer
-        # '''
-        # # self.rend = self.cameras['main'].getRenderer('CoordinateRenderer')
-        # # self.rend.setEnabled(True)
-        # renderer = fife.CoordinateRenderer.getInstance(self.cameras['main'])
-        # # renderer.setFont(textfont)
-        # renderer.clearActiveLayers()
-        # renderer.setFont(textfont)
-        # renderer.addActiveLayer(self.scene.map.getLayer("TrajectoryLayer"))
-        # renderer.setEnabled(True)
-        # '''
-
-
-        ## Start cellRenderer to show instance paths:
-        self.cellRenderer = fife.CellRenderer.getInstance(self.cameras['main'])
-        # self.cellRenderer.addActiveLayer(self.scene.agentLayer)
-        self.cellRenderer.activateAllLayers(self.scene.map)
-        self.cellRenderer.setEnabledBlocking(True)
-        self.cellRenderer.setPathColor(0,0,255)
-        self.cellRenderer.setEnabled(True)
+    def initView(self, map):
+        self.view.load(map)
+        self.cameras = self.view.cameras
 
 
     def getInstancesAt(self, arg):
@@ -681,30 +593,16 @@ class World(object):
 
         ## Create an InstanceRenderer if not existing
         if not self.activeUnitRenderer:
-            self.activeUnitRenderer = fife.InstanceRenderer.getInstance(self.cameras['main'])
-            #renderer.removeAllOutlines()
+            self.activeUnitRenderer = self.view.renderer["InstanceRenderer"]
 
         ## Clear previously selected unit
         if self.activeUnit != id:
             if self.activeUnit:
                 self.activeUnitRenderer.removeOutlined(self.scene.getInstance(self.activeUnit).instance)
-                ### !!!! CHekc if we can improve this!
 
         self.activeUnit = id
         if id:
             self.activeUnitRenderer.addOutlined(self.scene.getInstance(id).instance, 173, 255, 47, 2)
-        #
-        #     ## Get rid of all this because we don't have it on the original game.
-        #     ## Show it on the mini-camera:
-        #     print "Trying to show in the mini-camera"
-        #     unit = self.scene.instance_to_agent[id]
-        #     self.cameras['small'].setLocation(unit.agent.getLocation())
-        #     self.cameras['small'].attach(unit.agent)
-        #     self.cameras['small'].setEnabled(True)
-        #
-        # else:
-        #     self.cameras['small'].detach()
-        #     self.cameras['small'].setEnabled(False)
 
         # Update UI:
         self.HUD.updateUI()
@@ -717,25 +615,6 @@ class World(object):
         currot = self.cameras['main'].getRotation()
         if self.target_rotation != currot:
             self.cameras['main'].setRotation((currot + 5) % 360)
-
-
-
-    def moveCamera(self, speedVector):
-        ''' Checks if the mouse is on the edge of the screen and moves the camera accordingly'''
-
-        mainCamera = self.cameras['main']
-        #speedVector = (-0.5,0)
-        angle = mainCamera.getRotation()
-        currentLocation = mainCamera.getLocation()
-        # print "Close to the edge!"
-        vector = fife.DoublePoint3D(speedVector[0] * math.cos(angle) - speedVector[1] * math.sin(angle),
-                                    speedVector[0] * math.sin(angle) + speedVector[1] * math.cos(angle),0)
-        currentPoint = currentLocation.getMapCoordinates()
-        newPoint = currentPoint + vector
-        currentLocation.setMapCoordinates(newPoint)
-
-        if self.cameras['main'].getMatchingInstances(currentLocation):
-            mainCamera.setLocation(currentLocation)
 
 
     def lightIntensity(self, value):
@@ -812,7 +691,7 @@ class World(object):
             speedVector = (-self._camMoveSpeed , self._camMoveSpeed)
             self.moveCamera(speedVector)
 
-        self.changeRotation()
+        #self.changeRotation()
         self.pump_ctr += 1
 
         ## handle mouse:

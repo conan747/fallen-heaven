@@ -50,9 +50,7 @@ class TacticScene(Scene):
         super(TacticScene, self).load(filename)
 
         ## Start cellRenderer to show instance paths:
-        [self._world.cellRenderer.addPathVisual(unit.instance) for unit in self.unitManager.getAgents()]
-        self._world.cellRenderer.setEnabledPathVisual(True)
-        self._world.cellRenderer.setEnabled(True)
+        self.view.setVisual(self.unitManager.getAgents())
 
         # Setup factionUnits
         for factionName in self.factionNames:
