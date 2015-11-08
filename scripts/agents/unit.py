@@ -34,31 +34,15 @@ class Projectile(fife.InstanceActionListener):
 
         super(Projectile, self).__init__()
 
-        self.start = False
         self.world = world
-        ## Show projectile
-        # self.layer = origin.getLayer()
         self.layer = world.scene.map.getLayer("TrajectoryLayer")
-        agentLayer = origin.getLayer()
-        rect = agentLayer.getCellCache().getSize()
-        self.layer.getCellCache().setSize(rect)
-        self.layer.getCellCache().setStaticSize(True)
-        print "Size: ", self.layer.getCellCache().getSize()
-        self.layer.setWalkable(True)
 
         object = world.model.getObject("SBT", "fallen")
-        #object.addWalkableArea("land")
-        object.setBlocking(False)
         print "Attacking from: " , origin.getLayerCoordinates()
         originCoords = origin.getExactLayerCoordinates()
-        originCoords.x +=1
-        originCoords.y +=1
         self.instance = self.layer.createInstance(object, originCoords)
         self.instance.thisown = 0
         self.instance.addActionListener(self)
-        self.visual = fife.InstanceVisual.create(self.instance)
-        self.visual.setVisible(True)
-        self.instance.setCellStackPosition(0)
         self.destination = fife.Location(self.layer)
         self.destination.setLayerCoordinates(destination.getLayerCoordinates())
         print "To: ", self.destination.getLayerCoordinates()
@@ -66,22 +50,22 @@ class Projectile(fife.InstanceActionListener):
         self.move()
 
     def move(self):
-        #self.world.busy = True
         if self.destination.isValid():
             self.instance.move("move", self.destination, 5)
-            self.start = True
 
     def onInstanceActionFinished(self, instance, action):
         print action.getId()
-        if action.getId() == "move" and self.start:
+        if action.getId() == "move": # and self.start:
             print "\n\nDestroying bullet"
             self.instance.removeActionListener(self)
-            self.visual.setVisible(False)
-            #self.world.busy = False
-            #self.celanup()
+            print "Cleaning up."
+            instances = self.layer.getInstances()
+            print "Found ", len(instances), "instances."
+            for instance in instances:
+                print instance
+            self.instance = None
 
-    def celanup(self):
-        self.layer.deleteInstance(self.instance)
+            #self.layer.deleteInstance(instance)
 
 
     def onInstanceActionCancelled(self, instance, action):

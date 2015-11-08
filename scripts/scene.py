@@ -190,7 +190,7 @@ class UnitManager(object):
             self.fife2Agent.__delitem__(fifeID)
             agent.instance.removeActionListener(agent)
 
-            self.agentLayer.deleteInstance(agent.agent)
+            self.agentLayer.deleteInstance(agent.instance)
             agent.instance = None
 
             if fifeID in self.dummyIDs.keys():

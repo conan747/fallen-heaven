@@ -383,7 +383,7 @@ class Building(Agent):
                 cell = cellCache.getCell(cellPos)
                 cell.setCellType(fife.CTYPE_NO_BLOCKER)
 
-        while self.dummyInstances.size() != 0:
+        while len(self.dummyInstances) != 0:
             dummy = self.dummyInstances.pop()
             layer.deleteInstance(dummy)
 
