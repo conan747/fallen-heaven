@@ -2512,7 +2512,7 @@
         <instances>
         </instances>
     </layer>
-        <layer id="TrajectoryLayer" x_offset="0.000000" y_offset="0.000000" z_offset="0.000000" x_scale="1.000000" y_scale="1.000000" rotation="0.000000" grid_type="square" transparency="0" pathing="cell_edges_and_diagonals" sorting="camera" layer_type="walkable">
+        <layer id="TrajectoryLayer" x_offset="0.000000" y_offset="0.000000" z_offset="0.000000" x_scale="1.000000" y_scale="1.000000" rotation="0.000000" grid_type="square" transparency="0" pathing="cell_edges_and_diagonals" sorting="location" layer_type="walkable">
         <instances>
         </instances>
     </layer>

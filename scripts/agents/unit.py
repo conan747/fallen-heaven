@@ -39,16 +39,22 @@ class Projectile(fife.InstanceActionListener):
         ## Show projectile
         # self.layer = origin.getLayer()
         self.layer = world.scene.map.getLayer("TrajectoryLayer")
+        agentLayer = origin.getLayer()
+        rect = agentLayer.getCellCache().getSize()
+        self.layer.getCellCache().setSize(rect)
+        self.layer.getCellCache().setStaticSize(True)
+        print "Size: ", self.layer.getCellCache().getSize()
         self.layer.setWalkable(True)
 
         object = world.model.getObject("SBT", "fallen")
-        object.addWalkableArea("land")
+        #object.addWalkableArea("land")
         object.setBlocking(False)
         print "Attacking from: " , origin.getLayerCoordinates()
         originCoords = origin.getExactLayerCoordinates()
         originCoords.x +=1
         originCoords.y +=1
         self.instance = self.layer.createInstance(object, originCoords)
+        self.instance.thisown = 0
         self.instance.addActionListener(self)
         self.visual = fife.InstanceVisual.create(self.instance)
         self.visual.setVisible(True)
@@ -72,7 +78,10 @@ class Projectile(fife.InstanceActionListener):
             self.instance.removeActionListener(self)
             self.visual.setVisible(False)
             #self.world.busy = False
-            #self.layer.deleteInstance(self.instance)
+            #self.celanup()
+
+    def celanup(self):
+        self.layer.deleteInstance(self.instance)
 
 
     def onInstanceActionCancelled(self, instance, action):

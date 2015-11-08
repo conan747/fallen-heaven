@@ -275,6 +275,9 @@ class Scene(object):
 
         self.map = loader.load(filename)
 
+        self.map.initializeCellCaches()
+        self.map.finalizeCellCaches()
+
         self.agentLayer = self.map.getLayer('TechdemoMapGroundObjectLayer')
 
         self.unitManager = UnitManager()
