@@ -818,6 +818,13 @@ class World(object):
         ## handle mouse:
         self.handleCursor()
 
+        # if self.activeUnit:
+        #     projectile = self.unitManager.getAgent(self.activeUnit).projectile
+        #     if projectile:
+        #         projectile.move()
+        #         self.unitManager.getAgent(self.activeUnit).projectile = None
+
+
         self.scene.pump()
 
         # print "End pumping world"

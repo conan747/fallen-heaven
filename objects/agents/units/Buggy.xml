@@ -9,5 +9,11 @@
 		</animation>
 	</action>
 
+	<action id="move">
+		<animation atlas="Buggy.png" height="45" width="45" y_offset="-10" >
+			<direction delay="130" dir="0" frames="1" />
+		</animation>
+	</action>
+
 
 </object>

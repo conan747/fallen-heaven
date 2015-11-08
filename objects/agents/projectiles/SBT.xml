@@ -1,0 +1,49 @@
+<?fife type="object"?>
+
+<object blocking="0" cellstack_position="0" cost="1.0" cost_id="" id="SBT" namespace="fallen" static="0">
+
+
+
+	<action id="stand">
+		<animation atlas="SBT.png" width="32" height="32" y_offset="0" >
+			<direction delay="130" dir="0" frames="1" />
+		</animation>
+	</action>
+
+	<action id="move">
+		<animation atlas="SBT.png" width="32" height="32" y_offset="0" >
+			<direction delay="130" dir="0" frames="1" />
+		</animation>
+	</action>
+
+
+</object>
+
+<!--
+
+
+
+<object id="SBT" namespace="fallen" blocking="0" static="0" blocking="0" cellstack_position="0" >
+		
+		<action id="stand">
+		<image source="SBT.png" direction="0" x_offset="32" y_offset="32"/>
+	</action>
+	
+	<action id="move">
+		<animation atlas="SBT.png" height="32" width="32" y_offset="-10" >
+			<direction delay="130" dir="0" frames="1" />
+		</animation>
+	</action>
+	
+	
+</object>
+
+<atlas name="SBT" namespace="fallen" width="224" height="128">
+	<image source="SBT.png" xpos="0" ypos="0" width="224" height="128"/>
+</atlas>
+
+	<image source="SBT.png" direction="0" x_offset="32" y_offset="32"/>
+	<image source="SBT.png" direction="45" x_offset="32" y_offset="32"/>
+
+
+-->

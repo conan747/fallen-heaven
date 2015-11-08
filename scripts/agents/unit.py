@@ -28,6 +28,58 @@ from building import Building
 
 
 
+class Projectile(fife.InstanceActionListener):
+    
+    def __init__(self, world, origin, destination):
+
+        super(Projectile, self).__init__()
+
+        self.start = False
+        self.world = world
+        ## Show projectile
+        # self.layer = origin.getLayer()
+        self.layer = world.scene.map.getLayer("TrajectoryLayer")
+        self.layer.setWalkable(True)
+
+        object = world.model.getObject("SBT", "fallen")
+        object.addWalkableArea("land")
+        object.setBlocking(False)
+        print "Attacking from: " , origin.getLayerCoordinates()
+        originCoords = origin.getExactLayerCoordinates()
+        originCoords.x +=1
+        originCoords.y +=1
+        self.instance = self.layer.createInstance(object, originCoords)
+        self.instance.addActionListener(self)
+        self.visual = fife.InstanceVisual.create(self.instance)
+        self.visual.setVisible(True)
+        self.instance.setCellStackPosition(0)
+        self.destination = fife.Location(self.layer)
+        self.destination.setLayerCoordinates(destination.getLayerCoordinates())
+        print "To: ", self.destination.getLayerCoordinates()
+        print "\n\nbullet created!"
+        self.move()
+
+    def move(self):
+        #self.world.busy = True
+        if self.destination.isValid():
+            self.instance.move("move", self.destination, 5)
+            self.start = True
+
+    def onInstanceActionFinished(self, instance, action):
+        print action.getId()
+        if action.getId() == "move" and self.start:
+            print "\n\nDestroying bullet"
+            self.instance.removeActionListener(self)
+            self.visual.setVisible(False)
+            #self.world.busy = False
+            #self.layer.deleteInstance(self.instance)
+
+
+    def onInstanceActionCancelled(self, instance, action):
+        print "Action cancelled!"
+
+    def onInstanceActionFrame(self, instance, action, frame):
+        print "Action frame" , frame
 
 
 ## TODO: When unit is moving, prevent from selecting new position.
@@ -205,11 +257,19 @@ class Unit(Agent):
 
         ## TODO: add self.instance.setFacingLocation
 
-        if self.canAttack(self.LWEAPON):
-            self.lightWeapon.fire(location)
+        if weaponType == self.LWEAPON:
+            weapon = self.lightWeapon
+        else:
+            weapon = self.heavyWeapon
+
+        if self.canAttack(weaponType):
+
+            weapon.fire(location)
+
+            self.projectile = Projectile(self.world ,self.instance.getLocation(), location)
 
             # Reduce APs
-            percentTimeUnits = self.lightWeapon.properties["PercentTimeUnits"]
+            percentTimeUnits = weapon.properties["PercentTimeUnits"]
             deducing = percentTimeUnits * self.properties["TimeUnits"] / 100
             self.AP -= deducing
 

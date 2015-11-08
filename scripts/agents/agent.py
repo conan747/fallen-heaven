@@ -41,6 +41,8 @@ class Agent(fife.InstanceActionListener):
         self.lightWeapon = None
         self.heavyWeapon = None
 
+        self.projectile = None
+
 
         self.health = 0
 
@@ -104,7 +106,7 @@ class Agent(fife.InstanceActionListener):
         '''
         layer = self.world.scene.agentLayer
         self.instance = layer.getInstance(instanceName)
-        object = self.instance.getObject()
+        #object = self.instance.getObject()
 
         if self.instance:
             self.agentName = instanceName

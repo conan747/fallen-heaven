@@ -330,6 +330,10 @@ class Building(Agent):
                 #object = DummyInstance.getDummyObject()
                 dummyInstance = layer.createInstance(object, newlocation.getExactLayerCoordinates())
                 dummyInstance.setId(dummyID)
+
+                visual = fife.InstanceVisual.create(dummyInstance)
+                visual.setVisible(False)
+                #dummyInstance.setVisual(visual)
                 #if layer.addInstance(dummyInstance, newlocation.getExactLayerCoordinates()  ):
                 #    print "Instance added!"
 
