@@ -172,19 +172,18 @@ class UnitManager(object):
                         storages[agent.agentName] = thisStorage
         return storages
 
-    def removeInstance(self, fifeID):
+    def removeInstance(self, arg):
         '''
         Process the destruction of a unit
         :param fifeID: FifeID or instace or agent of the destroyed unit
         :return:
         '''
-        if isinstance(fifeID, Agent):
-            agent = fifeID
-            fifeID = fifeID.instance.getFifeId()
+        if isinstance(arg, Agent):
+            agent = arg
+            fifeID = arg.instance.getFifeId()
         else:
-            agent = self.getAgent(fifeID)
-            if isinstance(fifeID, fife.Instance):
-                fifeID = fifeID.instance.getFifeId()
+            agent = self.getAgent(arg)
+            fifeID = agent.instance.getFifeId()
 
         if agent:
             self.fife2Agent.__delitem__(fifeID)
@@ -194,8 +193,7 @@ class UnitManager(object):
             agent.instance = None
 
             if fifeID in self.dummyIDs.keys():
-                self.fife2Agent.__delitem__(fifeID)
-
+                self.dummyIDs.__delitem__(fifeID)
         else:
             print "Could not delete instance: " , fifeID
 
