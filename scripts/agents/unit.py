@@ -30,10 +30,11 @@ from building import Building
 
 class Projectile(fife.InstanceActionListener):
     
-    def __init__(self, world, origin, destination):
+    def __init__(self, parent, world, origin, destination):
 
         super(Projectile, self).__init__()
 
+        self.parent = parent
         self.world = world
         self.layer = world.scene.map.getLayer("TrajectoryLayer")
 
@@ -59,13 +60,10 @@ class Projectile(fife.InstanceActionListener):
             print "\n\nDestroying bullet"
             self.instance.removeActionListener(self)
             print "Cleaning up."
-            instances = self.layer.getInstances()
-            print "Found ", len(instances), "instances."
-            for instance in instances:
-                print instance
+            self.world.projectileGraveyard.append(self.instance)
             self.instance = None
-
-            #self.layer.deleteInstance(instance)
+            self.parent.projectile = None
+            self.__del__() # Is this necessary?
 
 
     def onInstanceActionCancelled(self, instance, action):
@@ -259,7 +257,7 @@ class Unit(Agent):
 
             weapon.fire(location)
 
-            self.projectile = Projectile(self.world ,self.instance.getLocation(), location)
+            self.projectile = Projectile(self, self.world ,self.instance.getLocation(), location)
 
             # Reduce APs
             percentTimeUnits = weapon.properties["PercentTimeUnits"]

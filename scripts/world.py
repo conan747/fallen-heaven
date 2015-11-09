@@ -486,6 +486,17 @@ class World(object):
 
         ## There can only be one world -> assign unitLoader to this world.
         self.universe.unitLoader.setWorld(self)
+        self.projectileGraveyard = []
+
+    def cleanProjectiles(self):
+        if not self.projectileGraveyard:
+            return
+        layer = self.view.layers["TrajectoryLayer"]
+        num = len(self.projectileGraveyard)
+        print "Cleaning ", num
+        while len(self.projectileGraveyard) > 0:
+            instance = self.projectileGraveyard.pop()
+            layer.deleteInstance(instance)
 
     def getActiveAgent(self):
         '''
@@ -703,7 +714,7 @@ class World(object):
         #         projectile.move()
         #         self.unitManager.getAgent(self.activeUnit).projectile = None
 
-
+        self.cleanProjectiles()
         self.scene.pump()
 
         # print "End pumping world"
