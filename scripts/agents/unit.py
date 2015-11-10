@@ -29,10 +29,11 @@ from building import Building
 
 class Projectile(fife.InstanceActionListener):
     
-    def __init__(self, parent, world, origin, destination):
+    def __init__(self, parent, world, origin, destination, callback=None):
 
         super(Projectile, self).__init__()
 
+        self.callback = callback
         self.parent = parent
         self.world = world
         self.layer = world.scene.map.getLayer("TrajectoryLayer")
@@ -63,6 +64,8 @@ class Projectile(fife.InstanceActionListener):
             self.world.projectileGraveyard.append(self.instance)
             self.instance = None
             self.parent.projectile = None
+            if self.callback:
+                self.callback()
             self.__del__() # Is this necessary?
 
 
@@ -254,10 +257,9 @@ class Unit(Agent):
             weapon = self.heavyWeapon
 
         if self.canAttack(weaponType):
-            self.projectile = Projectile(self, self.world ,self.instance.getLocation(), location)
-            lock.acquire()
-            weapon.fire(location)
-
+            def callback(func = self.afterAttack, weapon= weapon, location = location):
+                func(weapon, location)
+            self.projectile = Projectile(self, self.world ,self.instance.getLocation(), location, callback)
             # Reduce APs
             percentTimeUnits = weapon.properties["PercentTimeUnits"]
             deducing = percentTimeUnits * self.properties["TimeUnits"] / 100
@@ -267,16 +269,8 @@ class Unit(Agent):
             print "Not enough APs!"
             self.playError()
 
-        #TODO: manage weapon choosing.
-
-        # if not weaponType:
-        #
-        # if weaponType == self.LWEAPON:
-        #     self.lightWeapon.fire(location)
-        # elif weaponType == self.HWEAPON:
-        #     self.heavyWeapon.fire(location)
-
-
+    def afterAttack(self, weapon, location):
+        weapon.fire(location)
 
 
 class Weapon(object):
