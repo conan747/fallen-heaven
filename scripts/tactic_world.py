@@ -25,7 +25,7 @@ from fife import fife
 from world import *
 
 from gui.huds import TacticalHUD
-from combat import Trajectory
+from combat import *
 from scripts.tactic_scene import TacticScene
 
 from agents.unit import Unit
@@ -61,9 +61,10 @@ class TacticListener(WorldListener):
         trajectory = Trajectory(activeAgent , self._world, self._world.attackType)
         # print "Is is reachable?"
         if trajectory.isInRange(clickLocation):
-        # print "Calculating Clear path:"
+            # print "Calculating Clear path:"
             if trajectory.hasClearPath(clickLocation):
                 activeAgent.attack(clickLocation, self._world.attackType)
+                self._world.retaliation = Retaliation(self._world, activeAgent)
                 self._world.HUD.updateUI()
 
 

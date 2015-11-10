@@ -119,6 +119,8 @@ class TacticScene(Scene):
         for factionName in self.factionUnits.keys():
             if unitID in self.factionUnits[factionName]:
                 self.factionUnits[factionName].remove(unitID)
+                if self._world.activeUnit == unitID:
+                    self._world.selectUnit(None)
                 return
 
 

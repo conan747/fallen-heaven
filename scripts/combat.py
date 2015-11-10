@@ -7,6 +7,89 @@ from agents.unit import *
 
 #_LIGHT, _HEAVY = xrange(2)
 
+class Retaliation(object):
+    '''
+    Handles keeping track of the units that have retaliated against a given unit.
+    '''
+
+    def __init__(self, world, targetAgent):
+        self.world = world
+        self.targetAgent = targetAgent
+        self.targetId = targetAgent.instance.getFifeId()
+        self.targetLocation = targetAgent.instance.getLocation()
+
+        enemyName = [name for name in self.world.scene.factionUnits.keys()
+                     if name is not self.world.scene.currentTurn][0]
+
+        self.enemyUnits = self.world.scene.factionUnits[enemyName]
+        self.retaliatedUnits = []
+        self.availableUnits = {}
+        self.world.busy = True
+        self.unitManager = self.world.unitManager
+
+        self.getAvailable()
+        self.blocked = True
+
+    def unblock(self):
+        self.blocked = False
+
+    def getAvailable(self):
+        '''
+        Gets the units that are able to retaliate.
+        '''
+        for id in self.enemyUnits:
+            agent = self.unitManager.getAgent(id)
+            if not hasattr(agent, "canAttack"):
+                continue
+            if agent.canAttack(agent.HWEAPON):
+                weaponType = agent.HWEAPON
+            elif agent.canAttack(agent.LWEAPON):
+                weaponType = agent.LWEAPON
+            else:
+                continue
+
+            # If we got here it's because we have a unit that can attack.
+            # See if the agent is in range.
+            trajectory = Trajectory(agent, self.world, weaponType)
+            if trajectory.hasClearPath(self.targetLocation):
+                self.availableUnits[id] = weaponType
+
+        if not self.availableUnits:
+            self.cleanup()
+
+    def next(self):
+        '''
+        Handles the next available retaliation.
+        '''
+        print "retaliating next"
+        self.blocked = True
+        if not self.unitManager.getAgent(self.targetId):
+            self.cleanup()
+            return
+
+        if not self.availableUnits:
+            self.cleanup()
+            return
+
+        (id, weaponType ) = self.availableUnits.popitem()
+        attackingUnit = self.unitManager.getAgent(id)
+        print "unit that is atacking: ", attackingUnit.agentName
+        attackingUnit.attack(self.targetLocation, weaponType)
+
+        if not self.availableUnits:
+            self.cleanup()
+            return
+
+
+    def cleanup(self):
+        self.blocked = False
+        self.world.busy = False
+        self.world.retaliation = None
+
+
+
+
+
 class Trajectory(object):
     '''
     Helps calculate if a unit can shoot to a position
@@ -14,7 +97,6 @@ class Trajectory(object):
 
     def __init__(self, unit, world, weapon = 0):
         '''
-
         :param unit: Unit that will shoot
         :param weapon: Heavy or Light unit.LWEAPON OR unit.HWEAPON
         :return:

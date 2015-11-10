@@ -93,6 +93,9 @@ class UnitManager(object):
         :param argument: Instance or fifeID
         :return: Agent
         '''
+        if not argument:
+            return None
+
         if isinstance(argument, fife.Instance):
             argument = argument.getFifeId()
 

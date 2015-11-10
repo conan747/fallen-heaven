@@ -1,0 +1,21 @@
+<?fife type="object"?>
+
+<object blocking="0" cellstack_position="0" id="explosion" namespace="fallen" static="0">
+
+
+	<action id="explode">
+        <animation atlas="explosion.png" width="256" height="128" x_offset="0" y_offset="0" >
+	        <direction delay="130" dir="0" frames="1"/>
+        </animation>
+
+	</action>
+	
+	<action id="move">
+		<animation atlas="SBT.png" width="32" height="32" y_offset="0" >
+			<direction delay="130" dir="0" frames="1" />
+		</animation>
+	</action>
+
+</object>
+
+    

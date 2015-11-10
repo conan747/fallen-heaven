@@ -137,7 +137,8 @@ class Agent(fife.InstanceActionListener):
         pass
         # self.instance.actOnce('stand')
 
-
+    def die(self):
+        pass
 
     def printProperties(self):
         print self.properties

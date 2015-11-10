@@ -487,6 +487,7 @@ class World(object):
         ## There can only be one world -> assign unitLoader to this world.
         self.universe.unitLoader.setWorld(self)
         self.projectileGraveyard = []
+        self.retaliation = None
 
     def cleanProjectiles(self):
         if not self.projectileGraveyard:
@@ -624,7 +625,9 @@ class World(object):
         ## Clear previously selected unit
         if self.activeUnit != id:
             if self.activeUnit:
-                self.activeUnitRenderer.removeOutlined(self.scene.getInstance(self.activeUnit).instance)
+                activeAgent = self.unitManager.getAgent(self.activeUnit)
+                if activeAgent:
+                    self.activeUnitRenderer.removeOutlined(activeAgent.instance)
 
         self.activeUnit = id
         if id:
@@ -730,6 +733,11 @@ class World(object):
         #         self.unitManager.getAgent(self.activeUnit).projectile = None
 
         self.cleanProjectiles()
+
+        if self.retaliation:
+            if not self.retaliation.blocked:
+                self.retaliation.next()
+
         self.scene.pump()
 
         # print "End pumping world"
@@ -759,6 +767,9 @@ class World(object):
         Changes the cursor according to the mode.
         :return:
         '''
+        if self.busy:
+            return
+
         if self.mode == self.MODE_ATTACK:
             if not self.activeUnit:
                 return

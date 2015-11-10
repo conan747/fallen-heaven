@@ -300,6 +300,8 @@ class Unit(Agent):
 
     def afterAttack(self, weapon, location):
         weapon.fire(location)
+        if self.world.retaliation:
+            self.world.retaliation.unblock()
 
 
 class Weapon(object):
