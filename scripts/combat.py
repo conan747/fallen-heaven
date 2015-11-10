@@ -38,7 +38,7 @@ class Trajectory(object):
         self._genericrenderer.activateAllLayers(self._world.scene.map)
         self.unitManager = self._world.unitManager
 
-    def canShoot(self, location):
+    def canShoot(self, location, display=False):
         '''
         Tells if a unit can shoot to a specific location.
         :param location: Target location
@@ -47,8 +47,9 @@ class Trajectory(object):
         if not self.isInRange(location):
             return False
 
-        if not self.hasClearPath(location):
-            return False
+        if not self.weapon.properties["Parabolic"]:
+            if not self.hasClearPath(location, display):
+                return False
 
         return True
 

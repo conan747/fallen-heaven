@@ -751,9 +751,9 @@ class World(object):
             mousepoint = fife.ScreenPoint(self.mousePos[0], self.mousePos[1])
             mouseLocation = self.getLocationAt(mousepoint)
 
-            trajectory = Trajectory( self.getActiveAgent(), self,0)
+            trajectory = Trajectory( self.getActiveAgent(), self, self.attackType)
             # print "Is is reachable?"
-            if trajectory.hasClearPath(mouseLocation, display=True) and trajectory.isInRange(mouseLocation) :
+            if trajectory.canShoot(mouseLocation, display=True):
                 self.cursorHandler.setCursor(self.cursorHandler.CUR_ATTACK)
             else:
                 self.cursorHandler.setCursor(self.cursorHandler.CUR_CANNOT)

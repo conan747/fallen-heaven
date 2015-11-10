@@ -298,8 +298,8 @@ class TacticWorld(World):
 
     def onAttackButtonPressed(self, attackType):
         if self.activeUnit:
-            self.setMode(self.MODE_ATTACK)
             self.attackType = attackType
+            self.setMode(self.MODE_ATTACK)
             self.HUD.updateUI()
         else:
             pass
