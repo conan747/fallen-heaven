@@ -25,6 +25,7 @@ from fife import fife
 from agent import Agent
 from fife.extensions.fife_settings import Setting
 from building import Building
+import random
 
 
 class Projectile(fife.InstanceActionListener):
@@ -257,6 +258,7 @@ class Unit(Agent):
             weapon = self.heavyWeapon
 
         if self.canAttack(weaponType):
+            location = self.computePrecision(weapon, location)
             def callback(func = self.afterAttack, weapon= weapon, location = location):
                 func(weapon, location)
             self.projectile = Projectile(self, self.world ,self.instance.getLocation(), location, callback)
@@ -268,6 +270,33 @@ class Unit(Agent):
         else:
             print "Not enough APs!"
             self.playError()
+
+    def computePrecision(self, weapon, location):
+        '''
+        Gives the location of the attack depending on the precision.
+        :param weapon: The weapon that has been shot
+        :param location: The intended location
+        :return: The new location.
+        '''
+        precision = weapon.properties["Precision"]
+        failProbability = 10 + precision
+        diceRoll = random.randint(0,99)
+        if failProbability >= diceRoll:
+            newLocation = fife.Location(location.getLayer())
+            locationCoords = location.getLayerCoordinates()
+            shift = [0,0]
+            while shift == [0,0]:
+                shift[0] = random.randint(-1,1)
+                shift[1] = random.randint(-1,1)
+            locationCoords.x += shift[0]
+            locationCoords.y += shift[1]
+            newLocation.setLayerCoordinates(locationCoords)
+
+            print "Target missed!"
+            return newLocation
+        else:
+            return location
+
 
     def afterAttack(self, weapon, location):
         weapon.fire(location)
