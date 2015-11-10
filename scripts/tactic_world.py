@@ -141,7 +141,7 @@ class TacticListener(WorldListener):
         instanceID = unit.instance.getFifeId()
         faction = unit.properties["faction"]
         self._world.scene.factionUnits[faction].append(instanceID)
-        self._world.cellRenderer.addPathVisual(unit.instance)
+        self._world.view.addPathVisual(unit.instance)
         self._world.storage.unitDeployed()
         self.cancelDeploy()
 

@@ -27,7 +27,6 @@ from fife.extensions.fife_settings import Setting
 from building import Building
 
 
-
 class Projectile(fife.InstanceActionListener):
     
     def __init__(self, parent, world, origin, destination):
@@ -48,6 +47,7 @@ class Projectile(fife.InstanceActionListener):
         self.destination.setLayerCoordinates(destination.getLayerCoordinates())
         print "To: ", self.destination.getLayerCoordinates()
         print "\n\nbullet created!"
+
         self.move()
 
     def move(self):
@@ -254,10 +254,9 @@ class Unit(Agent):
             weapon = self.heavyWeapon
 
         if self.canAttack(weaponType):
-
-            weapon.fire(location)
-
             self.projectile = Projectile(self, self.world ,self.instance.getLocation(), location)
+            lock.acquire()
+            weapon.fire(location)
 
             # Reduce APs
             percentTimeUnits = weapon.properties["PercentTimeUnits"]

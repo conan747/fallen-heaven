@@ -163,6 +163,11 @@ class View(object):
         self.model.deleteMaps()
         #super(View, self).end()
 
+    def addPathVisual(self, instance):
+        self.renderer["CellRenderer"].addPathVisual(instance)
+
+    def removePathVisual(self, instance):
+        self.renderer["CellRenderer"].removePathVisual(instance)
 
 
     def center(self, x, y):

@@ -100,8 +100,8 @@ class TacticScene(Scene):
         targetIDs = self._world.getInstancesAt(location)
         for unitID in targetIDs:
             agent = self.unitManager.getAgent(unitID)
-            agent.getDamage(damage)
             print "Dealt %s damage to %s" % (damage, agent.instance.getId())
+            agent.getDamage(damage)
 
 
 
@@ -112,7 +112,7 @@ class TacticScene(Scene):
         :return:
         '''
 
-        self._world.cellRenderer.removePathVisual(self.unitManager.getAgent(unitID).instance)
+        self._world.view.removePathVisual(self.unitManager.getAgent(unitID).instance)
 
         self.unitManager.removeInstance(unitID)
 
