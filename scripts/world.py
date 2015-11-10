@@ -568,10 +568,25 @@ class World(object):
         :param arg: Location or Point3D.
         :return: List of instance IDs.
         """
-        if isinstance(arg, fife.Point3D) or isinstance(arg, fife.ScreenPoint):
-            return self.cameras['main'].getMatchingInstances(arg, self.scene.agentLayer)
+        location = None
+        if isinstance(arg, fife.ScreenPoint):
+            instances = self.cameras['main'].getMatchingInstances(arg, self.scene.agentLayer, False)
+            if instances:
+                return instances
+            else:
+                location = self.getLocationAt(arg)
+
+        elif isinstance(arg, fife.Point3D):
+            point3d = arg
+
         elif isinstance(arg, fife.Location):
-            return self.scene.agentLayer.getInstancesAt(arg)
+            location = arg
+
+        if not location:
+            location = fife.Location(self.scene.agentLayer)
+            location.setLayerCoordinates(point3d)
+
+        return self.scene.agentLayer.getInstancesAt(location, False)
 
 
     # def getInstancesAt(self, clickpoint):
