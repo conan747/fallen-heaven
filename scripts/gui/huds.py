@@ -265,7 +265,8 @@ class StructureWidget(Widget):
 
         activeUnitInfo = activeUnit.properties
 
-        print activeUnitInfo
+        # for info in activeUnitInfo.items():
+        #  print "\t%s : %s" % info
 
         if activeUnit.agentType != "Building":
             # No Building was selected therefore hide this widget.
@@ -551,14 +552,17 @@ class UnitInfoWidget(Widget):
         self.unit = unit
 
         self.nameLabel = self.widget.findChildByName("unitName")
+
         self.HPLabel = self.widget.findChildByName("HPLabel")
         self.HPBar = self.widget.findChildByName("HPBar")
+
         self.APLabel = self.widget.findChildByName("APLabel")
         self.APBar = self.widget.findChildByName("APBar")
+        self.attackBar = self.widget.findChildByName("attackBar")
         
         self.attackLabel = self.widget.findChildByName("attackName")
         self.damageLabel = self.widget.findChildByName("damage")
-        self.attackBar = self.widget.findChildByName("attackBar")
+        self.rangeLabel = self.widget.findChildByName("range")
 
     def updateUI(self, unit=None, world=None):
 
@@ -573,7 +577,7 @@ class UnitInfoWidget(Widget):
         if unit.agentType == "Building":
             return
 
-        self.nameLabel.text = unit.unitName
+        self.nameLabel.text = unicode(unit.unitName)
 
         currentHP = unit.health
         maxHP = unit.properties["Hp"]
@@ -588,9 +592,20 @@ class UnitInfoWidget(Widget):
         self.APBar.value = APPercentage
         self.widget.show()
 
-        # Temporal: Always show LWEAPON as weapon.
         if world:
             if world.mode == world.MODE_ATTACK:
                 if world.attackType == unit.LWEAPON:
-                    attackAPs = unit.lightWeapon.properties["PercentTimeUnits"]
-                    self.attackBar.value = attackAPs
+                    weaponprops = unit.lightWeapon.properties
+                else:
+                    weaponprops = unit.heavyWeapon.properties
+
+                self.attackBar.value = weaponprops["PercentTimeUnits"]
+                self.attackLabel.text = unicode(weaponprops["Name"])
+                self.damageLabel.text = u"Dmg: %d" % weaponprops["DamageContact"]
+                self.rangeLabel.text = u"Rng: %d" % weaponprops["Range"]
+            else:
+                self.attackBar.value = 0
+
+                self.attackLabel.text = u""
+                self.damageLabel.text = u""
+                self.rangeLabel.text = u""

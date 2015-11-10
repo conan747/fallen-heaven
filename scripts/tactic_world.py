@@ -58,12 +58,12 @@ class TacticListener(WorldListener):
 
         activeAgent = self._world.getActiveAgent()
         clickLocation = self._world.getLocationAt(clickpoint)
-        trajectory = Trajectory(activeAgent , self._world, 0)
+        trajectory = Trajectory(activeAgent , self._world, self._world.attackType)
         # print "Is is reachable?"
         if trajectory.isInRange(clickLocation):
         # print "Calculating Clear path:"
             if trajectory.hasClearPath(clickLocation):
-                activeAgent.attack(clickLocation)
+                activeAgent.attack(clickLocation, self._world.attackType)
                 self._world.HUD.updateUI()
 
 

@@ -25,6 +25,7 @@
     <HBox name="attackBox">
         <Label text="" name="attackName"/>
         <Label name="damage"/>
+        <Label name="range" />
 
     </HBox>
 
