@@ -1,19 +1,20 @@
 <?fife type="object"?>
-<object blocking="1" cellstack_position="0" cost="1.0" cost_id="" id="Buggy" namespace="fallen" static="0">
-
-
-
+<object id="Buggy" namespace="fallen" blocking="1" static="0">
 	<action id="stand">
-		<animation atlas="Buggy.png" height="45" width="45" y_offset="-10" >
-			<direction delay="130" dir="0" frames="1" />
+		<animation atlas="../projectiles/explosion.png" width="128" height="64" x_offset="0" y_offset="0" frames="12" delay="200">
+			<direction dir="0"/>
 		</animation>
 	</action>
-
-	<action id="move">
-		<animation atlas="Buggy.png" height="45" width="45" y_offset="-10" >
-			<direction delay="130" dir="0" frames="1" />
+	<action id="walk">
+		<animation atlas="walk.png" width="128" height="128" x_offset="0" y_offset="-32" frames="8" delay="100">
+			<direction dir="180"/>
+			<direction dir="135"/>
+			<direction dir="90"/>
+			<direction dir="45"/>
+			<direction dir="0"/>
+			<direction dir="315"/>
+			<direction dir="270"/>
+			<direction dir="225"/>
 		</animation>
 	</action>
-
-
 </object>

@@ -73,6 +73,7 @@ class Agent(fife.InstanceActionListener):
 
         self.instance = self.world.scene.agentLayer.createInstance(object, point)
         self.instance.setCellStackPosition(0)
+        fife.InstanceVisual.create(self.instance)
 
         if self.unitName:
             fifeID = self.instance.getFifeId()
