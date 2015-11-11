@@ -1,15 +1,9 @@
 <?fife type="object"?>
 
-        <animation atlas="explosion.png" width="64" height="32" x_offset="0" y_offset="0" frames="3" delay="200">
-	        <direction dir="90"/>
-			<direction dir="135"/>
-			<direction dir="45"/>
-			<direction dir="0"/>
-        </animation>
-
-		<animation atlas="./explosion.png" width="171" height="85" x_offset="0" y_offset="0" frames="12" delay="200">
+		<animation atlas="./explosion.png" width="128" height="64" x_offset="0" y_offset="0" frames="12" delay="200">
 			<direction dir="0"/>
 		</animation>
+
 
 
     
