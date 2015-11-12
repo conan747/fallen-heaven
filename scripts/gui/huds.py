@@ -186,7 +186,7 @@ class ConstructingWidget(Widget):
         Will load the information about the buildings (what to display) form the UnitLoader.
         :return:
         '''
-        allStructureProps = self.HUD.world.scene.unitLoader.buildingProps
+        allStructureProps = self.HUD.world.unitLoader.buildingProps
         for structureProps in allStructureProps.values():
             if structureProps["faction"] == self.HUD.world.faction.name:
                 if not "CanBuild" in structureProps.keys():
@@ -374,7 +374,7 @@ class StorageUI(Widget):
                     vbox.addChild(icon)
                     label = pychan.widgets.Label(text=unicode(unitName))
                     vbox.addChild(label)
-                    cost = self.storage.world.scene.unitLoader.unitProps[unitName]["Cost"]
+                    cost = self.storage.world.unitLoader.unitProps[unitName]["Cost"]
                     label = pychan.widgets.Label(text=unicode(str(cost)))
                     vbox.addChild(label)
                     self.availableinUnitsWidget.addChild(vbox)
@@ -475,7 +475,7 @@ class StrategicHUD(HUD):
         Will load the information about the buildings (what to display) form the UnitLoader.
         :return:
         '''
-        allBuildingProps = self.world.scene.unitLoader.buildingProps
+        allBuildingProps = self.world.unitLoader.buildingProps
         for buildingProps in allBuildingProps.values():
             if buildingProps["faction"] == self.world.faction.name:
                 self.buildingList.append(buildingProps)

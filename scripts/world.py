@@ -37,9 +37,9 @@ from fife.extensions.fife_settings import Setting
 
 from gui.huds import TacticalHUD
 from combat import Trajectory
-from scripts.tactic_scene import TacticScene
 from gui.dialogs import InfoDialog
 from view import View
+from unitManager import *
 
 TDS = Setting(app_name="rio_de_hola")
 
@@ -111,15 +111,15 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
             id = ids[0]
 
 
-        if self._world.scene.factionUnits:
-            if id in self._world.scene.factionUnits[self._world.scene.currentTurn]:
+        if self._world.factionUnits:
+            if id in self._world.factionUnits[self._world.currentTurn]:
                 print "Instance: " , id, " is owned by this player!"
                 self._world.selectUnit(id)
             else:
                 return
 
         if not self.unitManager:
-            self.unitManager = self._world.scene.unitManager
+            self.unitManager = self._world.unitManager
 
         print "Instance: ", id
         if id in self.unitManager.getFifeIds():
@@ -141,7 +141,7 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
         self.cycleThroughInstances(instances)
 
         if not self.unitManager:
-            self.unitManager = self._world.scene.unitManager
+            self.unitManager = self._world.unitManager
 
         if self._world.activeUnit:
             if self._world.activeUnit == initialUnit:
@@ -163,7 +163,7 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
         print "Found " , instances.__len__(), "instances"
 
         if not self.unitManager:
-            self.unitManager = self._world.scene.unitManager
+            self.unitManager = self._world.unitManager
 
         for instance in instances:
             clickedAgent = self.unitManager.getAgent(instance)
@@ -192,7 +192,7 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
             return
 
         if not self.unitManager:
-            self.unitManager = self._world.scene.unitManager
+            self.unitManager = self._world.unitManager
 
         # Generate an instance for the unit.
         self.unitManager.addAgent(unit, clickLocation)
@@ -222,7 +222,7 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
         print "Agent Type: " , construction.agentType
 
         if construction.teleport(location):
-            self._world.scene.addBuilding(self._world.construction)
+            self._world.addBuilding(self._world.construction)
             self._world.construction = None
             self._world.cursorHandler.setCursor(self._world.cursorHandler.CUR_DEFAULT)
             self._world.setMode(self._world.MODE_DEFAULT)
@@ -279,7 +279,7 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
                     camera = self._world.cameras['main']
                     self._cellSelectionRenderer = fife.CellSelectionRenderer.getInstance(camera)
                     self._cellSelectionRenderer.setEnabled(True)
-                    self._cellSelectionRenderer.activateAllLayers(self._world.scene.map)
+                    self._cellSelectionRenderer.activateAllLayers(self._world.map)
 
             if self._cellSelectionRenderer:
                 mousePoint = fife.ScreenPoint(evt.getX(), evt.getY())
@@ -316,7 +316,7 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
     #     if (event.getButton() == fife.MouseEvent.LEFT):
     #         if clickpoint.x > self._lastmousepos[0] + 5 or clickpoint.x < self._lastmousepos[0] - 5 or clickpoint.y > \
     #                         self._lastmousepos[1] + 5 or clickpoint.y < self._lastmousepos[1] - 5:
-    #             self._world.scene.player.walk(self._world.scene.getLocationAt(clickpoint))
+    #             self._world.player.walk(self._world.getLocationAt(clickpoint))
     #
     #         self._lastmousepos = (clickpoint.x, clickpoint.y)
 
@@ -425,6 +425,9 @@ class CursorHandler(object):
 class World(object):
     """
     The world!
+    Keeps track of all game objects.
+
+    This is the meat and potatoes of the game.  This class takes care of all the units.
 
     This class handles:
       setup of map view (cameras ...)
@@ -435,43 +438,41 @@ class World(object):
 
 
     def __init__(self, universe, planet):
-        # super(World, self).__init__(engine, regMouse=True, regKeys=True)
+
+        ## Higher instances than this
         self.universe = universe
         self.engine = universe._engine
         self.eventmanager = self.engine.getEventManager()
         self.model = self.engine.getModel()
-        self.filename = ''
-        self.pump_ctr = 0 # for testing purposis
-        self.ctrldown = False
-        self.instancemenu = None
-        self.dynamic_widgets = {}
-        self.faction = universe.faction
-        self.planet = planet
-        self.attackType = None
-        self.scene=None
-        self.unitManager = None
-
         self.settings = universe._settings
 
+        ## Player and unit attributes
+        self.planet = planet
+        self.faction = universe.faction
+        self._player1 = True
+        self._player2 = False
 
-        ## Added by Jon
-        self.mousePos = (100,100)   ## this is used to move the camera. Alternative method possible!
-        # self.factionUnits = {}      ## This will hold the units for each faction.
-        self.activeUnit = None      ## Will point at the active unit "Agent" ID.
-        self.activeUnitRenderer = None
-        # self.currentTurn = True
-        # self._player1 = True
-        # self._player2 = False
-        # self._objectsToDelete = list()
-        self.mode = self.MODE_DEFAULT
+        ## There can only be one world -> assign unitLoader to this world.
+        self.unitManager = None
+        self.unitLoader = self.universe.unitLoader
+        self.unitLoader.setWorld(self)
+        self.projectileGraveyard = []
+        self.unitGraveyard = []
+        self.retaliation = None
+        self.factionUnits = {}      ## This will hold the units for each faction.
         self.storage = None # Points at the storage object in Deploy mode.
         self.deploying = None
+        self.agentLayer = None
 
-        self.view = View(self, self.engine)
-
+        ## gui and widgets
+        self.instancemenu = None
+        self.dynamic_widgets = {}
+        self.activeUnitRenderer = None
         self.cursorHandler = CursorHandler(self.engine.getImageManager(), self.engine.getCursor())
 
-
+        ##Camera and visuals
+        self.view = View(self, self.engine)
+        self.mousePos = (100,100)   ## this is used to move the camera. Alternative method possible!
         ## Constants
         self._camMoveMargin = 20
         self._camMoveSpeed = 0.2
@@ -479,16 +480,32 @@ class World(object):
         self.light_sources = 0
         self.lightmodel = int(TDS.get("FIFE", "Lighting"))
 
+        ##Sound:
         self.sound = self.universe.sound
         self.music = None
 
+        ## Game state
+        self.activeUnit = None      ## Will point at the active unit "Agent" ID.
+        self.mode = self.MODE_DEFAULT
         self.busy = False
 
-        ## There can only be one world -> assign unitLoader to this world.
-        self.universe.unitLoader.setWorld(self)
-        self.projectileGraveyard = []
-        self.unitGraveyard = []
-        self.retaliation = None
+        ## Other. Possibly remove.
+        self.filename = ''
+        self.pump_ctr = 0 # for testing purposes
+        self.ctrldown = False
+        self.attackType = None
+
+        ## To be overriden:
+        self.listener = None
+
+
+
+    def destroy(self):
+        """
+        Removes all objects from the scene and deletes them from the layer.
+        """
+        self.unitManager.destroy()
+
 
     def cleanProjectiles(self):
         if not self.projectileGraveyard:
@@ -500,42 +517,49 @@ class World(object):
             instance = self.projectileGraveyard.pop()
             layer.deleteInstance(instance)
 
+
     def getActiveAgent(self):
         '''
         Returns the active agent.
         :return: Agent
         '''
         if self.activeUnit:
-            if not self.unitManager:
-                self.unitManager = self.scene.unitManager
-
             return self.unitManager.getAgent(self.activeUnit)
 
 
     def moveCamera(self, speedVector):
         self.view.moveCamera(speedVector)
 
-    def reset(self):
-        """
-        Clear the agent information and reset the moving secondary camera state.
-        """
-        if self.music:
-            self.music.stop()
 
-        # self.scene.map, self.agentLayer = None, None
-        self.cameras = {}
-        # self.hero, self.girl, self.clouds, self.beekeepers = None, None, [], []
-        self.cur_cam2_x, self.initial_cam2_x, self.cam2_scrolling_right = 0, 0, True
-        self.target_rotation = 0
-        # self.instance_to_agent = {}
 
     def load(self, filename):
         """
         Load a xml map and setup agents and cameras.
         """
-        self.reset()
+
         self.filename = filename
-        self.scene.load(filename)
+
+        #Here goes the code that would load the scene.
+        loader = fife.MapLoader(self.engine.getModel(),
+                                self.engine.getVFS(),
+                                self.engine.getImageManager(),
+                                self.engine.getRenderBackend())
+
+        if not loader.isLoadable(filename):
+            print "Problem loading map: map file is not loadable"
+            return
+
+        self.map = loader.load(filename)
+
+        self.map.initializeCellCaches()
+        self.map.finalizeCellCaches()
+
+        self.agentLayer = self.map.getLayer('TechdemoMapGroundObjectLayer')
+
+        self.unitManager = UnitManager()
+
+        self.initView(self.map)
+        self.initAgents()
 
         if int(self.settings.get("FIFE", "PlaySounds")):
 
@@ -551,8 +575,19 @@ class World(object):
             # self.waves.gain = 16.0
             # self.waves.play()
 
+    def initAgents(self):
+        """
+        Setup agents.
 
-        self.listener.attach()
+        Loads the "agents" (i.e. units and structures) from the planet object and initialises them.
+        """
+
+        agentList = self.planet.agentInfo
+        self.unitManager.initAgents(self.map, agentList, self.unitLoader, self.planet)
+        self.planet.agentInfo = {}
+
+        if self.listener:
+            self.listener.attach()
         # self._music = self._soundmanager.createSoundEmitter("music/waynesmind2.ogg")
         # self._music.callback = self.musicHasFinished
         # self._music.looping = True
@@ -564,6 +599,31 @@ class World(object):
         self.cameras = self.view.cameras
 
 
+    def updatePlanetAgents(self):
+        '''
+        Updates the agent information (units and structures) that the planet object stores.
+        :return:
+        '''
+        self.unitManager.saveAllAgents(self.planet)
+
+
+    def getStorageDicts(self):
+        '''
+        Return a dictionary containing the storages of the buildings in this scene.
+        :return:
+        '''
+        return self.unitManager.getStorageDicts()
+
+
+    def unitDied(self, fifeID):
+        '''
+        Process the destruction of a unit
+        :param fifeID: ID of the destroyed unit
+        :return:
+        '''
+        self.unitManager.removeInstance(fifeID)
+
+
     def getInstancesAt(self, arg):
         """
         Query the main camera for instances on our active(agent) layer.
@@ -572,7 +632,7 @@ class World(object):
         """
         location = None
         if isinstance(arg, fife.ScreenPoint):
-            instances = self.cameras['main'].getMatchingInstances(arg, self.scene.agentLayer, False)
+            instances = self.cameras['main'].getMatchingInstances(arg, self.agentLayer, False)
             if instances:
                 return instances
             else:
@@ -585,39 +645,32 @@ class World(object):
             location = arg
 
         if not location:
-            location = fife.Location(self.scene.agentLayer)
+            location = fife.Location(self.agentLayer)
             location.setLayerCoordinates(point3d)
 
-        return self.scene.agentLayer.getInstancesAt(location, False)
+        return self.agentLayer.getInstancesAt(location, False)
 
-
-    # def getInstancesAt(self, clickpoint):
-    #     """
-    #     Query the main camera for instances on our active(agent) layer.
-    #     """
-    #     if isinstance(clickpoint)
-    #     instances = self.cameras['main'].getMatchingInstances(clickpoint, self.scene.agentLayer)
-    #
-    #     if not instances:
-    #         location = self.getLocationAt(clickpoint)
-    #         return self.cameras['main'].getMatchingInstances(location, False)
-    #
-    #     return instances
 
     def getLocationAt(self, clickpoint):
         """
         Query the main camera for the Map location (on the agent layer)
         that a screen point refers to.
+        :return: Location on agent Layer
         """
         target_mapcoord = self.cameras['main'].toMapCoordinates(clickpoint, False)
         target_mapcoord.z = 0
-        location = fife.Location(self.scene.agentLayer)
+        location = fife.Location(self.agentLayer)
         location.setMapCoordinates(target_mapcoord)
         return location
 
 
 
     def selectUnit(self, id):
+        '''
+        Selects a unit and puts it as the activeUnit.
+        :param id: of a unit
+        :return:
+        '''
 
         ## Create an InstanceRenderer if not existing
         if not self.activeUnitRenderer:
@@ -632,47 +685,10 @@ class World(object):
 
         self.activeUnit = id
         if id:
-            self.activeUnitRenderer.addOutlined(self.scene.getInstance(id).instance, 173, 255, 47, 2)
+            self.activeUnitRenderer.addOutlined(self.getInstance(id).instance, 173, 255, 47, 2)
 
         # Update UI:
         self.HUD.updateUI()
-
-    def changeRotation(self):
-        """
-        Smoothly change the main cameras rotation until
-        the current target rotation is reached.
-        """
-        currot = self.cameras['main'].getRotation()
-        if self.target_rotation != currot:
-            self.cameras['main'].setRotation((currot + 5) % 360)
-
-
-    def lightIntensity(self, value):
-        if self.light_intensity+value <= 1 and self.light_intensity+value >= 0:
-            self.light_intensity = self.light_intensity + value
-
-            if self.lightmodel == 1:
-                self.cameras['main'].setLightingColor(self.light_intensity, self.light_intensity, self.light_intensity)
-
-    def lightSourceIntensity(self, value):
-        if self.light_sources+value <= 255 and self.light_sources+value >= 0:
-            self.light_sources = self.light_sources+value
-            renderer = fife.LightRenderer.getInstance(self.cameras['main'])
-
-            renderer.removeAll("beekeeper_simple_light")
-            renderer.removeAll("hero_simple_light")
-            renderer.removeAll("girl_simple_light")
-
-            if self.lightmodel == 1:
-                node = fife.RendererNode(self.hero.agent)
-                renderer.addSimpleLight("hero_simple_light", node, self.light_sources, 64, 32, 1, 1, 255, 255, 255)
-
-                node = fife.RendererNode(self.girl.agent)
-                renderer.addSimpleLight("girl_simple_light", node, self.light_sources, 64, 32, 1, 1, 255, 255, 255)
-
-                for beekeeper in self.beekeepers:
-                    node = fife.RendererNode(beekeeper.agent)
-                    renderer.addSimpleLight("beekeeper_simple_light", node, self.light_sources, 120, 32, 1, 1, 255, 255, 255)
 
 
     def onSkipTurnPress(self):
@@ -683,14 +699,14 @@ class World(object):
 
 
         text = "This is the turn of"
-        if not self.scene.currentTurn:
+        if not self.currentTurn:
             text += " Player 1"
         else:
             text += " Player 2"
         self._nextTurnWindow.setText(text)
         self._nextTurnWindow.show()
 
-        self.scene.nextTurn()
+        self.nextTurn()
 
     def pump(self):
         """
@@ -740,7 +756,7 @@ class World(object):
             if not self.retaliation.blocked:
                 self.retaliation.next()
 
-        self.scene.pump()
+        self.pump()
 
         # print "End pumping world"
 
@@ -756,9 +772,9 @@ class World(object):
 
             self.unitManager.removeInstance(unitID)
 
-            for factionName in self.scene.factionUnits.keys():
-                if unitID in self.scene.factionUnits[factionName]:
-                    self.scene.factionUnits[factionName].remove(unitID)
+            for factionName in self.factionUnits.keys():
+                if unitID in self.factionUnits[factionName]:
+                    self.factionUnits[factionName].remove(unitID)
                     if self.activeUnit == unitID:
                         self.selectUnit(None)
                     print "Cleaned unit: ", unitID
@@ -814,7 +830,7 @@ class World(object):
 
     def backToUniverse(self):
         '''
-
+        Goes back to the universe view.
         :return:
         '''
         self.universe.backToUniverse()
@@ -835,8 +851,10 @@ class World(object):
         print "Not enough credits!"
         return
 
+
     def startBuilding(self, buildingName):
         pass
+
 
     def startDeploy(self, storage):
         self.storage = storage

@@ -46,8 +46,8 @@ class Progress(object):
         # Update open planet:
         if self.universe.world:
             if self.universe.world.planet:
-                self.universe.world.scene.updatePlanetAgents()
-                storages = self.universe.world.scene.getStorageDicts()
+                self.universe.world.updatePlanetAgents()
+                storages = self.universe.world.getStorageDicts()
                 planetDict = self.universe.world.planet.getPlanetDict()
                 planetDict["storages"] = storages
                 self.allPlanets[planetDict["name"]] = planetDict

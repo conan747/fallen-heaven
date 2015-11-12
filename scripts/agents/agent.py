@@ -71,7 +71,7 @@ class Agent(fife.InstanceActionListener):
         object = self.setWalkableAreas(object)
         object.setBlocking(True)
 
-        self.instance = self.world.scene.agentLayer.createInstance(object, point)
+        self.instance = self.world.agentLayer.createInstance(object, point)
         self.instance.setCellStackPosition(0)
         fife.InstanceVisual.create(self.instance)
 
@@ -105,7 +105,7 @@ class Agent(fife.InstanceActionListener):
         :param instanceName: Name of the instance in the loaded map on the "activeLayer"
         :return: bool, true if it could be loaded.
         '''
-        layer = self.world.scene.agentLayer
+        layer = self.world.agentLayer
         self.instance = layer.getInstance(instanceName)
         #object = self.instance.getObject()
 

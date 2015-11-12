@@ -26,9 +26,6 @@ from world import *
 
 from gui.huds import TacticalHUD
 from combat import *
-from scripts.tactic_scene import TacticScene
-
-from agents.unit import Unit
 
 
 
@@ -141,7 +138,7 @@ class TacticListener(WorldListener):
         # Generate an instance for the unit.
         instanceID = unit.instance.getFifeId()
         faction = unit.properties["faction"]
-        self._world.scene.factionUnits[faction].append(instanceID)
+        self._world.factionUnits[faction].append(instanceID)
         self._world.view.addPathVisual(unit.instance)
         self._world.storage.unitDeployed()
         self.cancelDeploy()
@@ -154,7 +151,7 @@ class TacticListener(WorldListener):
         '''
 
         if not self.unitManager:
-            self.unitManager = self._world.scene.unitManager
+            self.unitManager = self._world.unitManager
 
         unit = self._world.getActiveAgent()
 
@@ -208,7 +205,7 @@ class TacticListener(WorldListener):
             return
 
         if not self.unitManager:
-            self.unitManager = self._world.scene.unitManager
+            self.unitManager = self._world.unitManager
         activeUnit = self._world.getActiveAgent()
         if activeUnit.agentType == "Building":
             return
@@ -219,7 +216,7 @@ class TacticListener(WorldListener):
 
         for instance in instances:
                 clickedAgent = self.unitManager.getAgent(instance)
-                if not clickedAgent or clickedAgent.properties["faction"] != self._world.scene.currentTurn:
+                if not clickedAgent or clickedAgent.properties["faction"] != self._world.currentTurn:
                         return
                 if clickedAgent.agentType == "Building":
                     storage = clickedAgent.storage
@@ -283,18 +280,93 @@ class TacticWorld(World):
     def __init__(self, universe, planet):
         super(TacticWorld, self).__init__(universe, planet)
 
-        self._nextTurnWindow = None
-
-
         self.listener = TacticListener(self)
         self.listener.attach()
 
-        self.faction = self.universe.faction
 
-        self.scene = TacticScene(self, self.engine)
+        playerFactionName = self.universe.progress.playerFactionName
+        self.currentTurn = playerFactionName
+        self.factionNames = [playerFactionName, "Tauran"]
 
+        #GUI
+        self._nextTurnWindow = None
         self.HUD = TacticalHUD(self)
         self.HUD.show()
+
+    def load(self, filename):
+        super(TacticWorld, self).load(filename)
+
+        ## Start cellRenderer to show instance paths:
+        self.view.setVisual(self.unitManager.getAgents())
+
+        # Setup factionUnits
+        for factionName in self.factionNames:
+            self.factionUnits[factionName] = []
+            for agent in self.unitManager.getAgents():
+                if agent.properties["faction"] == factionName:
+                    self.factionUnits[factionName].append(agent.getFifeId())
+
+        self.selectUnit(None)
+
+
+    def resetAPs(self):
+        '''
+        Resets the AP points of all the units to its maximum.
+        '''
+        for unitID in self.factionUnits[self.currentTurn]:
+            print "Reseting: ", unitID
+            unit = self.unitManager.getAgent(unitID)
+            unit.resetAP()
+
+
+    def nextTurn(self):
+        '''
+        Skips to the next turn
+        '''
+        if self.factionNames[0] == self.currentTurn:
+            self.currentTurn = self.factionNames[1]
+        else:
+            self.currentTurn = self.factionNames[0]
+        self.selectUnit(None)
+        self.resetAPs()
+        self.setMode(self.MODE_DEFAULT)
+        ## TO-DO: add a message stating who's turn it is.
+        # print self.instance_to_agent
+        # for key in self.instance_to_agent.keys():
+        #     instance = self.instance_to_agent[key]
+        #     instance.runTurn()
+
+
+
+    def applyDamage(self, location, damage):
+        '''
+        Deals damage to a specific location (and all the units within).
+        :param location: Place where the damage is applied in the map.
+        :param damage: Ammount of damage dealt
+        :return:
+        '''
+        targetIDs = self.getInstancesAt(location)
+        for unitID in targetIDs:
+            agent = self.unitManager.getAgent(unitID)
+            print "Dealt %s damage to %s" % (damage, agent.instance.getId())
+            agent.getDamage(damage)
+
+
+
+    def unitDied(self, unitID):
+        '''
+        Process the destruction of a unit
+        :param unitID: ID of the destroyed unit
+        :return:
+        '''
+
+        self.unitGraveyard.append(unitID)
+
+
+
+    def reset(self):
+        ### TODO This should be fixed!!!
+        pass
 
 
     def onAttackButtonPressed(self, attackType):
@@ -311,7 +383,7 @@ class TacticWorld(World):
         self.storage = storage
         self.setMode(self.MODE_DEPLOY)
         if not self.unitManager:
-            self.unitManager = self._world.scene.unitManager
+            self.unitManager = self._world.unitManager
         building = self.getActiveAgent()
         properties = building.properties
 

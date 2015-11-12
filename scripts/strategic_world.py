@@ -25,8 +25,6 @@ from fife import fife
 from world import *
 
 from gui.huds import StrategicHUD
-from combat import Trajectory
-from scripts.strategic_scene import StrategicScene
 
 
 
@@ -54,7 +52,7 @@ class StrategicListener(WorldListener):
 
         if instances:
             if not self.unitManager:
-                self.unitManager = self._world.scene.unitManager
+                self.unitManager = self._world.unitManager
             for instance in instances:
                 agent = self.unitManager.getAgent(instance)
                 print "Recycling: ", agent.agentName
@@ -83,7 +81,7 @@ class StrategicListener(WorldListener):
                     camera = self._world.cameras['main']
                     self._cellSelectionRenderer = fife.CellSelectionRenderer.getInstance(camera)
                     self._cellSelectionRenderer.setEnabled(True)
-                    self._cellSelectionRenderer.activateAllLayers(self._world.scene.map)
+                    self._cellSelectionRenderer.activateAllLayers(self._world.map)
 
             if self._cellSelectionRenderer:
                 mousePoint = fife.ScreenPoint(evt.getX(), evt.getY())
@@ -125,13 +123,23 @@ class StrategicWorld(World):
         self.listener = StrategicListener(self)
         self.listener.attach()
 
-        self.scene = StrategicScene(self, self.engine)
-
         self.HUD = StrategicHUD(self)
         self.HUD.show()
 
         self.construction = None
 
+        ## From strategic_scene. Check if we can delete:
+        self.currentTurn = True
+        self.turnCount = 0
+
+
+    def addBuilding(self, building):
+        '''
+        Adds the building to the map.
+        :param building:
+        :return:
+        '''
+        self.unitManager.addBuilding(building)
 
     def startRecycling(self):
         '''
@@ -150,9 +158,9 @@ class StrategicWorld(World):
             # get rid of the already loaded instance:
             self.stopBuilding()
 
-        self.construction = self.scene.unitLoader.createBuilding(buildingName)
+        self.construction = self.unitLoader.createBuilding(buildingName)
         self.setMode(self.MODE_BUILD)
-        # self.scene.build()
+        # self.build()
 
     def stopBuilding(self):
         '''
@@ -164,7 +172,7 @@ class StrategicWorld(World):
             # Destroy the construction first!
             # self._world.construction.remove()
             if self.construction.instance:
-                self.scene.agentLayer.deleteInstance(self.construction.instance)
+                self.agentLayer.deleteInstance(self.construction.instance)
                 self.construction.__del__()
             self.construction = None
             self.selectUnit(None)

@@ -18,10 +18,10 @@ class Retaliation(object):
         self.targetId = targetAgent.instance.getFifeId()
         self.targetLocation = targetAgent.instance.getLocation()
 
-        enemyName = [name for name in self.world.scene.factionUnits.keys()
-                     if name is not self.world.scene.currentTurn][0]
+        enemyName = [name for name in self.world.factionUnits.keys()
+                     if name is not self.world.currentTurn][0]
 
-        self.enemyUnits = self.world.scene.factionUnits[enemyName]
+        self.enemyUnits = self.world.factionUnits[enemyName]
         self.retaliatedUnits = []
         self.availableUnits = {}
         self.world.busy = True
@@ -117,7 +117,7 @@ class Trajectory(object):
         camera = world.cameras['main']
         self._renderer = fife.CellSelectionRenderer.getInstance(camera)
         self._genericrenderer = fife.GenericRenderer.getInstance(camera)
-        self._genericrenderer.activateAllLayers(self._world.scene.map)
+        self._genericrenderer.activateAllLayers(self._world.map)
         self.unitManager = self._world.unitManager
 
     def canShoot(self, location, display=False):

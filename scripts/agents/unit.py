@@ -37,7 +37,7 @@ class Projectile(fife.InstanceActionListener):
         self.callback = callback
         self.parent = parent
         self.world = world
-        self.layer = world.scene.map.getLayer("TrajectoryLayer")
+        self.layer = world.map.getLayer("TrajectoryLayer")
 
         object = world.model.getObject("SBT", "fallen")
         print "Attacking from: " , origin.getLayerCoordinates()
@@ -174,7 +174,7 @@ class Unit(Agent):
         print "Teleporting unit"
 
         # Check if we are pointing at the same location as the current unit.
-        # activeUnitLocation = self.world.scene.instance_to_agent[self.world.activeUnit].getLocation()
+        # activeUnitLocation = self.world.instance_to_agent[self.world.activeUnit].getLocation()
         # if activeUnitLocation == location:
         #     return True
 
@@ -229,7 +229,7 @@ class Unit(Agent):
             self.instance.actOnce("explode")
             return
 
-        self.world.scene.unitDied(self.instance.getFifeId())
+        self.world.unitDied(self.instance.getFifeId())
         # self.layer.deleteInstance(self.agent)
 
 
@@ -336,5 +336,5 @@ class Weapon(object):
         """
         #Handle animation
         self.speaker("explosion")
-        self._world.scene.applyDamage(location, self.properties["DamageContact"])
+        self._world.applyDamage(location, self.properties["DamageContact"])
 

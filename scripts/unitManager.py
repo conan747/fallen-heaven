@@ -3,21 +3,8 @@ __author__ = 'cos'
 
 
 from fife import fife
-from agents.cloud import Cloud
-# from agents.unit import *
-# from agents.building import *
-from fife.extensions.fife_settings import Setting
-
-from gui.huds import TacticalHUD
-from combat import Trajectory
-
-from fife.extensions.savers import saveMapFile
-import cPickle as pickle
 from agents.agent import Agent
 
-
-# Temp:
-import os
 
 
 _MODE_DEFAULT, _MODE_ATTACK, _MODE_DROPSHIP = xrange(3)
@@ -156,6 +143,7 @@ class UnitManager(object):
         :param planet: The planet object.
         :return:
         '''
+        planet.agentInfo = {}
         for angent in self.getAgents():
             planet.saveInstance(angent)
 
@@ -165,6 +153,7 @@ class UnitManager(object):
         :return:
         '''
         storages = {}
+        ##FIXME: Should this take into account faction?
 
         for agent in self.getAgents():
             if agent.agentType == "Building":
@@ -209,132 +198,3 @@ class UnitManager(object):
         :return:
         '''
         self.getAgent(id).teleport(location)
-
-
-class Scene(object):
-    """
-    Master game scene.  Keeps track of all game objects.
-
-    This is the meat and potatoes of the game.  This class takes care of all the units.
-    """
-
-    def __init__(self, world, engine):
-        """
-        @param world: A reference to the master instance of the World class
-        @type world: L{World}
-        @param engine: A reference to the FIFE engine
-        @type engine: L{fife.Engine}
-        @param objectLayer: The layer that all objects exist on
-        @type objectLayer: L{fife.Layer}
-        """
-        self.engine = engine
-        self._world = world
-        self._model = engine.getModel()
-        self.agentLayer = None
-
-        self._music = None
-        self.factionUnits = {}
-        self._player1 = True
-        self._player2 = False
-        self.faction = self._world.faction
-        self.planet = self._world.planet
-
-        self.unitLoader = self._world.universe.unitLoader
-        self.unitManager = None
-        self.view = self._world.view
-
-    def destroy(self):
-        """
-        Removes all objects from the scene and deletes them from the layer.
-        """
-        self.unitManager.destroy()
-
-
-    def getInstance(self, id):
-        '''
-        :param id: FIFEID of the agent you want to obtain
-        :return: Instance
-        '''
-        return self.unitManager.getAgent(id)
-
-    def pump(self):
-        pass
-
-
-    def load(self, filename):
-        """
-        Load a xml map and setup agents and cameras.
-        """
-        self.filename = filename
-        loader = fife.MapLoader(self.engine.getModel(),
-                                self.engine.getVFS(),
-                                self.engine.getImageManager(),
-                                self.engine.getRenderBackend())
-
-        if not loader.isLoadable(filename):
-            print "Problem loading map: map file is not loadable"
-            return
-
-        self.map = loader.load(filename)
-
-        self.map.initializeCellCaches()
-        self.map.finalizeCellCaches()
-
-        self.agentLayer = self.map.getLayer('TechdemoMapGroundObjectLayer')
-
-        self.unitManager = UnitManager()
-
-        self._world.initView(self.map)
-        self.initAgents()
-
-
-        ## Load storages:
-        # '''
-        # storageFile = filename.replace(".xml",".sto")
-        # if os.path.isfile(storageFile):
-        #     pic = pickle.load(open(storageFile, 'rb'))
-        #     for building in self.instance_to_agent.values():
-        #         if building.agentName in pic.keys():
-        #             info = pic[building.agentName]
-        #             print "Setting up", info
-        #             building.storage.setStorage(info)
-        # '''
-
-
-    def initAgents(self):
-        """
-        Setup agents.
-
-        Loads the "agents" (i.e. units and structures) from the planet object and initialises them.
-        """
-
-        agentList = self.planet.agentInfo
-        self.unitManager.initAgents(self.map, agentList, self._world.universe.unitLoader, self.planet)
-        self.planet.agentInfo = {}
-        
-
-    def updatePlanetAgents(self):
-        '''
-        Updates the agent information (units and structures) that the planet object stores.
-        :return:
-        '''
-        self.planet.agentInfo = {}
-        self.unitManager.saveAllAgents(self.planet)
-
-
-    def getStorageDicts(self):
-        '''
-        Return a dictionary containing the storages of the buildings in this scene.
-        :return:
-        '''
-        return self.unitManager.getStorageDicts()
-        storages = {}
-
-
-    def unitDied(self, fifeID):
-        '''
-        Process the destruction of a unit
-        :param fifeID: ID of the destroyed unit
-        :return:
-        '''
-        self.unitManager.removeInstance(fifeID)

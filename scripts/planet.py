@@ -1,6 +1,5 @@
 __author__ = 'cos'
 
-from scene import Scene
 import cPickle as pickle
 import os
 

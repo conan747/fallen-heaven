@@ -339,9 +339,7 @@ class Universe(object):
 
     def save(self):
         if self.world:
-            if self.world.scene:
-                # self.world.scene.save("test.xml")
-                self.world.scene.updatePlanetAgents()
+            self.world.updatePlanetAgents()
         self.campaign.saveCampaign()
         # self.progress.save()
 
@@ -349,7 +347,7 @@ class Universe(object):
         # Save the information
         self.progress.update()
 
-        self.world.scene.destroy()
+        self.world.destroy()
         self.world.HUD.closeExtraWindows()
 
         # delete map and objects.
@@ -367,11 +365,10 @@ class Universe(object):
         # self.world.soundmanager.releaseEmitter(id)
         del self.world.soundmanager ## TODO: Should soundManager be part of universe?
         # del self.world.waves
-        self.world.scene = None
+        self.world = None
         self.world.HUD.destroy()
         self.world.HUD = None
 
-        self.world.scene = None
         self.world = None
         self.unitLoader.setWorld(None)
 

@@ -60,7 +60,7 @@ class Storage(object):
         # Get the units that this is able to produce:
         productionType = self.parent.properties["ProductionType"]
         if productionType != "NONE":
-            unitList = self.world.scene.unitLoader.unitProps
+            unitList = self.world.unitLoader.unitProps
             self.ableToProduce = []
 
             for unitName in unitList:
@@ -93,7 +93,7 @@ class Storage(object):
         print "Removing: ", unitName
         self.inProduction.remove(unitName)
         unitName = unitName.split(":")[1]
-        cost = int(self.world.scene.unitLoader.unitProps[unitName]["Cost"])
+        cost = int(self.world.unitLoader.unitProps[unitName]["Cost"])
         self.world.deductCredits(-cost)
         self.updateUI()
 
@@ -101,7 +101,7 @@ class Storage(object):
     def buildUnit(self, unitName):
         print "Building ", unitName
 
-        cost = int(self.world.scene.unitLoader.unitProps[unitName]["Cost"])
+        cost = int(self.world.unitLoader.unitProps[unitName]["Cost"])
         if self.world.deductCredits(cost):
 
             # Create an icon for the new unit:
@@ -157,7 +157,7 @@ class Storage(object):
         # self.world.setMode(self.world.MODE_DEPLOY)
         # self.world.storage = self
         unitName = unitID.split(":")[1]
-        unit = self.world.scene.unitLoader.createUnit(unitName)
+        unit = self.world.unitLoader.createUnit(unitName)
         self.world.deploying = unit
         self.deployingID = unitID
         print "Deploying unit", unitName
@@ -294,7 +294,7 @@ class Building(Agent):
                 #     return False
 
         # ## Check if the location is empty:
-        # if not self.world.scene.getInstacesInTile(location):
+        # if not self.world.getInstacesInTile(location):
         self.instance.setLocation(location)
         return True
 
@@ -303,7 +303,7 @@ class Building(Agent):
         print "This unit is destroyed!"
         self.removeFootprint()
         #TODO: Enable attacking footprint area!
-        self.world.scene.unitDied(self.instance.getFifeId())
+        self.world.unitDied(self.instance.getFifeId())
         # self.layer.deleteInstance(self.agent)
 
 
