@@ -64,10 +64,12 @@ class Retaliation(object):
         print "retaliating next"
         self.blocked = True
         if not self.unitManager.getAgent(self.targetId):
+            # Target has died. Stop retaliation.
             self.cleanup()
             return
 
         if not self.availableUnits:
+            # There are no other units that can retaliate.
             self.cleanup()
             return
 

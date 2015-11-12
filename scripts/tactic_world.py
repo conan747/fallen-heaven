@@ -353,14 +353,14 @@ class TacticWorld(World):
 
 
 
-    def unitDied(self, unitID):
+    def unitDied(self, unitID, explode=False):
         '''
         Process the destruction of a unit
         :param unitID: ID of the destroyed unit
         :return:
         '''
 
-        self.unitGraveyard.append(unitID)
+        self.unitGraveyard.add(self.unitManager.getAgent(unitID).instance, explode)
 
 
 

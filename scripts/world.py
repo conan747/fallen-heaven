@@ -40,6 +40,7 @@ from combat import Trajectory
 from gui.dialogs import InfoDialog
 from view import View
 from unitManager import *
+from eventManager import *
 
 TDS = Setting(app_name="rio_de_hola")
 
@@ -456,8 +457,8 @@ class World(object):
         self.unitManager = None
         self.unitLoader = self.universe.unitLoader
         self.unitLoader.setWorld(self)
-        self.projectileGraveyard = []
-        self.unitGraveyard = []
+        self.projectileGraveyard = None
+        self.unitGraveyard = None
         self.retaliation = None
         self.factionUnits = {}      ## This will hold the units for each faction.
         self.storage = None # Points at the storage object in Deploy mode.
@@ -507,17 +508,6 @@ class World(object):
         self.unitManager.destroy()
 
 
-    def cleanProjectiles(self):
-        if not self.projectileGraveyard:
-            return
-        layer = self.view.layers["TrajectoryLayer"]
-        num = len(self.projectileGraveyard)
-        print "Cleaning ", num
-        while len(self.projectileGraveyard) > 0:
-            instance = self.projectileGraveyard.pop()
-            layer.deleteInstance(instance)
-
-
     def getActiveAgent(self):
         '''
         Returns the active agent.
@@ -557,6 +547,8 @@ class World(object):
         self.agentLayer = self.map.getLayer('TechdemoMapGroundObjectLayer')
 
         self.unitManager = UnitManager()
+        self.unitGraveyard = UnitGraveyard(self.agentLayer)
+        self.projectileGraveyard = Graveyard(self.view.layers["TrajectoryLayer"])
 
         self.initView(self.map)
         self.initAgents()
@@ -749,14 +741,7 @@ class World(object):
         #         projectile.move()
         #         self.unitManager.getAgent(self.activeUnit).projectile = None
 
-        self.cleanProjectiles()
-        self.cleanGraveyard()
-
-        if self.retaliation:
-            if not self.retaliation.blocked:
-                self.retaliation.next()
-
-        self.pump()
+        self.eventmanager.next()
 
         # print "End pumping world"
 

@@ -35,7 +35,6 @@ class Projectile(fife.InstanceActionListener):
         super(Projectile, self).__init__()
 
         self.callback = callback
-        self.parent = parent
         self.world = world
         self.layer = world.map.getLayer("TrajectoryLayer")
 
@@ -64,7 +63,6 @@ class Projectile(fife.InstanceActionListener):
             print "Cleaning up."
             self.world.projectileGraveyard.append(self.instance)
             self.instance = None
-            self.parent.projectile = None
             if self.callback:
                 self.callback()
             self.__del__() # Is this necessary?
@@ -225,11 +223,8 @@ class Unit(Agent):
 
     def die(self, explode=False):
         print "This unit died!"
-        if explode:
-            self.instance.actOnce("explode")
-            return
 
-        self.world.unitDied(self.instance.getFifeId())
+        self.world.unitDied(self.instance.getFifeId(), explode=explode)
         # self.layer.deleteInstance(self.agent)
 
 
@@ -265,7 +260,7 @@ class Unit(Agent):
             location = self.computePrecision(weapon, location)
             def callback(func = self.afterAttack, weapon= weapon, location = location):
                 func(weapon, location)
-            self.projectile = Projectile(self, self.world ,self.instance.getLocation(), location, callback)
+            Projectile(self, self.world ,self.instance.getLocation(), location, callback)
             # Reduce APs
             percentTimeUnits = weapon.properties["PercentTimeUnits"]
             deducing = percentTimeUnits * self.properties["TimeUnits"] / 100
@@ -304,6 +299,7 @@ class Unit(Agent):
 
     def afterAttack(self, weapon, location):
         weapon.fire(location)
+        #Fixme: I think this is not needed with the eventManager.
         if self.world.retaliation:
             self.world.retaliation.unblock()
 

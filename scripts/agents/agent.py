@@ -26,7 +26,8 @@ from scripts.common.common import ProgrammingError
 
 class Agent(fife.InstanceActionListener):
     def __init__(self, unitName, agentType, world):
-        fife.InstanceActionListener.__init__(self)
+        super(Agent, self).__init__(self)
+        #fife.InstanceActionListener.__init__(self)
         # self.settings = settings
         # self.model = model
         self.agentName = None
@@ -73,7 +74,7 @@ class Agent(fife.InstanceActionListener):
 
         self.instance = self.world.agentLayer.createInstance(object, point)
         self.instance.setCellStackPosition(0)
-        fife.InstanceVisual.create(self.instance)
+        fife.InstanceVisual.create(self.instance)  ## FIXME: Is this really necessary?
 
         if self.unitName:
             fifeID = self.instance.getFifeId()
