@@ -226,7 +226,7 @@ class Unit(Agent):
     def die(self, explode=False):
         print "This unit died!"
         if explode:
-            self.instance.actOnce("explode", 0)
+            self.instance.actOnce("explode")
             return
 
         self.world.scene.unitDied(self.instance.getFifeId())

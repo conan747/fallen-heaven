@@ -112,19 +112,8 @@ class TacticScene(Scene):
         :return:
         '''
 
-        self._world.view.removePathVisual(self.unitManager.getAgent(unitID).instance)
+        self._world.unitGraveyard.append(unitID)
 
-        self.unitManager.removeInstance(unitID)
-
-        for factionName in self.factionUnits.keys():
-            if unitID in self.factionUnits[factionName]:
-                self.factionUnits[factionName].remove(unitID)
-                if self._world.activeUnit == unitID:
-                    self._world.selectUnit(None)
-                return
-
-
-        print "Could not delete instance: " , unitID
 
 
     def reset(self):

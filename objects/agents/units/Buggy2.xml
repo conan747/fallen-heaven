@@ -1,0 +1,23 @@
+<?fife type="object"?>
+<object blocking="1" cellstack_position="0" cost="1.0" cost_id="" id="Buggy" namespace="fallen" static="0">
+
+
+
+	<action id="asdf">
+		<animation atlas="Buggy.png" height="45" width="45" y_offset="-10" >
+			<direction delay="130" dir="0" frames="1" />
+		</animation>
+	</action>
+
+	<action id="move">
+		<animation atlas="Buggy.png" height="45" width="45" y_offset="-10" >
+			<direction delay="130" dir="0" frames="1" />
+		</animation>
+	</action>
+	
+	<action id="stand">
+		<animation source="../explode/explosion.xml"/>
+	</action>
+
+
+</object>

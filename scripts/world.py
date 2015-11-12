@@ -487,6 +487,7 @@ class World(object):
         ## There can only be one world -> assign unitLoader to this world.
         self.universe.unitLoader.setWorld(self)
         self.projectileGraveyard = []
+        self.unitGraveyard = []
         self.retaliation = None
 
     def cleanProjectiles(self):
@@ -733,6 +734,7 @@ class World(object):
         #         self.unitManager.getAgent(self.activeUnit).projectile = None
 
         self.cleanProjectiles()
+        self.cleanGraveyard()
 
         if self.retaliation:
             if not self.retaliation.blocked:
@@ -741,6 +743,25 @@ class World(object):
         self.scene.pump()
 
         # print "End pumping world"
+
+    def cleanGraveyard(self):
+        '''
+        Deletes the instances that are in the graveyard.
+        :return:
+        '''
+
+        while self.unitGraveyard:
+            unitID = self.unitGraveyard.pop()
+            self.view.removePathVisual(self.unitManager.getAgent(unitID).instance)
+
+            self.unitManager.removeInstance(unitID)
+
+            for factionName in self.scene.factionUnits.keys():
+                if unitID in self.scene.factionUnits[factionName]:
+                    self.scene.factionUnits[factionName].remove(unitID)
+                    if self.activeUnit == unitID:
+                        self.selectUnit(None)
+                    print "Cleaned unit: ", unitID
 
 
     def setMode(self, mode):
