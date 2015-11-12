@@ -5,8 +5,10 @@ __author__ = 'cos'
 import xml.etree.ElementTree as ET
 import sys
 import glob
+import os
 
 def main(arg):
+    os.chdir("/media/cos/Programas/fife/fifengine/demos/fallen/objects/agents/units/")
     template = "Buggy.xml"
 
     with open(template, 'r') as text:

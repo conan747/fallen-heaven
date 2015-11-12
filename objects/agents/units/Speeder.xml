@@ -1,14 +1,19 @@
 <?fife type="object"?>
-
 <object blocking="1" id="Speeder" namespace="fallen" static="0">
 
 
 
 	<action id="stand">
 		<animation atlas="Speeder.png" height="35" width="45">
-			<direction delay="2000" dir="0" frames="1"/>
+			<direction delay="2000" dir="0" frames="1" />
 		</animation>
 	</action>
 
 
+<action id="explode">
+			<animation atlas="../projectiles/explosion.png" delay="200" frames="12" height="64" width="128" x_offset="0" y_offset="0">
+			<direction dir="0" />
+		</animation>
+	</action>
+	
 </object>
