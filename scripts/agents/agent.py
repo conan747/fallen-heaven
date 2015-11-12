@@ -123,6 +123,10 @@ class Agent(fife.InstanceActionListener):
         self.world.busy = False
         #TODO: Add here the trajectory erasing instead after run?
 
+        if action.getId() == "explode":
+            agent = self.world.unitManager.getAgent(instance)
+            agent.die()
+
     def onInstanceActionFrame(self, instance, action, frame):
         print "Action frame" , frame
 
@@ -149,7 +153,7 @@ class Agent(fife.InstanceActionListener):
         print "Dealing ", dmg, " damage!"
         self.health -= dmg
         if self.health <= 0:
-            self.die()
+            self.die(explode=True)
 
 
     def resetAP(self):

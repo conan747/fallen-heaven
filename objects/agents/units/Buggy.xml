@@ -1,12 +1,12 @@
 <?fife type="object"?>
 <object id="Buggy" namespace="fallen" blocking="1" static="0">
-	<action id="stand">
+	<action id="explode">
 		<animation atlas="Buggy.png" height="45" width="45" y_offset="-10" >
 			<direction delay="130" dir="0" frames="1" />
 		</animation>
 	</action>
 	
-	<action id="explode">
+	<action id="stand">
 		<animation source="../projectiles/explosion.xml"/>
 	</action>
 	

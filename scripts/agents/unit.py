@@ -223,8 +223,12 @@ class Unit(Agent):
             runAfterFinish()
 
 
-    def die(self):
-        print "This unit is dead!"
+    def die(self, explode=False):
+        print "This unit died!"
+        if explode:
+            self.instance.actOnce("explode", 0)
+            return
+
         self.world.scene.unitDied(self.instance.getFifeId())
         # self.layer.deleteInstance(self.agent)
 

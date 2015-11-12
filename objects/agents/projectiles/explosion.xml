@@ -1,6 +1,6 @@
 <?fife type="object"?>
 
-		<animation atlas="./explosion.png" width="128" height="64" x_offset="0" y_offset="0" frames="12" delay="200">
+		<animation atlas="explosion.png" width="128" height="64" x_offset="0" y_offset="0" frames="12" delay="200">
 			<direction dir="0"/>
 		</animation>
 
