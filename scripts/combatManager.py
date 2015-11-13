@@ -1,7 +1,7 @@
 __author__ = 'jon'
 
 from fife import fife
-from combat import Retaliation
+from combat import *
 
 class Graveyard(fife.InstanceActionListener):
     '''
@@ -16,7 +16,7 @@ class Graveyard(fife.InstanceActionListener):
 
     def add(self, instance):
         self.instances.append(instance)
-        instance.addActionListener(self)
+        # instance.addActionListener(self)
 
     def next(self):
         if not self.busy:
@@ -64,27 +64,27 @@ class ProjectileGraveyard(Graveyard):
     '''
     def __init__(self, layer, combatManager):
         super(ProjectileGraveyard, self).__init__(layer)
-        self.combatManager = combatManager
-        self.projectile = None
+        # self.combatManager = combatManager
+        # self.projectile = None
 
-    def onInstanceActionFinished(self, instance, action):
-        if action.getId() == "move":
-            print "ProjectileGraveyard: projectile moved."
-            self.instances.append(instance)
-            self.busy = False
-            self.projectile = None
-            self.combatManager.resume()
+    # def onInstanceActionFinished(self, instance, action):
+    #     if action.getId() == "move":
+    #         print "ProjectileGraveyard: projectile moved."
+    #         self.instances.append(instance)
+    #         self.busy = False
+    #         self.projectile = None
+    #         self.combatManager.resume()
 
-    def add(self, instance):
-        instance.addActionListener(self)
-        self.busy = True
+    # def add(self, instance):
+    #     instance.addActionListener(self)
+    #     self.busy = True
 
-    def addProjectile(self, projectile):
-        '''
-        Adds the projectile and waits till it moves.
-        '''
-        self.projectile = projectile
-        self.add(projectile.getInstance())
+    # def addProjectile(self, projectile):
+    #     '''
+    #     Adds the projectile and waits till it moves.
+    #     '''
+    #     self.projectile = projectile
+    #     self.add(projectile.getInstance())
 
 
 class UnitGraveyard(Graveyard):
@@ -132,59 +132,6 @@ class UnitGraveyard(Graveyard):
             self.busy = False
 
 
-
-
-class Projectile(fife.InstanceActionListener):
-
-    def __init__(self, parent, world, origin, destination, callback=None):
-
-        super(Projectile, self).__init__()
-
-        self.callback = callback
-        self.world = world
-        self.layer = world.map.getLayer("TrajectoryLayer")
-
-        object = world.model.getObject("SBT", "fallen")
-        print "Attacking from: " , origin.getLayerCoordinates()
-        originCoords = origin.getExactLayerCoordinates()
-        self.instance = self.layer.createInstance(object, originCoords)
-        self.instance.thisown = 0
-        self.instance.addActionListener(self)
-        self.destination = fife.Location(self.layer)
-        self.destination.setLayerCoordinates(destination.getLayerCoordinates())
-        print "To: ", self.destination.getLayerCoordinates()
-        print "\n\nbullet created!"
-
-        self.move()
-
-    def getInstance(self):
-        return self.instance
-
-    def move(self):
-        if self.destination.isValid():
-            self.instance.move("move", self.destination, 5)
-
-    def onInstanceActionFinished(self, instance, action):
-        print action.getId()
-        if action.getId() == "move": # and self.start:
-            print "\n\nDestroying bullet"
-            self.instance.removeActionListener(self)
-            print "Cleaning up."
-            #self.world.projectileGraveyard.add(self.instance)
-            self.instance = None
-            if self.callback:
-                self.callback()
-            self.__del__() # Is this necessary?
-
-
-    def onInstanceActionCancelled(self, instance, action):
-        print "Action cancelled!"
-
-    def onInstanceActionFrame(self, instance, action, frame):
-        print "Action frame" , frame
-
-
-
 class CombatManager(object):
     '''
     Keeps track of the events in world. Blocks world execution until all the events have been taken care of.
@@ -204,6 +151,11 @@ class CombatManager(object):
 
         # if self.paused:
         #     return
+        if self.projectile:
+            if self.projectile.active:
+                return
+            else:
+                self.projectile = None
 
         if self.world.projectileGraveyard and not self.world.projectileGraveyard.isEmpty():
             self.world.projectileGraveyard.next()
@@ -237,7 +189,7 @@ class CombatManager(object):
         # self.paused = False
         self.retaliation = None
 
-    def addProjectile(self, unit, origin, destination, callback=None):
+    def addProjectile(self, origin, destination, weapon=None, callback=None):
         '''
         Adds a projectile to the scene and takes care of its construction and destruction.
         :param unit: Unit that is firing.
@@ -246,6 +198,5 @@ class CombatManager(object):
         :param callback: What will be run right after it ends.
         :return:
         '''
-        projectile = Projectile(unit, self.world, origin, destination, callback)
-        self.world.projectileGraveyard.addProjectile(projectile)
+        self.projectile = Projectile(self.world, origin, destination, callback)
         # self.paused = True
