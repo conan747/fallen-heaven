@@ -3,7 +3,6 @@ __author__ = 'cos'
 
 from tactic_world import TacticWorld
 from strategic_world import StrategicWorld
-from progress import Progress
 from planet import Planet
 from faction import Faction
 from gui.universeUI import UniverseUI
@@ -13,7 +12,6 @@ from agents.unit import *
 from agents.building import *
 
 import Tkinter, tkFileDialog
-from gui.selectPlanet import SelectPlanet
 
 from engine.sound import Sound
 

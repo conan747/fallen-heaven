@@ -20,7 +20,6 @@
 # ###################################################
 
 import math
-import time
 from fife import fife
 
 
