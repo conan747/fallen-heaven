@@ -28,10 +28,6 @@ from fife.extensions.pychan import widgets
 from fife.extensions.pychan.internal import get_manager
 
 from scripts.common.eventlistenerbase import EventListenerBase
-from fife.extensions.soundmanager import SoundManager
-# from agents.hero import Hero
-# from agents.girl import Girl
-# from agents.cloud import Cloud
 from agents.unit import *
 from fife.extensions.fife_settings import Setting
 
@@ -207,9 +203,11 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
 
     def clickBuild(self, clickpoint):
         buildingCost = int(self._world.construction.properties["Cost"])
-        if self._world.deductCredits(buildingCost):
-            if not self.placeBuilding(clickpoint):
-                self._world.deductCredits(-buildingCost)
+        if self._world.hasCredits(buildingCost):
+            if self.placeBuilding(clickpoint):
+                self._world.deductCredits(buildingCost)
+                return
+        self._world.playError()
         ## TODO: Give feedback of why it can't be built.
 
 
@@ -422,6 +420,36 @@ class CursorHandler(object):
         self._cursor.set(cursorImg)
 
 
+    def handleCursor(self):
+        '''
+        Changes the cursor according to the mode.
+        :return:
+        '''
+        if self.busy:
+            return
+
+        if self.mode == self.MODE_ATTACK:
+            if not self.activeUnit:
+                return
+
+            mousepoint = fife.ScreenPoint(self.mousePos[0], self.mousePos[1])
+            mouseLocation = self.getLocationAt(mousepoint)
+
+            trajectory = Trajectory( self.getActiveAgent(), self, self.attackType)
+            # print "Is is reachable?"
+            if trajectory.canShoot(mouseLocation, display=True):
+                self.cursorHandler.setCursor(self.cursorHandler.CUR_ATTACK)
+            else:
+                self.cursorHandler.setCursor(self.cursorHandler.CUR_CANNOT)
+
+        elif self.mode == self.MODE_RECYCLE:
+            self.cursorHandler.setCursor(self.cursorHandler.CUR_RECYCLE)
+        elif self.mode == self.MODE_GET_IN:
+            self.cursorHandler.setCursor(self.cursorHandler.CUR_GET_IN)
+        else:
+            self.cursorHandler.setCursor(self.cursorHandler.CUR_DEFAULT)
+
+
 
 class World(object):
     """
@@ -553,19 +581,6 @@ class World(object):
 
         self.unitGraveyard = UnitGraveyard(self.agentLayer)
 
-        if int(self.settings.get("FIFE", "PlaySounds")):
-
-            if int(self.settings.get("FIFE", "PlayMusic")):
-                # play track as background music
-                self.music = self.sound.soundmanager.createSoundEmitter('music/fallen.ogg')
-                self.music.looping = True
-                self.music.gain = 128.0
-                self.music.play()
-
-            # self.waves = self.soundmanager.createSoundEmitter('sounds/waves.ogg')
-            # self.waves.looping = True
-            # self.waves.gain = 16.0
-            # self.waves.play()
 
     def initAgents(self):
         """
@@ -821,6 +836,14 @@ class World(object):
         '''
         self.universe.backToUniverse()
 
+    def hasCredits(self, cred):
+        '''
+        Tells if the player has enough credits.
+        :param cred: Number of credits.
+        :return:Bool
+        '''
+
+        return self.faction.resources["Credits"] >= cred
 
     def deductCredits(self, cred):
         '''
@@ -828,14 +851,12 @@ class World(object):
         :param cred: Number of credits to be reduced.
         :return: Bool saying if it was successfull (if there were enough credits)
         '''
-
-        currentCredits = self.faction.resources["Credits"]
-        if cred <= currentCredits:
-            self.faction.resources["Credits"] = currentCredits - cred
+        if self.hasCredits(cred):
+            self.faction.resources["Credits"] -= cred
             return True
 
         print "Not enough credits!"
-        return
+        return False
 
 
     def startBuilding(self, buildingName):
@@ -845,3 +866,6 @@ class World(object):
     def startDeploy(self, storage):
         self.storage = storage
         self.setMode(self.MODE_DEPLOY)
+
+    def playError(self):
+        self.sound.playFX("error")

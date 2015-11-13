@@ -1,8 +1,6 @@
 __author__ = 'cos'
 
 
-
-from agents.unit import *
 import math
 
 #_LIGHT, _HEAVY = xrange(2)

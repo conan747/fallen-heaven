@@ -360,11 +360,6 @@ class Universe(object):
         if self.world.music:
             self.world.music.stop()
             del self.world.music
-        # self.world.waves.stop()
-        # del self.world.waves
-        # self.world.soundmanager.releaseEmitter(id)
-        del self.world.soundmanager ## TODO: Should soundManager be part of universe?
-        # del self.world.waves
         self.world = None
         self.world.HUD.destroy()
         self.world.HUD = None

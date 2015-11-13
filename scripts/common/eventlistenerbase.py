@@ -22,7 +22,6 @@
 # ####################################################################
 
 from fife import fife
-from fife.extensions import pychan
 from fife.extensions.pychan.internal import get_manager
 
 class EventListenerBase(fife.IKeyListener, fife.ICommandListener, fife.IMouseListener, fife.ConsoleExecuter):

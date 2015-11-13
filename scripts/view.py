@@ -60,11 +60,6 @@ class View(object):
                 cellCache.setSize(rect)
                 cellCache.setStaticSize(True)
 
-
-        # camera_prefix = self.filename.rpartition('.')[0] # Remove file extension TODO: Is this really necessary?
-        # camera_prefix = camera_prefix.rpartition('/')[2] # Remove path
-        # camera_prefix += '_'
-
         for cam in map.getCameras():
             camera_id = cam.getId()
             print "Camera ID: ", camera_id

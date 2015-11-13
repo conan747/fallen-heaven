@@ -22,7 +22,6 @@
 # ####################################################################
 
 from fife import fife
-from scripts.common.common import ProgrammingError
 
 class Agent(fife.InstanceActionListener):
     def __init__(self, unitName, agentType, world):

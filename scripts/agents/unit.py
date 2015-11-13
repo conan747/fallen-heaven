@@ -23,8 +23,6 @@
 
 from fife import fife
 from agent import Agent
-from fife.extensions.fife_settings import Setting
-from building import Building
 import random
 
 

@@ -21,10 +21,6 @@
 # ###################################################
 
 import glob
-import random
-from collections import deque
-
-from fife import fife
 
 
 class Sound(object):
@@ -96,10 +92,11 @@ class Sound(object):
         self.emitter['speech'].setLooping(False)
 
         # Start background music:
-        if int(self.settings.get("FIFE", "PlaySounds")):
+        if int(self.settings.get("FIFE", "PlayMusic")):
             self._old_byte_pos = 0.0
             self._old_smpl_pos = 0.0
             self.check_music(refresh_playlist=True, play_menu_tracks=True)
+
 
     def disable_sound(self):
         """Disable all sound outputs."""
@@ -119,6 +116,15 @@ class Sound(object):
         @param play_menu_tracks: Whether to start the playlist with menu music. Only works with refresh_playlist=True.
         """
         pass
+
+
+        # play track as background music
+        #self.music = self.sound.soundmanager.createSoundEmitter('music/fallen.ogg')
+        self.play_sound("bgsound", "fallen")
+        self.emitter['bgsound'].looping = True
+        self.emitter['bgsound'].gain = 128.0
+        self.emitter['bgsound'].play()
+
     # if refresh_playlist:
     # 	if play_menu_tracks and self.menu_music:
     # 		self.music = self.menu_music
@@ -190,14 +196,16 @@ class Sound(object):
         for emitter in self.emitter['ambient']:
             emitter.setGain(volume * 2)
 
-def loadSounds():
-    '''
-    Loads all the sounds in the sounds folder into soundclipmanager.
-    :return:
-    '''
+    def loadSounds(self):
+        '''
+        Loads all the sounds in the sounds folder into soundclipmanager.
+        :return:
+        '''
 
-    soundFiles = glob.glob("sounds/*.ogg")
+        for musicFile in glob.glob("music/*.ogg"):
+            self.soundclipmanager.load(musicFile)
 
-    for soundFile in soundFiles:
-        self.soundclipmanager.load(soundFile)
+        for soundFile in glob.glob("sounds/*.ogg"):
+            self.soundclipmanager.load(soundFile)
+
 
