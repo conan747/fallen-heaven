@@ -28,10 +28,6 @@ class Retaliation(object):
         self.unitManager = self.world.unitManager
 
         self.getAvailable()
-        self.blocked = True
-
-    def unblock(self):
-        self.blocked = False
 
     def getAvailable(self):
         '''
@@ -62,7 +58,6 @@ class Retaliation(object):
         Handles the next available retaliation.
         '''
         print "retaliating next"
-        self.blocked = True
         if not self.unitManager.getAgent(self.targetId):
             # Target has died. Stop retaliation.
             self.cleanup()
@@ -85,7 +80,6 @@ class Retaliation(object):
 
 
     def cleanup(self):
-        self.blocked = False
         self.world.busy = False
         self.world.retaliation = None
 

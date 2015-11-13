@@ -61,7 +61,6 @@ class TacticListener(WorldListener):
             # print "Calculating Clear path:"
             if trajectory.hasClearPath(clickLocation):
                 activeAgent.attack(clickLocation, self._world.attackType)
-                self._world.retaliation = Retaliation(self._world, activeAgent)
                 self._world.HUD.updateUI()
 
 
@@ -298,6 +297,7 @@ class TacticWorld(World):
 
     def pump(self):
         super(TacticWorld, self).pump()
+        self.projectileGraveyard = ProjectileGraveyard(self.view.layers["TrajectoryLayer"], self.combatManager)
         self.combatManager.next()
 
 
@@ -374,7 +374,6 @@ class TacticWorld(World):
         self.unitGraveyard.add(self.unitManager.getAgent(unitID).instance, explode)
 
         self.unitManager.removeInstance(unitID, explode)
-
 
 
     def reset(self):

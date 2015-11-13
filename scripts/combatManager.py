@@ -1,6 +1,7 @@
 __author__ = 'jon'
 
 from fife import fife
+from combat import Retaliation
 
 class Graveyard(fife.InstanceActionListener):
     '''
@@ -37,7 +38,6 @@ class Graveyard(fife.InstanceActionListener):
         if not instances:
             instances = self.instances
 
-
         while instances:
             instance = instances.pop()
             if not self.isInLayer(instance):
@@ -62,14 +62,18 @@ class ProjectileGraveyard(Graveyard):
     '''
     Handles the destruction of projectiles.
     '''
-    def __init__(self, layer):
+    def __init__(self, layer, combatManager):
         super(ProjectileGraveyard, self).__init__(layer)
+        self.combatManager = combatManager
+        self.projectile = None
 
     def onInstanceActionFinished(self, instance, action):
         if action.getId() == "move":
+            print "ProjectileGraveyard: projectile moved."
             self.instances.append(instance)
             self.busy = False
             self.projectile = None
+            self.combatManager.resume()
 
     def add(self, instance):
         instance.addActionListener(self)
@@ -188,18 +192,9 @@ class CombatManager(object):
 
     def __init__(self, world):
         self.world = world
+        self.retaliation = None
+        # self.paused = False
 
-
-    def update(self):
-        '''
-        Updates the information from the world.
-        :return:
-        '''
-        self.unitGraveyard = self.world.unitGraveyard
-        self.projectileGraveyard = self.world.projectileGraveyard
-        self.retaliation = self.world.retaliation
-
-        self.paused = False
 
     def next(self):
         '''
@@ -207,29 +202,40 @@ class CombatManager(object):
         :return:
         '''
 
-        self.update()
+        # if self.paused:
+        #     return
 
-        if self.paused:
+        if self.world.projectileGraveyard and not self.world.projectileGraveyard.isEmpty():
+            self.world.projectileGraveyard.next()
             return
 
-        if self.projectileGraveyard and not self.projectileGraveyard.isEmpty():
-            self.projectileGraveyard.next()
-            return
-
-        if self.unitGraveyard and not self.unitGraveyard.isEmpty():
-            self.unitGraveyard.next()
+        if self.world.unitGraveyard and not self.world.unitGraveyard.isEmpty():
+            self.world.unitGraveyard.next()
             return
 
         ## Handle retaliation.
         if self.retaliation:
             if not self.retaliation.blocked:
                 self.retaliation.next()
+                return
 
-    def combatStarted(self):
-        self.paused = True
+        self.combatFinished()
+
+    def newCombat(self, attackerAgent):
+        '''
+        Starts a combat round with retaliation.
+        :param attackerAgent: Agent that attacks
+        :return:
+        '''
+        # self.paused = True
+        self.retaliation = Retaliation(self.world, attackerAgent)
 
     def resume(self):
         self.paused = False
+
+    def combatFinished(self):
+        # self.paused = False
+        self.retaliation = None
 
     def addProjectile(self, unit, origin, destination, callback=None):
         '''
@@ -240,5 +246,6 @@ class CombatManager(object):
         :param callback: What will be run right after it ends.
         :return:
         '''
-        projectile = Projectile(unit, self.world ,origin, destination, callback)
-        self.projectileGraveyard.addProjectile(projectile)
+        projectile = Projectile(unit, self.world, origin, destination, callback)
+        self.world.projectileGraveyard.addProjectile(projectile)
+        # self.paused = True

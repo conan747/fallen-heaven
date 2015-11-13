@@ -459,7 +459,7 @@ class World(object):
         self.unitLoader.setWorld(self)
         self.projectileGraveyard = None
         self.unitGraveyard = None
-        self.retaliation = None
+        #self.retaliation = None
         self.factionUnits = {}      ## This will hold the units for each faction.
         self.storage = None # Points at the storage object in Deploy mode.
         self.deploying = None
@@ -552,7 +552,6 @@ class World(object):
         self.initAgents()
 
         self.unitGraveyard = UnitGraveyard(self.agentLayer)
-        self.projectileGraveyard = ProjectileGraveyard(self.view.layers["TrajectoryLayer"])
 
         if int(self.settings.get("FIFE", "PlaySounds")):
 

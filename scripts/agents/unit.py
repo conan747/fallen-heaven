@@ -211,12 +211,15 @@ class Unit(Agent):
             weapon = self.heavyWeapon
 
         if self.canAttack(weaponType):
+
             location = self.computePrecision(weapon, location)
+
             def callback(func = self.afterAttack, weapon= weapon, location = location):
                 func(weapon, location)
-            self.world.combatManager.addProjectile(self, self.instance.getLocation(), location, callback)
+
             # Signal the combatManager
-            self.world.combatManager.combatStarted()
+            self.world.combatManager.newCombat(self)
+            self.world.combatManager.addProjectile(self, self.instance.getLocation(), location, callback)
 
             # Reduce APs
             percentTimeUnits = weapon.properties["PercentTimeUnits"]
@@ -226,6 +229,9 @@ class Unit(Agent):
         else:
             print "Not enough APs!"
             self.playError()
+
+    def afterAttack(self, weapon, location):
+        weapon.fire(location)
 
     def computePrecision(self, weapon, location):
         '''
@@ -252,14 +258,6 @@ class Unit(Agent):
             return newLocation
         else:
             return location
-
-
-    def afterAttack(self, weapon, location):
-        weapon.fire(location)
-        #Fixme: I think this is not needed with the eventManager.
-        self.world.combatManager.resume()
-        if self.world.retaliation:
-            self.world.retaliation.unblock()
 
 
 class Weapon(object):
