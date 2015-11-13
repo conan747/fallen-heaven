@@ -26,7 +26,7 @@ from scripts.common.common import ProgrammingError
 
 class Agent(fife.InstanceActionListener):
     def __init__(self, unitName, agentType, world):
-        super(Agent, self).__init__(self)
+        super(Agent, self).__init__()
         #fife.InstanceActionListener.__init__(self)
         # self.settings = settings
         # self.model = model
@@ -124,9 +124,9 @@ class Agent(fife.InstanceActionListener):
         self.world.busy = False
         #TODO: Add here the trajectory erasing instead after run?
 
-        if action.getId() == "explode":
-            agent = self.world.unitManager.getAgent(instance)
-            agent.die()
+        # if action.getId() == "explode":
+        #     agent = self.world.unitManager.getAgent(instance)
+        #     agent.die()
 
     def onInstanceActionFrame(self, instance, action, frame):
         print "Action frame" , frame

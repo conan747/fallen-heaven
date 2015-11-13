@@ -28,53 +28,6 @@ from building import Building
 import random
 
 
-class Projectile(fife.InstanceActionListener):
-    
-    def __init__(self, parent, world, origin, destination, callback=None):
-
-        super(Projectile, self).__init__()
-
-        self.callback = callback
-        self.world = world
-        self.layer = world.map.getLayer("TrajectoryLayer")
-
-        object = world.model.getObject("SBT", "fallen")
-        print "Attacking from: " , origin.getLayerCoordinates()
-        originCoords = origin.getExactLayerCoordinates()
-        self.instance = self.layer.createInstance(object, originCoords)
-        self.instance.thisown = 0
-        self.instance.addActionListener(self)
-        self.destination = fife.Location(self.layer)
-        self.destination.setLayerCoordinates(destination.getLayerCoordinates())
-        print "To: ", self.destination.getLayerCoordinates()
-        print "\n\nbullet created!"
-
-        self.move()
-
-    def move(self):
-        if self.destination.isValid():
-            self.instance.move("move", self.destination, 5)
-
-    def onInstanceActionFinished(self, instance, action):
-        print action.getId()
-        if action.getId() == "move": # and self.start:
-            print "\n\nDestroying bullet"
-            self.instance.removeActionListener(self)
-            print "Cleaning up."
-            self.world.projectileGraveyard.append(self.instance)
-            self.instance = None
-            if self.callback:
-                self.callback()
-            self.__del__() # Is this necessary?
-
-
-    def onInstanceActionCancelled(self, instance, action):
-        print "Action cancelled!"
-
-    def onInstanceActionFrame(self, instance, action, frame):
-        print "Action frame" , frame
-
-
 ## TODO: When unit is moving, prevent from selecting new position.
 
 class Unit(Agent):
@@ -224,6 +177,7 @@ class Unit(Agent):
     def die(self, explode=False):
         print "This unit died!"
 
+        self.instance.removeActionListener(self)
         self.world.unitDied(self.instance.getFifeId(), explode=explode)
         # self.layer.deleteInstance(self.agent)
 
@@ -260,7 +214,10 @@ class Unit(Agent):
             location = self.computePrecision(weapon, location)
             def callback(func = self.afterAttack, weapon= weapon, location = location):
                 func(weapon, location)
-            Projectile(self, self.world ,self.instance.getLocation(), location, callback)
+            self.world.combatManager.addProjectile(self, self.instance.getLocation(), location, callback)
+            # Signal the combatManager
+            self.world.combatManager.combatStarted()
+
             # Reduce APs
             percentTimeUnits = weapon.properties["PercentTimeUnits"]
             deducing = percentTimeUnits * self.properties["TimeUnits"] / 100
@@ -300,6 +257,7 @@ class Unit(Agent):
     def afterAttack(self, weapon, location):
         weapon.fire(location)
         #Fixme: I think this is not needed with the eventManager.
+        self.world.combatManager.resume()
         if self.world.retaliation:
             self.world.retaliation.unblock()
 

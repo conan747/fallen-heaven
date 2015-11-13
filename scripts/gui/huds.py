@@ -570,7 +570,7 @@ class UnitInfoWidget(Widget):
         self.unit = unit
 
         if not self.unit:
-            print "Error, no unit selected!"
+            #print "Error, no unit selected!"
             self.widget.hide()
             return
 

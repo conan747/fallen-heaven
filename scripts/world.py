@@ -40,7 +40,7 @@ from combat import Trajectory
 from gui.dialogs import InfoDialog
 from view import View
 from unitManager import *
-from eventManager import *
+from combatManager import *
 
 TDS = Setting(app_name="rio_de_hola")
 
@@ -547,11 +547,12 @@ class World(object):
         self.agentLayer = self.map.getLayer('TechdemoMapGroundObjectLayer')
 
         self.unitManager = UnitManager()
-        self.unitGraveyard = UnitGraveyard(self.agentLayer)
-        self.projectileGraveyard = Graveyard(self.view.layers["TrajectoryLayer"])
 
         self.initView(self.map)
         self.initAgents()
+
+        self.unitGraveyard = UnitGraveyard(self.agentLayer)
+        self.projectileGraveyard = ProjectileGraveyard(self.view.layers["TrajectoryLayer"])
 
         if int(self.settings.get("FIFE", "PlaySounds")):
 
@@ -677,7 +678,8 @@ class World(object):
 
         self.activeUnit = id
         if id:
-            self.activeUnitRenderer.addOutlined(self.getInstance(id).instance, 173, 255, 47, 2)
+            instance = self.unitManager.getAgent(id).instance
+            self.activeUnitRenderer.addOutlined(instance, 173, 255, 47, 2)
 
         # Update UI:
         self.HUD.updateUI()
@@ -741,7 +743,7 @@ class World(object):
         #         projectile.move()
         #         self.unitManager.getAgent(self.activeUnit).projectile = None
 
-        self.eventmanager.next()
+
 
         # print "End pumping world"
 

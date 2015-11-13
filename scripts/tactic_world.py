@@ -293,6 +293,14 @@ class TacticWorld(World):
         self.HUD = TacticalHUD(self)
         self.HUD.show()
 
+        self.combatManager = CombatManager(self)
+
+
+    def pump(self):
+        super(TacticWorld, self).pump()
+        self.combatManager.next()
+
+
     def load(self, filename):
         super(TacticWorld, self).load(filename)
 
@@ -359,8 +367,13 @@ class TacticWorld(World):
         :param unitID: ID of the destroyed unit
         :return:
         '''
+        if self.activeUnit == unitID:
+            self.selectUnit(None)
+            self.setMode(self.MODE_DEFAULT)
 
         self.unitGraveyard.add(self.unitManager.getAgent(unitID).instance, explode)
+
+        self.unitManager.removeInstance(unitID, explode)
 
 
 

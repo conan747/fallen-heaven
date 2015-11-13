@@ -75,8 +75,9 @@ class Retaliation(object):
 
         (id, weaponType ) = self.availableUnits.popitem()
         attackingUnit = self.unitManager.getAgent(id)
-        print "unit that is atacking: ", attackingUnit.agentName
-        attackingUnit.attack(self.targetLocation, weaponType)
+        if attackingUnit:
+            print "unit that is retaliating: ", attackingUnit.agentName
+            attackingUnit.attack(self.targetLocation, weaponType)
 
         if not self.availableUnits:
             self.cleanup()
