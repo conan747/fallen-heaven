@@ -141,7 +141,7 @@ class CombatManager(object):
         self.world = world
         self.retaliation = None
         self.projectile = None
-        # self.paused = False
+        self.inCombat = False
 
 
     def next(self):
@@ -169,9 +169,12 @@ class CombatManager(object):
 
         ## Handle retaliation.
         if self.retaliation:
-            if not self.retaliation.blocked:
-                self.retaliation.next()
-                return
+            if self.retaliation.active:
+                if not self.retaliation.blocked:
+                    self.retaliation.next()
+                    return
+            else:
+                self.retaliation = None
 
         self.combatFinished()
 
@@ -181,14 +184,16 @@ class CombatManager(object):
         :param attackerAgent: Agent that attacks
         :return:
         '''
-        # self.paused = True
+        if self.inCombat:
+            return
+        self.inCombat = True
         self.retaliation = Retaliation(self.world, attackerAgent)
 
     def resume(self):
         self.paused = False
 
     def combatFinished(self):
-        # self.paused = False
+        self.inCombat = False
         self.retaliation = None
 
     def addProjectile(self, origin, destination, weapon=None, callback=None):

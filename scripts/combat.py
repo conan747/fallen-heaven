@@ -23,11 +23,11 @@ class Retaliation(object):
         self.enemyUnits = self.world.factionUnits[enemyName]
         self.retaliatedUnits = []
         self.availableUnits = {}
-        self.world.busy = True
         self.unitManager = self.world.unitManager
 
         self.getAvailable()
         self.blocked = True
+        self.active = True
 
     def getAvailable(self):
         '''
@@ -86,8 +86,7 @@ class Retaliation(object):
 
 
     def cleanup(self):
-        self.world.busy = False
-        self.world.retaliation = None
+        self.active = False
 
 
 
@@ -279,7 +278,7 @@ class Projectile(object):
         :return:
         '''
 
-        print "Pumping projectile!"
+        # print "Pumping projectile!"
         time = (self.timer.getTime() - self.startTime) / 1000.
 
         if time < self.TOA:
@@ -290,7 +289,7 @@ class Projectile(object):
             exactloc.x = newCoords[0]
             exactloc.y = newCoords[1]
             exactloc.z = newCoords[2]
-            print newCoords
+            # print newCoords
             location.setExactLayerCoordinates(exactloc)
             self.instance.setLocation(location)
         else:
