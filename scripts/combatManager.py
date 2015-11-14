@@ -140,6 +140,7 @@ class CombatManager(object):
     def __init__(self, world):
         self.world = world
         self.retaliation = None
+        self.projectile = None
         # self.paused = False
 
 
@@ -153,6 +154,7 @@ class CombatManager(object):
         #     return
         if self.projectile:
             if self.projectile.active:
+                self.projectile.pump()
                 return
             else:
                 self.projectile = None
@@ -198,5 +200,7 @@ class CombatManager(object):
         :param callback: What will be run right after it ends.
         :return:
         '''
-        self.projectile = Projectile(self.world, origin, destination, callback)
+        self.projectile = Projectile(self.world, origin, destination, weapon=weapon, callback=callback)
+        if self.retaliation:
+            self.retaliation.unblock()
         # self.paused = True

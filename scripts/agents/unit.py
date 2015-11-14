@@ -217,7 +217,7 @@ class Unit(Agent):
 
             # Signal the combatManager
             self.world.combatManager.newCombat(self)
-            self.world.combatManager.addProjectile(self, self.instance.getLocation(), location, weapon=weapon, callback=callback)
+            self.world.combatManager.addProjectile(self.instance.getLocation(), location, weapon=weapon, callback=callback)
 
             # Reduce APs
             percentTimeUnits = weapon.properties["PercentTimeUnits"]

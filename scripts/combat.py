@@ -2,6 +2,7 @@ __author__ = 'cos'
 
 
 import math
+from fife import fife
 
 #_LIGHT, _HEAVY = xrange(2)
 
@@ -26,6 +27,7 @@ class Retaliation(object):
         self.unitManager = self.world.unitManager
 
         self.getAvailable()
+        self.blocked = True
 
     def getAvailable(self):
         '''
@@ -50,6 +52,12 @@ class Retaliation(object):
 
         if not self.availableUnits:
             self.cleanup()
+
+    def unblock(self):
+        self.blocked = False
+
+    def start(self):
+        self.blocked = False
 
     def next(self):
         '''
@@ -229,7 +237,7 @@ class Projectile(object):
         self.destination = fife.Location(self.layer)
         self.destination.setLayerCoordinates(destination.getLayerCoordinates())
 
-        phi = fife.getAngleBetween(origin, destination)
+        phi = fife.Mathf_degToRad() * fife.getAngleBetween(origin, destination)
         print "To: ", self.destination.getLayerCoordinates()
         print "\n\nbullet created!"
 
@@ -240,27 +248,26 @@ class Projectile(object):
         Calculates the equations that will dictate the trajectory of the projectile.
         :return:
         '''
-
         ang = (math.cos(phi), math.sin(phi))
-        v = 5 # A temporary value
-        z = 10 # Maximum value of z
+        v = 2 # A temporary value
+        z = 2 # Maximum value of z
 
         ## Get the time of arrival of the projectile to the target.
-        if abs(ang(0)) > 0.1:
+        if abs(ang[0]) > 0.1:
             # We can calculate it using the X coordinate
-            self.TOA = (destination.x - origin.x) / (v * ang(0))
+            self.TOA = (destination.x - origin.x) / (v * ang[0])
 
         else:
-            self.TOA = (destination.y - origin.y) / (v * ang(1))
+            self.TOA = (destination.y - origin.y) / (v * ang[1])
 
         # Now that we have the TOA, we can calculate the trajectory (for the Z component).
 
-        if self.weapon.properties["Parabolic"] == 0:
-            self.curve = lambda t: (origin.x + v * ang(0) * t, origin.y + v * ang(1) * t, 0)
+        if not self.weapon or not self.weapon.properties["Parabolic"]:
+            self.curve = lambda t: (origin.x + v * ang[0] * t, origin.y - v * ang[1] * t, 0)
         else:
-            self.curve = lambda t: (origin.x + v * ang(0) * t,
-                                    origin.y + v * ang(1) * t,
-                                    -4 * z / self.TOA**2 + 4 * z / self.TOA)
+            self.curve = lambda t: (origin.x + v * ang[0] * t,
+                                    origin.y - v * ang[1] * t,
+                                    -4.*v * z / self.TOA**2 * t**2 + 4.*v * z / self.TOA * t)
 
 
     def getInstance(self):
@@ -272,16 +279,20 @@ class Projectile(object):
         :return:
         '''
 
-        time = self.timer.getTime() - self.startTime
+        print "Pumping projectile!"
+        time = (self.timer.getTime() - self.startTime) / 1000.
 
         if time < self.TOA:
             ## Move the instance
             newCoords = self.curve(time)
-            exactloc = self.instance.getExactLayerCoordinates()
-            exactloc.x = newCoords(0)
-            exactloc.y = newCoords(1)
-            exactloc.z = newCoords(2)
-            self.instance.setExactLayerCoordinates(exactloc)
+            location = self.instance.getLocation()
+            exactloc = location.getExactLayerCoordinates()
+            exactloc.x = newCoords[0]
+            exactloc.y = newCoords[1]
+            exactloc.z = newCoords[2]
+            print newCoords
+            location.setExactLayerCoordinates(exactloc)
+            self.instance.setLocation(location)
         else:
             self.end()
 
@@ -294,7 +305,7 @@ class Projectile(object):
         print "\n\nDestroying bullet"
         print "Cleaning up."
         self.world.projectileGraveyard.add(self.instance)
-        self.instance = None
+        #self.instance = None
         self.active = False
         if self.callback:
             self.callback()

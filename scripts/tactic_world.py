@@ -293,11 +293,12 @@ class TacticWorld(World):
         self.HUD.show()
 
         self.combatManager = CombatManager(self)
+        self.projectileGraveyard = None
 
 
     def pump(self):
         super(TacticWorld, self).pump()
-        self.projectileGraveyard = ProjectileGraveyard(self.view.layers["TrajectoryLayer"], self.combatManager)
+        # self.projectileGraveyard = ProjectileGraveyard(self.view.layers["TrajectoryLayer"], self.combatManager)
         self.combatManager.next()
 
 
@@ -315,6 +316,7 @@ class TacticWorld(World):
                     self.factionUnits[factionName].append(agent.getFifeId())
 
         self.selectUnit(None)
+        self.projectileGraveyard = ProjectileGraveyard(self.view.layers["TrajectoryLayer"], self.combatManager)
 
 
     def resetAPs(self):
