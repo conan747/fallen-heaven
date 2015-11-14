@@ -622,7 +622,7 @@ class World(object):
         return self.unitManager.getStorageDicts()
 
 
-    def unitDied(self, fifeID):
+    def unitDied(self, fifeID, explode=False):
         '''
         Process the destruction of a unit
         :param fifeID: ID of the destroyed unit
