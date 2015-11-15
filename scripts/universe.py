@@ -14,6 +14,7 @@ from agents.building import *
 import Tkinter, tkFileDialog
 
 from engine.sound import Sound
+import time
 
 
 class UnitLoader(object):
@@ -345,29 +346,30 @@ class Universe(object):
         # Save the information
         self.progress.update()
 
+        map = self.world.map
         self.world.destroy()
         self.world.HUD.closeExtraWindows()
 
-        # delete map and objects.
-        model = self._engine.getModel()
-        model.deleteMaps()
-        model.deleteObjects()
-
         self.world.listener.detach()
         del self.world.listener
-        if self.world.music:
-            self.world.music.stop()
-            del self.world.music
-        self.world = None
+        # if self.world.music:
+        #     self.world.music.stop()
+        #     del self.world.music
         self.world.HUD.destroy()
         self.world.HUD = None
 
-        self.world = None
         self.unitLoader.setWorld(None)
 
         if self.selectedPlanet:
             self.selectedPlanet = None
 
+        # delete map and objects.
+        model = self._engine.getModel()
+
+        self.world.view.end()
+        model.deleteObjects()
+
+        self.world = None
         self.gui.show()
 
 

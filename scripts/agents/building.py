@@ -372,16 +372,16 @@ class Building(Agent):
 
         location = self.instance.getLocation()
         layer = location.getLayer()
-        cellCache = layer.getCellCache()
-
-        for y in range(self.properties["SizeX"]):
-            for x in range(self.properties["SizeY"]):
-                cellPos = location.getLayerCoordinates()
-                cellPos.x -= x
-                cellPos.y -= y
-
-                cell = cellCache.getCell(cellPos)
-                cell.setCellType(fife.CTYPE_NO_BLOCKER)
+        # cellCache = layer.getCellCache()
+        #
+        # for y in range(self.properties["SizeX"]):
+        #     for x in range(self.properties["SizeY"]):
+        #         cellPos = location.getLayerCoordinates()
+        #         cellPos.x -= x
+        #         cellPos.y -= y
+        #
+        #         cell = cellCache.getCell(cellPos)
+        #         cell.setCellType(fife.CTYPE_NO_BLOCKER)
 
         while len(self.dummyInstances) != 0:
             dummy = self.dummyInstances.pop()

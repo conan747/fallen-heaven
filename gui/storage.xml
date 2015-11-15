@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ascii"?>
 
 
-<VBox name="constant_pannel" opaque="1" hexpand="1" position="330,10" min_size="400,400" base_color="20,20,20">
+<VBox name="constant_pannel" opaque="1" hexpand="1" position="330,10" min_size="250,300" base_color="20,20,20">
 
     <Label text="Production"/>
     <HBox name="available_units" >

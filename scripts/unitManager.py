@@ -38,7 +38,7 @@ class UnitManager(object):
 
         for agent in self.fife2Agent.values():
             if hasattr(agent, "storage"):
-                del agent.storage
+                agent.storage = None
             self.removeInstance(agent)
 
 
@@ -175,14 +175,16 @@ class UnitManager(object):
         if agent:
             agent.instance.removeActionListener(agent)
 
+            if fifeID in self.dummyIDs.keys():
+                agent.removeFootprint()
+                self.dummyIDs.__delitem__(fifeID)
+
             self.fife2Agent.__delitem__(fifeID)
 
             if not soft:
                 self.agentLayer.deleteInstance(agent.instance)
             agent.instance = None
 
-            if fifeID in self.dummyIDs.keys():
-                self.dummyIDs.__delitem__(fifeID)
         else:
             print "Could not delete instance: " , fifeID
 

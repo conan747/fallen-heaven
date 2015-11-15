@@ -67,7 +67,7 @@ class View(object):
 
         self.cam = self.cameras["main"]
 
-        self.cam.resetRenderers()
+        #self.cam.resetRenderers()
         self.renderer = {}
         for r in ('InstanceRenderer', 'GridRenderer',
                   'CellSelectionRenderer', 'BlockingInfoRenderer', 'FloatingTextRenderer',
@@ -166,6 +166,17 @@ class View(object):
 
     def end(self):
         # horizons.globals.fife.pump.remove(self.do_autoscroll)
+        for renderer in self.renderer.values():
+            renderer.clearActiveLayers()
+
+        for layer in self.layers.values():
+            print "Deleting layer:", layer.getId()
+            instanceNum = len(layer.getInstances())
+            if instanceNum:
+                print "Number of instances in this layer:", instanceNum
+            layer.destroyCellCache()
+            self.map.deleteLayer(layer)
+
         self.model.deleteMaps()
         #super(View, self).end()
 
