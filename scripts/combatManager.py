@@ -40,8 +40,8 @@ class Graveyard(fife.InstanceActionListener):
 
         while instances:
             instance = instances.pop()
-            if not self.isInLayer(instance):
-                continue
+            # if not self.isInLayer(instance):
+            #     continue
             instance.removeActionListener(self)
             self.layer.deleteInstance(instance)
 
@@ -64,28 +64,6 @@ class ProjectileGraveyard(Graveyard):
     '''
     def __init__(self, layer, combatManager):
         super(ProjectileGraveyard, self).__init__(layer)
-        # self.combatManager = combatManager
-        # self.projectile = None
-
-    # def onInstanceActionFinished(self, instance, action):
-    #     if action.getId() == "move":
-    #         print "ProjectileGraveyard: projectile moved."
-    #         self.instances.append(instance)
-    #         self.busy = False
-    #         self.projectile = None
-    #         self.combatManager.resume()
-
-    # def add(self, instance):
-    #     instance.addActionListener(self)
-    #     self.busy = True
-
-    # def addProjectile(self, projectile):
-    #     '''
-    #     Adds the projectile and waits till it moves.
-    #     '''
-    #     self.projectile = projectile
-    #     self.add(projectile.getInstance())
-
 
 class UnitGraveyard(Graveyard):
     '''
@@ -128,6 +106,7 @@ class UnitGraveyard(Graveyard):
     def onInstanceActionFinished(self, instance, action):
         if action.getId() == "explode":
             instance.removeActionListener(self)
+            #instance.get2dGfxVisual().setVisible(False)
             self.toDelete.append(instance)
             self.busy = False
 

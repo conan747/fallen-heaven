@@ -524,6 +524,7 @@ class World(object):
         self.ctrldown = False
         self.attackType = None
 
+
         ## To be overriden:
         self.listener = None
 
@@ -590,7 +591,7 @@ class World(object):
         """
 
         agentList = self.planet.agentInfo
-        self.unitManager.initAgents(self.map, agentList, self.unitLoader, self.planet)
+        self.unitManager.initAgents(self.agentLayer, agentList, self.unitLoader, self.planet)
         self.planet.agentInfo = {}
 
         if self.listener:

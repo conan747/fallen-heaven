@@ -35,14 +35,12 @@ class UnitManager(object):
         """
         Removes all objects from the scene and deletes them from the layer.
         """
-        #TODO: Re-check this method
-        for id in self.fife2Agent.keys():
-            self.unitDied(id)
 
         for agent in self.fife2Agent.values():
             if hasattr(agent, "storage"):
                 del agent.storage
-            del agent
+            self.removeInstance(agent)
+
 
     def fife2Agent(self, id):
         '''
@@ -94,17 +92,14 @@ class UnitManager(object):
             if parentID:
                 return self.fife2Agent[parentID[0]]
 
-    def initAgents(self, map, agentList, unitLoader, planet):
+    def initAgents(self, layer, agentList, unitLoader, planet):
         """
         Setup agents.
 
         Loads the "agents" (i.e. units and structures) from the planet object and initialises them.
         """
         #self.map # Can I get away with not defining this?
-        self.agentLayer = map.getLayer('TechdemoMapGroundObjectLayer')
-        if not self.agentLayer:
-            print "Using the first layer that was found: ", map.getLayers()[0].getId()
-            self.agentLayer = map.getLayers()[0]
+        self.agentLayer = layer
 
         for agentID in agentList.keys():
             agentType = agentID.split(":")[0] # Holds the unit or stucture name
@@ -178,8 +173,9 @@ class UnitManager(object):
             fifeID = agent.instance.getFifeId()
 
         if agent:
-            self.fife2Agent.__delitem__(fifeID)
             agent.instance.removeActionListener(agent)
+
+            self.fife2Agent.__delitem__(fifeID)
 
             if not soft:
                 self.agentLayer.deleteInstance(agent.instance)

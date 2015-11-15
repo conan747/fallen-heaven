@@ -298,8 +298,8 @@ class TacticWorld(World):
 
     def pump(self):
         super(TacticWorld, self).pump()
-        # self.projectileGraveyard = ProjectileGraveyard(self.view.layers["TrajectoryLayer"], self.combatManager)
         self.combatManager.next()
+
 
 
     def load(self, filename):
@@ -373,8 +373,11 @@ class TacticWorld(World):
             self.selectUnit(None)
             self.setMode(self.MODE_DEFAULT)
 
-        self.unitGraveyard.add(self.unitManager.getAgent(unitID).instance, explode)
+        agent = self.unitManager.getAgent(unitID)
+        if explode:
+            self.unitGraveyard.add(agent.instance, explode)
 
+        self.view.removeVisual(agent)
         self.unitManager.removeInstance(unitID, explode)
 
 

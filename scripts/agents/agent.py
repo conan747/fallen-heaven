@@ -57,8 +57,7 @@ class Agent(fife.InstanceActionListener):
         :param location: Location where the instance will be.
         :return:
         '''
-
-        if type(location) is fife.Location:
+        if isinstance(location, fife.Location):
             point = location.getLayerCoordinates()
         else:
             point = fife.Point3D(location[0], location[1], location[2])
@@ -73,7 +72,7 @@ class Agent(fife.InstanceActionListener):
 
         self.instance = self.world.agentLayer.createInstance(object, point)
         self.instance.setCellStackPosition(0)
-        fife.InstanceVisual.create(self.instance)  ## FIXME: Is this really necessary?
+        #fife.InstanceVisual.create(self.instance)  ## FIXME: Is this really necessary?
 
         if self.unitName:
             fifeID = self.instance.getFifeId()

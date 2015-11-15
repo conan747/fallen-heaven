@@ -177,7 +177,6 @@ class Unit(Agent):
 
         self.instance.removeActionListener(self)
         self.world.unitDied(self.instance.getFifeId(), explode=explode)
-        # self.layer.deleteInstance(self.agent)
 
 
 

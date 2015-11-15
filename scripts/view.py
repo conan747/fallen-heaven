@@ -121,6 +121,18 @@ class View(object):
         # self.set_rotation(rotation)
         # self.center(loc_x, loc_y)
 
+    def removeVisual(self, agents):
+        '''
+        Removes cellRenderer from instances
+        :param agents: list of agents
+        :return:
+        '''
+        if not isinstance(agents, list):
+            agents = [agents]
+
+        renderer = self.renderer['CellRenderer']
+        [renderer.removePathVisual(agent.instance) for agent in agents]
+
 
     def setVisual(self, agents):
         '''
