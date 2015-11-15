@@ -34,7 +34,7 @@ from fife.extensions.fife_settings import Setting
 from gui.huds import TacticalHUD
 from combat import Trajectory
 from gui.dialogs import InfoDialog
-from view import View
+from engine.view import View
 from unitManager import *
 from combatManager import *
 
