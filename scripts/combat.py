@@ -257,7 +257,7 @@ class Projectile(object):
             self.TOA = (destination.x - origin.x) / (v * ang[0])
 
         else:
-            self.TOA = (destination.y - origin.y) / (v * ang[1])
+            self.TOA = -(destination.y - origin.y) / (v * ang[1])
 
         # Now that we have the TOA, we can calculate the trajectory (for the Z component).
 
