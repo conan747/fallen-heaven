@@ -11,7 +11,7 @@ class Progress(object):
 
 
 
-    def __init__(self, universe, playerFactionName="Human"):
+    def __init__(self, universe, playerFactionName="Human", saveDir="saves/test"):
         '''
 
         :return:
@@ -19,7 +19,7 @@ class Progress(object):
         self.universe = universe # Points at the universe
 
         self.playerFactionName = playerFactionName
-        self.saveDir = "saves/test/"    # Directory where the file should be saved/loaded
+        self.saveDir = saveDir   # Directory where the file should be saved/loaded
         self.allPlanets = {} # Dictionary containing planet name:planetInfo
         self.factionInfo = None # Dictionary containing faction factionInfo.
 

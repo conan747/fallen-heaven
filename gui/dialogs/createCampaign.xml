@@ -14,6 +14,11 @@
                 <ListBox name="factionList" min_size="100,100" />
             </ScrollArea>
         </HBox>
+                <HBox>
+            <Label text="Save Directory:"/>
+            <TextBox name="saveDir" min_size="200,20" />
+                  <Button name="saveDialog" text="..."/>
+        </HBox>
         <Spacer/>
 
 

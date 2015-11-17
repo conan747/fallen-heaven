@@ -16,8 +16,8 @@ class InfoDialog(pychan.Window):
         prototype = pychan.loadXML("gui/dialogs/genericDialog.xml")
         self.addChildren(prototype._cloneChildren("Info"))
         messageLabel = self.findChildByName("InfomessageLabel")
-        messageLabel.text = message
-        self.title = title
+        messageLabel.text = unicode(message)
+        self.title = unicode(title)
         if cancelButton:
             buttonBox = self.findChildByName("InfobuttonBox")
             cancelBtn = pychan.Button(parent=self, name="InfocancelButton", text="Cancel")

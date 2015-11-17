@@ -46,6 +46,7 @@ class Campaign(object):
         self.name = "ForeverWar" # Name of the campaign
         self.factionNames = []
         self.paused = False # Tells if it is waiting a response to be loaded.
+        self.saveDir = ""
 
         if fileName:
             self.loadCampaign(fileName)
@@ -61,17 +62,47 @@ class Campaign(object):
         dialog.distributeInitialData({"factionList" : factionList})
 
         def okCallback(dialog=dialog):
-            campaignName, playerName, playerFaction = dialog.collectData('campaignNameText', 'playerNameText', 'factionList')
+            campaignName, playerName, playerFaction, saveDir = dialog.collectData('campaignNameText',
+                                                                                  'playerNameText',
+                                                                                  'factionList',
+                                                                                  'saveDir')
+            if saveDir[-1] != "/":
+                saveDir += "/"
             info = {"playerName" : playerName,
                     "campaignName" : campaignName,
-                    "playerFaction" : factionList[playerFaction]}
+                    "playerFaction" : factionList[playerFaction],
+                    "saveDir" : saveDir}
             # self.createInvitation(info)
-            pickle.dump(info, open("saves/" + campaignName +".inv" , 'wb'))
+            if not saveDir:
+                saveDir = "saves"
+
+            def make_tree(path):
+                if not os.path.isdir(path):
+                    parent = os.path.dirname(path)
+                    make_tree(parent)
+                    os.mkdir(path)
+
+            make_tree(saveDir)
+
+            pickle.dump(info, open(saveDir + campaignName +".inv" , 'wb'))
+            print "Chosen dir:" , saveDir
             # dialog.hide()
             print "Dialog executed"
-            ## TODO: Show explanation.
 
-        dialog.mapEvents({'OkButton' : okCallback})
+        def saveDialogCallback(dialog=dialog):
+            root = Tkinter.Tk()
+            root.withdraw()
+            dir = tkFileDialog.askdirectory(parent=root,
+                                        title='Select saves parent directory.',
+                                        initialdir="saves")
+            if dir:
+                children = dialog.findChildren(name="saveDir")
+                for child in children:
+                    child.text = os.path.abspath(dir)
+
+        dialog.mapEvents({'OkButton' : okCallback,
+                          'saveDialog': saveDialogCallback})
+
         result = dialog.execute({'OkButton': True, 'cancelButton' : False})
         if result:
             print "This returns true"
@@ -128,27 +159,61 @@ class Campaign(object):
             factionList.remove(info["playerFaction"])
 
             dialog.distributeInitialData({"factionList" : factionList,
-                                          "campaignNameText" : info["campaignName"]})
+                                          "campaignNameText" : info["campaignName"],
+                                          'saveDir' : info["saveDir"]})
 
             campaignInfo = { "RemotePlayer" : info}
 
             def okCallback(dialog=dialog, campaignInfo=campaignInfo):
-                campaignName, playerName, playerFaction = dialog.collectData('campaignNameText', 'playerNameText', 'factionList')
+                campaignName, playerName, playerFaction, saveDir = dialog.collectData('campaignNameText',
+                                                                             'playerNameText',
+                                                                             'factionList',
+                                                                             'saveDir')
+
+                if saveDir[-1] != "/":
+                    saveDir += "/"
                 info = {"playerName" : playerName,
                         "campaignName" : campaignName,
-                        "playerFaction" : factionList[playerFaction]}
+                        "playerFaction" : factionList[playerFaction],
+                        "saveDir" : saveDir}
+
                 campaignInfo["LocalPlayer"] = info
                 dialog.hide()
 
                 # Create response:
                 response = {"LocalPlayer" : campaignInfo["RemotePlayer"],
                             "RemotePlayer" : campaignInfo["LocalPlayer"]}
-                pickle.dump(response, open("saves/"+ campaignName +".rsp", 'wb'))
+
+                if not saveDir:
+                    saveDir = "saves"
+
+                def make_tree(path):
+                    if not os.path.isdir(path):
+                        parent = os.path.dirname(path)
+                        make_tree(parent)
+                        os.mkdir(path)
+
+                make_tree(saveDir)
+
+                pickle.dump(response, open(saveDir + campaignName +".rsp", 'wb'))
                 self.newCampaign(campaignInfo)
                 self.universe.newGame(self)
 
-            dialog.mapEvents({'OkButton' : okCallback})
+            def saveDialogCallback(dialog=dialog):
+                root = Tkinter.Tk()
+                root.withdraw()
+                dir = tkFileDialog.askdirectory(parent=root,
+                                            title='Select saves parent directory.',
+                                            initialdir="saves")
+                if dir:
+                    children = dialog.findChildren(name="saveDir")
+                    for child in children:
+                        child.text = os.path.abspath(dir)
+
+            dialog.mapEvents({'OkButton' : okCallback,
+                          'saveDialog': saveDialogCallback})
             dialog.execute({'OkButton' : True})
+            ## TODO: Add cancel button action.
 
             # Information:
             infoDialog = InfoDialog("Campaign properly joined! Now send the .rsp file to your opponent. You can now start playing the first turn.")
@@ -187,6 +252,9 @@ class Campaign(object):
             remotePlayerInfo = campaignInfo["RemotePlayer"]
             self.playerNames.append(remotePlayerInfo["playerName"])
             self.factionNames.append(localPlayerInfo["playerFaction"])
+            self.saveDir = localPlayerInfo["saveDir"]
+            if self.saveDir[-1] != "/":
+                self.saveDir += "/"
 
 
             mainFaction = self.factionNames[0]
@@ -194,7 +262,7 @@ class Campaign(object):
             mainPlayer = self.playerNames[0]
             otherPlayer = self.playerNames[1]
 
-        progress = Progress(self.universe, playerFactionName= mainFaction)
+        progress = Progress(self.universe, playerFactionName= mainFaction, saveDir=self.saveDir)
         faction = Faction(mainFaction)
         progress.factionInfo = faction.__getInfo__()
         progress.playerName = mainPlayer
@@ -301,7 +369,8 @@ class Campaign(object):
 
         campaignDict["enemyInfo"] = self.enemy.__getInfo__()
 
-        pickle.dump(campaignDict, open("saves/test/" + self.name + "_" + self.progress.playerName + ".cpn", 'wb'))
+        pickle.dump(campaignDict, open("%s/%s_%s.cpn" %
+                                       (self.saveDir, self.name, self.progress.playerName), 'wb'))
 
         self.progress.save()
 

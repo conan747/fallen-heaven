@@ -235,7 +235,6 @@ class Universe(object):
         if self.world:
             self.world.model.deleteMaps()
             self.world.model.deleteObjects()
-            self.world = None
             self.unitLoader.setWorld(None)
 
         self.gui.show()

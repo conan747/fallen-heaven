@@ -8,9 +8,7 @@ class Faction(object):
     '''
     Holds the information about a faction i.e. a player and all its units and resources.
     '''
-    name = None
-    resources = None
-    technology = None
+
 
     # _RES_ENERGY, _RES_CREDITS, _RES_RESEARCH = xrange(3)
 
