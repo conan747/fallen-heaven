@@ -256,7 +256,6 @@ class Campaign(object):
             if self.saveDir[-1] != "/":
                 self.saveDir += "/"
 
-
             mainFaction = self.factionNames[0]
             otherFaction = self.factionNames[1]
             mainPlayer = self.playerNames[0]
@@ -364,7 +363,8 @@ class Campaign(object):
                          "planetList" : self.planetList,
                          "factionNames" : self.factionNames,
                          "name" : self.name,
-                         "paused" : self.paused
+                         "paused" : self.paused,
+                         "saveDir" : self.saveDir
                         }
 
         campaignDict["enemyInfo"] = self.enemy.__getInfo__()
@@ -388,6 +388,7 @@ class Campaign(object):
         self.planetList = campaignDict["planetList"]
         self.factionNames = campaignDict["factionNames"]
         self.paused = campaignDict["paused"]
+        self.saveDir = campaignDict["saveDir"]
 
         playerName = campaignDict["playerName"]
         rootFolder = os.path.dirname(fileName)
