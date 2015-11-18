@@ -298,3 +298,18 @@ class View(object):
         return Rect.init_from_topleft_and_size(coords.x - (screen_width_as_coords[0] // 2),
                                                coords.y - (screen_width_as_coords[1] // 2),
                                                *screen_width_as_coords)
+
+    def addBurnedGround(self, location):
+        '''
+        Tries to display an overlay on the cells so it looks burned.
+        :param location: Location to be burned.
+        :return:
+        '''
+
+        instanceRenderer = self.renderer["InstanceRenderer"]
+        groundLayer = self.layers["Ground"]
+        # groundLocation = fife.Location(groundLayer)
+        # groundLocation.setLayerCoordinates(location.getLayerCoordinates())
+        groundInstances = groundLayer.getInstancesAt(location)
+        for instance in groundInstances:
+            instanceRenderer.addColored(instance, 0,0,0, 128)

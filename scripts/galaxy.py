@@ -4,6 +4,54 @@ import cPickle as pickle
 import os
 
 
+class Galaxy(object):
+    '''
+    Holds the information of the different planets available and their display.
+    '''
+
+    _dir = "maps/"
+    _extension = ".gal"
+
+    def __init__(self, name="default"):
+        self.name = name
+        self.planetList = []
+        self.planetLinks = {} # Gives the planets that are reachable from the "key" planet.
+        self.image = "" # Path to the background image for the universe window.
+        self.planteLocation = {} # Contains the coordinates of the planet to display.
+        self.planetIm = {} # Contains the path to the images that represent the planet.
+        self.planetList = self.getPlanetNames()
+
+
+
+
+
+    def load(self, name=None):
+        if name:
+            self.name = name
+
+        if not os.path.exists(self._dir + self.name + self._extension):
+            print "Error loading galaxy: ", self.name
+            return
+
+        self.planetList = self.getPlanetNames()
+
+
+    def getPlanetNames(self):
+        '''
+        Gets a list of planet names from the map directory
+        :return:
+        '''
+        if self.planetList:
+            return self.planetList
+
+        # TODO: Contemplate loading planets depending on galaxy.
+        fileNames = os.listdir("maps")
+        planetNames = [fileName.split(".xml")[0] for fileName in fileNames
+                       if ".xml" in fileName]
+        print "Found planets: "
+        print planetNames
+        return planetNames
+
 
 
 class Planet(object):
@@ -11,17 +59,19 @@ class Planet(object):
     Stores the information to load a map.
     '''
 
-    name = None # Name of the planet. Used to figure out map file.
-    storages = {} # Dictionary containing the information for building storages.
-    agentInfo = {} # Information of each Agent on the map.
+
     _fileNameTemplate = "saves/test/planet.plt"
 
     def __init__(self, planetName="", planetInfo = None):
         self.name = planetName
         self.load(planetInfo)
+        self.name = None # Name of the planet. Used to figure out map file.
+        self.storages = {} # Dictionary containing the information for building storages.
+        self.agentInfo = {} # Information of each Agent on the map.
 
 
     def getMapPath(self):
+        print "Looking for ", self.name
         return "maps/" + self.name + ".xml"
 
     def saveInstance(self, agent):

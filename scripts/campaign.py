@@ -9,6 +9,8 @@ from gui.dialogs import InfoDialog
 
 from fife.extensions import pychan
 
+from galaxy import Galaxy
+
 import Tkinter, tkFileDialog
 
 
@@ -39,7 +41,8 @@ class Campaign(object):
 
     def __init__(self, universe, fileName=None):
         self.universe = universe
-        self.planetList = self.getPlanetNames()
+        galaxy = Galaxy()
+        self.planetList = galaxy.getPlanetNames()
         self.year = 0 # Strategic turn
         self.turn = 0 # Tactic turn
         self.progress = None # Player progress.
@@ -277,18 +280,6 @@ class Campaign(object):
 
 
         print self.progress
-
-
-    def getPlanetNames(self):
-        '''
-        Gets a list of planet names from the map directory
-        :return:
-        '''
-        fileNames = os.listdir("maps")
-        planetNames = [fileName.split(".xml")[0] for fileName in fileNames]
-        print "Found planets: "
-        print planetNames
-        return planetNames
 
 
     def compileYear(self):

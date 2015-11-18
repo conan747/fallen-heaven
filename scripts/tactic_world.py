@@ -361,6 +361,9 @@ class TacticWorld(World):
             print "Dealt %s damage to %s" % (damage, agent.instance.getId())
             agent.getDamage(damage)
 
+        if damage > self._dmgThreshold:
+            self.view.addBurnedGround(location)
+
 
 
     def unitDied(self, unitID, explode=False):

@@ -464,6 +464,7 @@ class World(object):
     """
 
     MODE_DEFAULT, MODE_ATTACK, MODE_DROPSHIP, MODE_DEPLOY, MODE_BUILD, MODE_RECYCLE, MODE_GET_IN = xrange(7)
+    _dmgThreshold = 10
 
 
     def __init__(self, universe, planet):

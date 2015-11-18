@@ -3,7 +3,7 @@ __author__ = 'cos'
 
 from tactic_world import TacticWorld
 from strategic_world import StrategicWorld
-from planet import Planet
+from galaxy import Planet
 from faction import Faction
 from gui.universeUI import UniverseUI
 from campaign import Campaign
