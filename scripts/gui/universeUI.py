@@ -19,13 +19,7 @@ class UniverseUI(object):
 
         planetNames = self.getPlanetNames()
 
-        planetBox = self.gui.findChild(name="planetBox")
-        for name in planetNames:
-            newButton = pychan.Button(name=name, text=unicode("Go to planet " + name))
-            planetBox.addChild(newButton)
-            def callback(arg=name): # Weird way of doing it. Taken from here: http://wiki.wxpython.org/Passing%20Arguments%20to%20Callbacks
-                        self.universe.goToPlanet(arg)
-            newButton.capture(callback, event_name="mouseClicked")
+        self.createSimpleButtons(planetNames)
 
 
         eventMap = {
@@ -36,6 +30,19 @@ class UniverseUI(object):
         }
         self.gui.mapEvents(eventMap)
 
+    def createPlanetIcons(self, planetNames):
+        planetBox = self.gui.findChild(name="planetBox")
+
+
+    def createSimpleButtons(self,  planetNames):
+        planetBox = self.gui.findChild(name="planetBox")
+        for name in planetNames:
+
+            newButton = pychan.Button(name=name, text=unicode("Go to planet " + name))
+            planetBox.addChild(newButton)
+            def callback(arg=name): # Weird way of doing it. Taken from here: http://wiki.wxpython.org/Passing%20Arguments%20to%20Callbacks
+                        self.universe.goToPlanet(arg)
+            newButton.capture(callback, event_name="mouseClicked")
 
 
     def getPlanetNames(self):

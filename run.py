@@ -219,18 +219,6 @@ class FallenHeaven(PychanApplicationBase):
         if self.listener.quit:
             if self.universe:
                 self.universe.save()
-            # if self.universe.world:
-
-                # get the correct directory to save the map file to
-                # mapSaveDir = getUserDataDirectory("fife", "fallen") + "/maps"
-                # mapSaveDir = "saves/test"
-
-                # create the directory structure if it does not exist
-                # if not os.path.isdir(mapSaveDir):
-                #     os.makedirs(mapSaveDir)
-
-                # save map file to directory
-                # self.universe.world.scene.save(mapSaveDir + "/savefile.xml")
             self.breakRequested = True
         else:
             self.universe.pump()
@@ -242,7 +230,7 @@ def main():
 
 if __name__ == '__main__':
 
-    if TDS.get("FIFE", "UsePsyco"):
+    if FifePychanSettings(app_name="fallen").get("FIFE", "UsePsyco"):
             # Import Psyco if available
             try:
                 import psyco

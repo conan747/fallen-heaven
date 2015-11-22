@@ -185,13 +185,7 @@ class Universe(object):
         self._settings = settings
         self.world = None
         self.year = 1   # Equivalent to "turn" in strategic view.
-
-        # '''
-        # Build the main GUI
-        self.gui = UniverseUI(self)
-        self.gui.mapEvents = {
-            "endTurn" : self.endTurn
-        }
+        self.gui = None
 
         self.faction = None
 
@@ -202,6 +196,14 @@ class Universe(object):
 
 
     def load(self):
+
+
+        # Build the main GUI
+        if not self.gui:
+            self.gui = UniverseUI(self)
+            self.gui.mapEvents = {
+                "endTurn" : self.endTurn
+            }
 
         saveDir = "saves/test/"
         # self.progress = Progress(self)
@@ -236,6 +238,13 @@ class Universe(object):
             self.world.model.deleteMaps()
             self.world.model.deleteObjects()
             self.unitLoader.setWorld(None)
+
+        # Build the main GUI
+        if not self.gui:
+            self.gui = UniverseUI(self)
+            self.gui.mapEvents = {
+                "endTurn" : self.endTurn
+            }
 
         self.gui.show()
 
