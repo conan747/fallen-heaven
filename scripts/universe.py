@@ -258,7 +258,7 @@ class Universe(object):
         self.progress = self.campaign.progress # to save the progress.
         self.faction = Faction()
         self.faction.__setInfo__(self.progress.factionInfo)
-        # Give a freebee of 100000 credits
+        # Give a freebee of 10000 credits
         self.faction.resources["Credits"] = 10000
 
         # self.faction = Faction("Human")
@@ -288,22 +288,6 @@ class Universe(object):
         self.selectedPlanet = Planet(planetName, self.progress.allPlanets[planetName])
         self.startTactic()
 
-    def toCapitalClicked(self):
-        print "Going to Planet!"
-        self.gui.hide()
-        planetName = "firstCapital"
-        planetInfo = self.progress.allPlanets[planetName]
-        self.selectedPlanet = Planet(planetName, planetInfo)
-        self.startStrategic()
-
-    def toPlanetClicked(self):
-        print "Going to Planet!"
-        self.gui.hide()
-        planetName = "secondPlanet"
-        planetInfo = self.progress.allPlanets[planetName]
-        self.selectedPlanet = Planet(planetName, planetInfo)
-        self.startStrategic()
-
     def goToPlanet(self, planetName):
         print "Going to Planet ", planetName
         self.gui.hide()
@@ -321,7 +305,6 @@ class Universe(object):
         '''
 
         self.world = TacticWorld(self, self.selectedPlanet)
-
         self.world.load(self.selectedPlanet.getMapPath())
         print "Loading map: ", self.selectedPlanet.getMapPath()
 
@@ -341,8 +324,6 @@ class Universe(object):
         if self.world:
             self.world.pump()
 
-    # def quit(self):
-    #     self._applictaion.requestQuit()
 
     def save(self):
         if self.world:
@@ -350,13 +331,13 @@ class Universe(object):
         self.campaign.saveCampaign()
         # self.progress.save()
 
+
     def backToUniverse(self):
         # Save the information
         self.progress.update()
 
-        map = self.world.map
-        self.world.destroy()
         self.world.HUD.closeExtraWindows()
+        self.world.destroy()
 
         self.world.listener.detach()
         del self.world.listener
@@ -381,16 +362,87 @@ class Universe(object):
         self.gui.show()
 
 
+    def getPlanetResources(self, planetName, display=False):
+        '''
+        Calculates the resources of a given planet.
+        :param planetName: name of the planet to calculate
+        :return: a tuple containing: (cash, energy, research)
+        '''
+
+
+        cashConsumption = 0
+        cashProduction = 0
+        energyConsumption = 0
+        energyProduction = 0
+        researchProduction = 0
+
+        planet = self.progress.allPlanets[planetName]
+        for agentID in planet["agentInfo"]:
+            agentName = agentID.split(":")[0]
+            if self.unitLoader.isBuilding(agentName):
+                buildingProps = self.unitLoader.buildingProps[agentName]
+                cashProduction += buildingProps["ProductionCash"]
+                energyConsumption += buildingProps["ConsummationEnergy"]
+                energyProduction += buildingProps["ProductionEnergy"]
+                researchProduction += buildingProps["ProductionResearch"]
+
+            elif self.unitLoader.isUnit(agentName):
+                unitProps = self.unitLoader.unitProps[agentName]
+                cashConsumption += unitProps["Upkeep"]
+            else:
+                print "Error, no agent type found for ", agentName
+
+        for storage in planet["storages"].values():
+            ## Should we also add the "inProduction" to the upkeep costs? So far no.
+            for unitID in storage["unitsReady"]:
+                agentName = unitID.split(":")[1]
+                unitProps = self.unitLoader.unitProps[agentName]
+                cashConsumption += unitProps["Upkeep"]
+
+        totalCash = cashProduction - cashConsumption
+        totalEnergy = energyProduction - energyConsumption
+
+        if display:
+            print "\nPlanet resource summary:"
+            print "Planet name: ", planetName
+            print "Cash flow: %d - %d = %d" % (cashProduction, cashConsumption, totalCash)
+            print "Energy flow: %d - %d = %d" % (energyProduction, energyConsumption, totalEnergy)
+
+        return (totalCash, totalEnergy, researchProduction)
+
+
+    def updateResources(self):
+        '''
+        Calculates the resources and updates the faction information.
+        :return:
+        '''
+
+        cashDelta = 0
+        researchDelta = 0
+
+        for planet in self.faction.pwnedPlanets:
+            (cash, energy, research) = self.getPlanetResources(planet, display=True)
+            cashDelta += cash
+            researchDelta += research
+
+        print "Total cash this turn:", cashDelta
+        print "Research points this turn:", researchDelta
+        self.faction.resources["Credits"] += cashDelta
+        self.faction.resources["Research"] += researchDelta
+
+
+
     def endTurn(self):
         '''
         Ends the current turn. This implies:
         - Saves the information for this turn and should send it.
         - Leaves the game at a state where it's waiting the input from the other player.
-        - After the other pla
         :return:
         '''
 
         print "Skipping turn!"
+
+        self.updateResources()
         self.progress.faction = self.faction
         self.progress.save()
         self.campaign.compileYear()

@@ -102,7 +102,7 @@ class Planet(object):
 
     def save(self):
         '''
-        Pickles the planet. (Try saying it three times)
+        It pickles the planet. (Try saying it three times)
         :return:
         '''
         tosave = self.getPlanetDict()
