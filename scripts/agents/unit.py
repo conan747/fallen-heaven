@@ -292,15 +292,15 @@ class Weapon(object):
             # Compute damage close:
             tempLocation = fife.Location(location.getLayer())
 
-            for y in range(-1, 1):
-                for x in range(-1,1):
+            for y in range(-1, 2):
+                for x in range(-1,2):
                     if not  (x or y):
                         continue
                     cellPos = location.getLayerCoordinates()
                     cellPos.x -= x
                     cellPos.y -= y
                     tempLocation.setLayerCoordinates(cellPos)
-                    self._world.applyDamage(tempLocation, self.properties["DamageContact"])
+                    self._world.applyDamage(tempLocation, self.properties["DamageClose"])
 
             if self.properties["DamageFar"] > 0:
                 # Compute damage close:
@@ -309,7 +309,6 @@ class Weapon(object):
 
                 for y in (-2, 2):
                     cellPos = location.getLayerCoordinates()
-                    cellPos.x -= 0
                     cellPos.y -= y
                     tempLocation.setLayerCoordinates(cellPos)
                     self._world.applyDamage(tempLocation, self.properties["DamageFar"])
@@ -317,7 +316,6 @@ class Weapon(object):
                 for x in (-2, 2):
                     cellPos = location.getLayerCoordinates()
                     cellPos.x -= x
-                    cellPos.y -= 0
                     tempLocation.setLayerCoordinates(cellPos)
-                    self._world.applyDamage(tempLocation, self.properties["DamageContact"])
+                    self._world.applyDamage(tempLocation, self.properties["DamageFar"])
 
