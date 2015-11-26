@@ -57,11 +57,9 @@ class TacticListener(WorldListener):
         clickLocation = self._world.getLocationAt(clickpoint)
         trajectory = Trajectory(activeAgent , self._world, self._world.attackType)
         # print "Is is reachable?"
-        if trajectory.isInRange(clickLocation):
-            # print "Calculating Clear path:"
-            if trajectory.hasClearPath(clickLocation):
-                activeAgent.attack(clickLocation, self._world.attackType)
-                self._world.HUD.updateUI()
+        if trajectory.canShoot(clickLocation, display=True):
+            activeAgent.attack(clickLocation, self._world.attackType)
+            self._world.HUD.updateUI()
 
 
     def clickDefault(self, clickpoint):

@@ -111,9 +111,6 @@ class ApplicationListener(eventlistenerbase.EventListenerBase):
         widget.mapEvents({"createCampaign" : onButtonCreate,
                           "joinCampaign" : onButtonJoin})
 
-        # print "Exiting from onNewGamePressed"
-        # self.universe.newGame()
-        # self.cont = True
 
     def onLoadPressed(self):
         self.hide()
@@ -147,8 +144,8 @@ class ApplicationListener(eventlistenerbase.EventListenerBase):
     def keyPressed(self, evt):
         print evt
         keyval = evt.getKey().getValue()
-        keystr = evt.getKey().getAsString().lower()
-        consumed = False
+        #keystr = evt.getKey().getAsString().lower()
+        #consumed = False
         if keyval == fife.Key.ESCAPE:
             self.universe.pauseGame()
             self.show()
