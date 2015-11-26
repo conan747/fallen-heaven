@@ -11,6 +11,8 @@ class UniverseUI(object):
     Handles the UI part of the Universe view. Displays the planet map, information.
     '''
 
+    _planetInfoFile = "gui/planets/planetInfo.txt"
+
     def __init__(self, universe):
 
         self.universe = universe
@@ -19,9 +21,8 @@ class UniverseUI(object):
 
         planetNames = self.getPlanetNames()
 
-        self.createSimpleButtons(planetNames)
-
-
+        # self.createSimpleButtons(planetNames)
+        self.createPlanetIcons(planetNames)
         eventMap = {
             # 'toWar': self.universe.toWarClicked,
             # 'toCapital': self.universe.toCapitalClicked,
@@ -32,13 +33,33 @@ class UniverseUI(object):
 
     def createPlanetIcons(self, planetNames):
         planetBox = self.gui.findChild(name="planetBox")
+        imagePattern="gui/planets/%s.png"
 
+        #Load planet info from file
+        with open(self._planetInfoFile, 'r') as planetInfoFile:
+            planetInfo = planetInfoFile.readlines()
+
+        planetCoords = {}
+        for line in planetInfo:
+            info = line.split()
+            planetCoords[info[0]] = info[1:]
+
+        for name in planetNames:
+            print "Loading " , imagePattern % name
+            coords = planetCoords[name]
+            coords = [int(x) for x in coords]
+            newIcon = pychan.Icon(parent=planetBox,
+                                  name=name,
+                                  image=imagePattern % name,
+                                  base_color=(255,0,0),
+                                  position=coords)
+            planetBox.addChild(newIcon)
 
     def createSimpleButtons(self,  planetNames):
         planetBox = self.gui.findChild(name="planetBox")
         for name in planetNames:
 
-            newButton = pychan.Button(name=name, text=unicode("Go to planet " + name))
+            newButton = pychan.Button(name=name, text=unicode("Go to planet " + name), parent=planetBox)
             planetBox.addChild(newButton)
             def callback(arg=name): # Weird way of doing it. Taken from here: http://wiki.wxpython.org/Passing%20Arguments%20to%20Callbacks
                         self.universe.goToPlanet(arg)
@@ -51,7 +72,8 @@ class UniverseUI(object):
         :return:
         '''
         fileNames = os.listdir("maps")
-        planetNames = [fileName.split(".xml")[0] for fileName in fileNames]
+        planetNames = [fileName.split(".xml")[0] for fileName in fileNames
+                       if ".xml" in fileName]
         print "Found planets: "
         print planetNames
         return planetNames
@@ -71,18 +93,20 @@ class UniverseUI(object):
         # Update pwned planets
 
         planetBox = self.gui.findChild(name="planetBox")
-        planetBox.removeAllChildren()
+        # planetBox.removeAllChildren()
         for name in self.universe.faction.pwnedPlanets:
-            newButton = pychan.Button(name=name, text=unicode("Go to planet " + name))
-            planetBox.addChild(newButton)
+            planetButton = planetBox.findChild(name=name)
             def callback(arg=name): # Weird way of doing it. Taken from here: http://wiki.wxpython.org/Passing%20Arguments%20to%20Callbacks
                         self.universe.goToPlanet(arg)
-            newButton.capture(callback, event_name="mouseClicked")
+            planetButton.capture(callback, event_name="mouseClicked")
+            planetButton._setBorderSize(2)
 
         separator = pychan.Spacer(planetBox)
-        newButton = pychan.Button(name="test" , text="Go to war!")
+        newButton = pychan.Button(name="test", text="Go to war!")
         newButton.capture(self.universe.toWarClicked)
         planetBox.addChild(newButton)
+
+        # self.createPlanetIcons(self.universe.faction.pwnedPlanets)
 
         # Update year:
         yearLabel = self.gui.findChildByName("year")
@@ -98,7 +122,6 @@ class UniverseUI(object):
         playerLabel.text = unicode(playerName)
 
         self.handlePaused()
-
         self.gui.adaptLayout()
 
 

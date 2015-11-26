@@ -12,11 +12,13 @@
         <Label name="playerName" text=""/>
     </HBox>
     <HBox vexpand="1">
-        <VBox name="planetBox" margins="0,0" hexpand="2">
-            <!--<Button name="toCapital" text="Planet 1: First Capital"/>-->
-            <!--<Button name="toPlanet" text="Planet 2: Conquered Planet"/>-->
-            <!--<Button name="toWar" text="Planet 3: Enemy Capital"/>-->
-        </VBox>
+        <VBox>
+            <Container name="planetBox" background_image="gui/HUDs/galaxy.png" margins="0,0" hexpand="2" size="700,541">
+                <!--<Button name="toCapital" text="Planet 1: First Capital"/>-->
+                <!--<Button name="toPlanet" text="Planet 2: Conquered Planet"/>-->
+                <!--<Button name="toWar" text="Planet 3: Enemy Capital"/>-->
+            </Container>
+       </VBox>
         <ScrollArea>
             <Label name="dummy" text="Planet info"/>
             <ListBox name="InfoList"/>

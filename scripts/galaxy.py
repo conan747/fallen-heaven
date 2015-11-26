@@ -64,10 +64,9 @@ class Planet(object):
 
     def __init__(self, planetName="", planetInfo = None):
         self.name = planetName
-        self.load(planetInfo)
-        self.name = None # Name of the planet. Used to figure out map file.
         self.storages = {} # Dictionary containing the information for building storages.
         self.agentInfo = {} # Information of each Agent on the map.
+        self.load(planetInfo)
 
 
     def getMapPath(self):

@@ -379,7 +379,10 @@ class Campaign(object):
         self.planetList = campaignDict["planetList"]
         self.factionNames = campaignDict["factionNames"]
         self.paused = campaignDict["paused"]
-        self.saveDir = campaignDict["saveDir"]
+        if "saveDir" in campaignDict.keys():
+            self.saveDir = campaignDict["saveDir"]
+        else:
+            self.saveDir = "saves"
 
         playerName = campaignDict["playerName"]
         rootFolder = os.path.dirname(fileName)
