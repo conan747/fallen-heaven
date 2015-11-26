@@ -1,0 +1,3 @@
+secondPlanet    140 400
+enemyPlanet     270  200
+firstCapital    600  20
