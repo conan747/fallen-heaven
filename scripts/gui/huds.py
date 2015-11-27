@@ -18,18 +18,22 @@ from fife.extensions.pychan.fife_pychansettings import FifePychanSettings
 # -----------------------------------------------------------------------------------------------------------------
 class Widget(object):
 
-    widget = None
-    infoDict = {"unitName": "buildingName",
-        "production" : "ProductionType",
-        "energyConsumption" : "ConsummationEnergy",
-        "armor" : "Hp",
-        "Cost" : "Cost"
-        }
+    def __init__(self, parent= None):
+        self.widget = None
+        self.infoDict = {"unitName": "buildingName",
+            "production" : "ProductionType",
+            "energyConsumption" : "ConsummationEnergy",
+            "armor" : "Hp",
+            "Cost" : "Cost"
+            }
 
     def hide(self, free=False):
         self.widget.hide(free)
     def show(self):
         self.widget.show()
+
+    def destroy(self):
+        self.hide(free=True)
 
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -40,6 +44,7 @@ class HUD(Widget):
     Parent class that will be inherited.
     '''
     def __init__(self, world):
+        super(HUD, self).__init__()
         self.world = world
 
     def closeExtraWindows(self):
@@ -99,13 +104,8 @@ class TacticalHUD(HUD):
         self.world.onAttackButtonPressed(self.HWEAPON)
 
     def destroy(self):
-        self.widget.hide()
-        self.widget.mapEvents({
-                'nextTurnButton' : None,
-                'attackLightButton' : None
-        })
-        del self.widget
         self.structureWidget.destroy()
+        super(TacticalHUD, self).destroy()
 
 
     def updateUI(self):
@@ -120,7 +120,8 @@ class TacticalHUD(HUD):
 
 class ConstructingWidget(Widget):
     def __init__(self, parent):
-
+        
+        super(ConstructingWidget, self).__init__()
         self.structureList = [] # List containing all the property dictionaries for the buildings
         self.structureIndex = None   #Index of the selected building in the List.
         self.buildingStructName = None    #Name of the structure that is being built.
@@ -136,15 +137,6 @@ class ConstructingWidget(Widget):
                 'buttonPrevious' : self.onPreviousPressed,
                 'buttonNext' : self.onNextPressed
         })
-
-    def destroy(self):
-        self.widget.hide()
-
-        self.widget.mapEvents({
-                'buttonPrevious' : None,
-                'buttonNext' : None
-        })
-        del self.widget
 
 
     def onPreviousPressed(self):
@@ -236,7 +228,7 @@ class StructureWidget(Widget):
 
 
     def __init__(self, parent):
-
+        super(StructureWidget, self).__init__()
         self.HUD = parent
 
         self.widget = pychan.loadXML('gui/structure_info.xml')
@@ -244,11 +236,9 @@ class StructureWidget(Widget):
         self.storageWidget = None
 
     def destroy(self):
-        self.hide()
         if self.storageWidget:
             self.storageWidget.destroy()
-        self.widget.removeAllChildren()
-        del self.widget
+        super(StructureWidget, self).destroy()
 
     def updateUI(self):
 
@@ -317,7 +307,7 @@ class StructureWidget(Widget):
 
 class StorageUI(Widget):
     def __init__(self, storage):
-
+        super(StorageUI, self).__init__()
         self.storage = storage # This will point at the storage object that it represents.
         self.widget = pychan.loadXML('gui/storage.xml')
         self.widget.mapEvents({
@@ -330,20 +320,6 @@ class StorageUI(Widget):
 
     def completeUnits(self):
         self.storage.completeUnits()
-
-    def destroy(self):
-        self.widget.mapEvents({
-            'completeUnits': None
-        })
-
-        children = self.widget.findChildren(parent=self.widget)
-        for widget in children:
-            widget.capture(callback=None, event_name="mouseClicked")
-
-        self.widget.hide()
-        del self.widget
-
-
 
 
     def updateUI(self):
@@ -459,16 +435,9 @@ class StrategicHUD(HUD):
 
 
     def destroy(self):
-
-        self.widget.mapEvents({
-                'build' : None,
-                'toUniverseButton' : None
-        })
-
-        self.widget.hide()
-        del self.widget
         self.constructionWidget.destroy()
         self.structureWidget.destroy()
+        super(StrategicHUD, self).destroy()
 
     def loadBuildingList(self):
         '''
@@ -548,6 +517,7 @@ class UnitInfoWidget(Widget):
     '''
 
     def __init__(self, unit=None):
+        super(UnitInfoWidget, self).__init__()
         self.widget = pychan.loadXML("gui/unit_info.xml")
         self.unit = unit
 

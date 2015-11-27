@@ -148,7 +148,7 @@ class StrategicWorld(World):
         '''
         self.setMode(self.MODE_RECYCLE)
 
-    def startBuilding(self, buildingName):
+    def startBuilding(self, buildingName, hideMenu=False):
         '''
         Starts the building mode.
         :return:
@@ -160,6 +160,8 @@ class StrategicWorld(World):
 
         self.construction = self.unitLoader.createBuilding(buildingName)
         self.setMode(self.MODE_BUILD)
+        if hideMenu:
+            self.HUD.constructionWidget.hide()
         # self.build()
 
     def stopBuilding(self):

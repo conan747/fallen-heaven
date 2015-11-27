@@ -432,7 +432,7 @@ class Building(Agent):
         else:
             buildingName = "Saucer"
 
-        self.world.startBuilding(buildingName)
+        self.world.startBuilding(buildingName, hideMenu=True)
         #
         # if self.world.construction:
         #     # get rid of the already loaded instance:
