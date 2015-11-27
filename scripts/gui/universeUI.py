@@ -159,15 +159,21 @@ class UniverseUI(Widget):
         # Update year:
         yearLabel = self.widget.findChildByName("year")
         year = self.universe.campaign.year
-        yearLabel.text = unicode(str(year))
+        yearLabel.text = unicode("Year:  %d" % year)
 
         #Update faction+ player name
         factionName = self.universe.faction.name
         playerName = self.universe.progress.playerName
         factionLabel = self.widget.findChildByName("faction")
-        factionLabel.text = unicode(factionName)
+        factionLabel.text = unicode("Faction:  %s" % factionName)
         playerLabel = self.widget.findChildByName("playerName")
-        playerLabel.text = unicode(playerName)
+        playerLabel.text = unicode("Player:  %s" % playerName)
+
+        #Update credits
+        credits = self.universe.faction.resources["Credits"]
+        creditLabel = self.widget.findChildByName("creditInfo")
+        creditLabel.text = unicode("Credits:  %d" % credits)
+
 
         self.handlePaused()
         self.widget.adaptLayout()

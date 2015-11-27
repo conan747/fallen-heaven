@@ -316,8 +316,6 @@ class Campaign(object):
 
         info = pickle.load(open(fileName, 'rb'))
 
-        progress = self.universe.progress
-
         ## Verify packet
         factionName = info["factionName"]
         year = info["year"]

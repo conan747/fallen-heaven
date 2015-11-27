@@ -2,13 +2,10 @@
 
 <VBox hexpand="1">
     <HBox>
-        <Label text="Here should go the credit info etc. "/>
+        <Label name="creditInfo" text="Here should go the credit info etc. "/>
 
-        <Label text="Year: "/>
         <Label name="year" text=""/>
-        <Label text="Faction: "/>
         <Label name="faction" text=""/>
-        <Label text="Player: "/>
         <Label name="playerName" text=""/>
     </HBox>
     <HBox vexpand="1">
