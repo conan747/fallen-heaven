@@ -274,25 +274,20 @@ class Campaign(object):
             otherPlayer = self.playerNames[1]
 
         progress = Progress(self.universe, playerFactionName= mainFaction, saveDir=self.saveDir)
-        faction = Faction(mainFaction)
+        faction = Faction(localPlayerInfo["playerFaction"])
         progress.factionInfo = faction.__getInfo__()
         progress.playerName = mainPlayer
         self.progress = progress
-        ## Assign initial pwned planets:
-        self.progress.factionInfo["pwnedPlanets"] = ["firstCapital"]
 
         ## Create the enemy information:
         self.enemy = Enemy()
         self.enemy.name = otherPlayer
         self.enemy.factionName = otherFaction
-        self.enemy.pwnedPlanets = ["enemyPlanet"]
-
 
         print self.progress
 
 
     def compileYear(self):
-
 
         fileToSend = {}
         progress = self.universe.progress
