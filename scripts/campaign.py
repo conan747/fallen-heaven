@@ -40,6 +40,8 @@ class Campaign(object):
 
     def __init__(self, universe, fileName=None):
         self.universe = universe
+        self.galaxyName = None
+        ## TODO: Change this, it should depend on the galaxy name.
         galaxy = Galaxy()
         self.planetList = galaxy.getPlanetNames()
         self.year = 0 # Strategic turn

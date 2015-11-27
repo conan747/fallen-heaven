@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="ascii"?>
+
+<Container name="planetBox" background_image="gui/HUDs/galaxy.png" margins="0,0" hexpand="2" size="700,541">
+</Container>

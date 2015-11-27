@@ -1,159 +1,80 @@
 __author__ = 'cos'
 
-# import scripts.universe
 import os
 from fife.extensions import pychan
+from universeUI import GalaxyUI
+from huds import Widget
 
 from dialogs import InfoDialog
 
-class SelectPlanet(object):
+class SelectPlanet(Widget):
     '''
-    Opens a menu to select planets for dropship movement and missile attacks.
+    Opens a menu to select planets for dropship movement.
     '''
 
-    def __init__(self, universe):
+    def __init__(self, universe, selectablePlanets = None):
 
+        super(SelectPlanet, self).__init__()
+
+        self.selectablePlanets = selectablePlanets
         self.universe = universe
-        self.gui = pychan.loadXML('gui/selectPlanet.xml')
+        self.widget = pychan.loadXML('gui/selectPlanet.xml')
         renderBackend = self.universe._engine.getRenderBackend()
-        self.gui.min_size = renderBackend.getScreenWidth(), renderBackend.getScreenHeight()
+        self.widget.min_size = renderBackend.getScreenWidth(), renderBackend.getScreenHeight()
+        self.currentPlanet = self.universe.selectedPlanet.name
 
         self.selectedPlanet = None
 
-        planetNames = self.getPlanetNames()
-
-        planetBox = self.gui.findChild(name="planetBox")
-        for name in planetNames:
-            newButton = pychan.Label(name=name,
-                                     text=unicode("Go to planet " + name),
-                                     is_focusable=True,
-                                     base_color=(255,0,0,200),
-                                     foreground_color=(0,0,0)
-                                        )
-            pychan.TextField
-            planetBox.addChild(newButton)
-            def callback(arg=name, widget=None): # Weird way of doing it. Taken from here: http://wiki.wxpython.org/Passing%20Arguments%20to%20Callbacks
-                        self.selectPlanet(arg, widget)
-            newButton.capture(callback, event_name="mouseClicked")
-
-
-        # eventMap = {
-            # 'toWar': self.universe.toWarClicked,
-            # 'toCapital': self.universe.toCapitalClicked,
-            # 'toPlanet': self.universe.toPlanetClicked,
-            # 'OkButton': self.onOkPressed,
-            # 'cancelButton' : self.onCancelPressed
-        # }
-        # self.gui.mapEvents(eventMap)
-        self.selectedPlanetLabel = self.gui.findChildByName("selectedPlanet")
-        self.gui.show()
+        self.selectedPlanetLabel = self.widget.findChildByName("selectedPlanet")
+        self.galaxyUI = GalaxyUI(self.universe, self, clickAction=self.selectPlanet)
 
 
 
+    def activateOwnPlanets(self):
+        planetList = self.universe.faction.pwnedPlanets
 
-    def getPlanetNames(self):
+        self.selectablePlanets += planetList
+        self.selectablePlanets = list(set(self.selectablePlanets)) # Removes duplicates.
+        self.markSelectables()
+
+
+    def markSelectables(self):
         '''
-        Gets a list of planet names from the map directory
+        Marks the planets in self.selectablePlanets.
         :return:
         '''
-        fileNames = os.listdir("maps")
-        planetNames = [fileName.split(".xml")[0] for fileName in fileNames]
-        print "Found planets: "
-        print planetNames
-        return planetNames
+        for planet in self.selectablePlanets:
+            self.galaxyUI.markPlanet(planet, self.galaxyUI._SELECTABLE)
 
-    def show(self):
-        self.gui.show()
+        # Mark current planet as special.
+        self.galaxyUI.markPlanet(self.currentPlanet, self.galaxyUI._SPECIAL)
 
-    def hide(self):
-        self.gui.hide()
 
-    def selectPlanet(self, planetName, widget=None):
+    def selectPlanet(self, planetName):
         '''
         Handles the drawing of the planets.
         :return:
         '''
+
+        if planetName not in self.selectablePlanets:
+            InfoDialog(message="Planet not reachable.").start()
+            return
+
+        if planetName == self.currentPlanet:
+            InfoDialog(message="Current planet can't be selected.").start()
+            return
+
         if self.selectedPlanet:
             ## Unselect  the planet.
-            planetLabel = self.gui.findChildByName(self.selectedPlanet)
-            self.setHighlighting(planetLabel, False)
+            self.galaxyUI.markPlanet(self.selectedPlanet, self.galaxyUI._SELECTABLE)
 
         self.selectedPlanet = planetName
-        self.selectedPlanetLabel.text = planetName
-        self.setHighlighting(widget)
+        self.galaxyUI.markPlanet(self.selectedPlanet, self.galaxyUI._SELECT)
 
-    def setHighlighting(self, widget, bol=True):
-        if bol:
-            widget.border_size = 1
-        else:
-            widget.border_size = 0
-
-    def updateUI(self):
-        '''
-        Will update the Universe UI information.
-        :return:
-        '''
-        pass
-        ## TODO: Handle planet owner printing.
-
-        '''
-        # Update pwned planets
-
-        planetBox = self.gui.findChild(name="planetBox")
-        planetBox.removeAllChildren()
-        for name in self.universe.faction.pwnedPlanets:
-            newButton = pychan.Button(name=name, text=unicode("Go to planet " + name))
-            planetBox.addChild(newButton)
-            def callback(arg=name): # Weird way of doing it. Taken from here: http://wiki.wxpython.org/Passing%20Arguments%20to%20Callbacks
-                        self.universe.goToPlanet(arg)
-            newButton.capture(callback, event_name="mouseClicked")
-
-        separator = pychan.Spacer(planetBox)
-        newButton = pychan.Button(name="test" , text="Go to war!")
-        newButton.capture(self.universe.toWarClicked)
-        planetBox.addChild(newButton)
-
-        # Update year:
-        yearLabel = self.gui.findChildByName("year")
-        year = self.universe.campaign.year
-        yearLabel.text = unicode(str(year))
-
-        self.handlePaused()
-
-        self.gui.adaptLayout()
-
-
-    def handlePaused(self):
-
-        if self.universe.campaign.paused:
-            if not self.gui.findChildByName("loadTurn"):
-                buttonBox = self.gui.findChildByName("buttonBox")
-                loadTurnButton = pychan.Button(parent=buttonBox,
-                                               name="loadTurn",
-                                               text="Load next turn")
-                buttonBox.addChild(loadTurnButton)
-                loadTurnButton.capture(self.universe.campaign.loadYear)
-
-            endTurnButton = self.gui.findChildByName("endTurn")
-            endTurnButton.hide()
-            loadTurnButton = self.gui.findChildByName("loadTurn")
-            loadTurnButton.show()
-            # self.gui.adaptLayout()
-
-            dialog = InfoDialog(message="Send the automatically generated .yer file and wait for the response.",
-                            title= "Game paused.")
-            dialog.show()
-
-        else:
-            loadTurnButton = self.gui.findChildByName("loadTurn")
-            if loadTurnButton:
-                loadTurnButton.hide()
-            endTurnButton = self.gui.findChildByName("endTurn")
-            endTurnButton.show()
-            '''
 
     def execute(self):
-        if self.gui.execute({'OkButton': True, 'cancelButton' : False}):
+        self.markSelectables()
+        if self.widget.execute({'OkButton': True, 'cancelButton' : False}):
             return self.selectedPlanet
         else:
             return None

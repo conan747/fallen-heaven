@@ -11,18 +11,19 @@ class Galaxy(object):
 
     _dir = "maps/"
     _extension = ".gal"
+    _planetInfoFile = "gui/planets/planetInfo.txt"
 
     def __init__(self, name="default"):
         self.name = name
         self.planetList = []
-        self.planetLinks = {} # Gives the planets that are reachable from the "key" planet.
-        self.image = "" # Path to the background image for the universe window.
-        self.planteLocation = {} # Contains the coordinates of the planet to display.
-        self.planetIm = {} # Contains the path to the images that represent the planet.
-        self.planetList = self.getPlanetNames()
+        self.planetLinks = {}       # Gives the planets that are reachable from the "key" planet.
+        self.image = ""             # Path to the background image for the universe window.
+        self.planteLocation = {}    # Contains the coordinates of the planet to display.
+        self.planetIm = {}          # Contains the path to the images that represent the planet.
 
-
-
+        # Load the info:
+        self.getPlanetNames()
+        self.getPlanetLinks()
 
 
     def load(self, name=None):
@@ -50,8 +51,19 @@ class Galaxy(object):
                        if ".xml" in fileName]
         print "Found planets: "
         print planetNames
+        self.planetList = planetNames
         return planetNames
 
+    def getPlanetLinks(self):
+        '''
+        Loads the member variable self.planetLinks.
+        :return:
+        '''
+        with open(self._planetInfoFile, 'r') as planetInfoFile:
+            planetInfo = planetInfoFile.readlines()
+            for line in planetInfo:
+                info = line.split()
+                self.planetLinks[info[0]] = info[3:]
 
 
 class Planet(object):

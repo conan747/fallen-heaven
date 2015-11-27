@@ -41,4 +41,4 @@ class InfoDialog(pychan.Window):
         Simply shows the dialog asynchronously.
         :return:
         '''
-        self.execute({"InfoOkButton" : True})
+        return self.execute({"InfoOkButton" : True})

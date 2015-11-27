@@ -402,11 +402,15 @@ class Building(Agent):
 
     def _takeoff(self):
         '''
-        Handles the lauch of this dropship to another planet..
+        Handles the launch of this Dropship to another planet..
         :return:
         '''
 
-        selectPlanet = SelectPlanet(self.world.universe)
+        possiblePlanets = list(self.world.faction.pwnedPlanets)
+        for planet in self.world.faction.pwnedPlanets:
+            possiblePlanets += self.world.universe.galaxy.planetLinks[planet]
+        possiblePlanets = list(set(possiblePlanets)) # Remove duplicates
+        selectPlanet = SelectPlanet(self.world.universe, selectablePlanets=possiblePlanets)
         targetPlanet = selectPlanet.execute()
         if not targetPlanet:
             return

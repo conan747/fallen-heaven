@@ -3,13 +3,8 @@ __author__ = 'cos'
 
 import os
 
-from fife import fife
 from fife.extensions import pychan
-from fife.extensions.pychan import widgets
-from fife.extensions.pychan.fife_pychansettings import FifePychanSettings
 
-# from xml.sax.saxutils import XMLGenerator
-# from xml.sax.xmlreader import AttributesNSImpl
 
 
 
@@ -18,14 +13,8 @@ from fife.extensions.pychan.fife_pychansettings import FifePychanSettings
 # -----------------------------------------------------------------------------------------------------------------
 class Widget(object):
 
-    def __init__(self, parent= None):
+    def __init__(self):
         self.widget = None
-        self.infoDict = {"unitName": "buildingName",
-            "production" : "ProductionType",
-            "energyConsumption" : "ConsummationEnergy",
-            "armor" : "Hp",
-            "Cost" : "Cost"
-            }
 
     def hide(self, free=False):
         self.widget.hide(free)
@@ -126,6 +115,14 @@ class ConstructingWidget(Widget):
         self.structureIndex = None   #Index of the selected building in the List.
         self.buildingStructName = None    #Name of the structure that is being built.
         self.HUD = parent
+
+
+        self.infoDict = {"unitName": "buildingName",
+            "production" : "ProductionType",
+            "energyConsumption" : "ConsummationEnergy",
+            "armor" : "Hp",
+            "Cost" : "Cost"
+            }
 
         self.widget = pychan.loadXML('gui/construction_pannel.xml')
         self.hide()
@@ -235,6 +232,13 @@ class StructureWidget(Widget):
         self.hide()
         self.storageWidget = None
 
+        self.infoDict = {"unitName": "buildingName",
+            "production" : "ProductionType",
+            "energyConsumption" : "ConsummationEnergy",
+            "armor" : "Hp",
+            "Cost" : "Cost"
+            }
+
     def destroy(self):
         if self.storageWidget:
             self.storageWidget.destroy()
@@ -282,9 +286,6 @@ class StructureWidget(Widget):
             actionButton.hide()
 
         self.widget.adaptLayout()
-
-
-        # self.widget.distributeData(self.infoDict)
 
         for info in self.infoDict.keys():
             label = self.widget.findChild(name=info)
@@ -533,6 +534,7 @@ class UnitInfoWidget(Widget):
         self.attackLabel = self.widget.findChildByName("attackName")
         self.damageLabel = self.widget.findChildByName("damage")
         self.rangeLabel = self.widget.findChildByName("range")
+
 
     def updateUI(self, unit=None, world=None):
 

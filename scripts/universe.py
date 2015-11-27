@@ -3,7 +3,7 @@ __author__ = 'cos'
 
 from tactic_world import TacticWorld
 from strategic_world import StrategicWorld
-from galaxy import Planet
+from galaxy import *
 from faction import Faction
 from gui.universeUI import UniverseUI
 from campaign import Campaign
@@ -187,6 +187,10 @@ class Universe(object):
         self.year = 1   # Equivalent to "turn" in strategic view.
         self.gui = None
 
+        self.campaign = None
+        self.progress = None
+        self.galaxy = None
+
         self.faction = None
 
         self.sound = Sound(self._engine, self._settings)
@@ -198,13 +202,6 @@ class Universe(object):
     def load(self):
 
 
-        # Build the main GUI
-        if not self.gui:
-            self.gui = UniverseUI(self)
-            self.gui.mapEvents = {
-                "endTurn" : self.endTurn
-            }
-
         saveDir = "saves/test/"
         # self.progress = Progress(self)
         root = Tkinter.Tk()
@@ -212,10 +209,17 @@ class Universe(object):
                                         title='Select campaign to load',
                                         initialdir=saveDir,
                                         filetypes=[("Campaign", "*.cpn")])
-        root.destroy()
 
         self.campaign = Campaign(self, file)
         self.progress = self.campaign.progress
+
+        self.galaxy = Galaxy(self.campaign.galaxyName)
+        # Build the main GUI
+        if not self.gui:
+            self.gui = UniverseUI(self)
+
+        root.destroy()
+
 
         # self.progress.load(saveDir + name + ".sav")
         self.gui.show()
