@@ -1,7 +1,5 @@
 __author__ = 'cos'
 
-# import scripts.universe
-import os
 from fife.extensions import pychan
 
 from dialogs import InfoDialog

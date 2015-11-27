@@ -216,6 +216,8 @@ class FallenHeaven(PychanApplicationBase):
         if self.listener.quit:
             if self.universe:
                 self.universe.save()
+            if self.universe.world:
+                self.universe.backToUniverse()
             self.breakRequested = True
         else:
             self.universe.pump()

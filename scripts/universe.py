@@ -14,7 +14,6 @@ from agents.building import *
 import Tkinter, tkFileDialog
 
 from engine.sound import Sound
-import time
 
 
 class UnitLoader(object):
@@ -211,28 +210,12 @@ class Universe(object):
                                         filetypes=[("Campaign", "*.cpn")])
 
         self.campaign = Campaign(self, file)
-        self.progress = self.campaign.progress
-
-        self.galaxy = Galaxy(self.campaign.galaxyName)
-        # Build the main GUI
-        if not self.gui:
-            self.gui = UniverseUI(self)
-
         root.destroy()
-
-
-        # self.progress.load(saveDir + name + ".sav")
-        self.gui.show()
-
-        self.faction = Faction()
-        self.faction.__setInfo__(self.progress.factionInfo)
-        # self.planetNames = self.progress.allPlanets.keys()
-        self.continueGame()
-        self.gui.updateUI()
+        self.newGame()
 
 
 
-    def newGame(self, campaign=None):
+    def newGame(self, campaign=None, giveFreebies=False):
         '''
         Creates a new campaign and starts it.
         :return:
@@ -243,37 +226,28 @@ class Universe(object):
             self.world.model.deleteObjects()
             self.unitLoader.setWorld(None)
 
+        if campaign:
+            self.campaign = campaign
+        elif not self.campaign:
+            self.campaign = Campaign(self)
+            self.campaign.createCampaign()
+
+        self.galaxy = Galaxy(self.campaign.galaxyName)
+
         # Build the main GUI
         if not self.gui:
             self.gui = UniverseUI(self)
-            self.gui.mapEvents = {
-                "endTurn" : self.endTurn
-            }
 
         self.gui.show()
-
-        if not campaign:
-            self.campaign = Campaign(self)
-            self.campaign.createCampaign()
-        else:
-            self.campaign = campaign
-        # self.campaign.newCampaign()
 
         self.progress = self.campaign.progress # to save the progress.
         self.faction = Faction()
         self.faction.__setInfo__(self.progress.factionInfo)
-        # Give a freebee of 10000 credits
-        self.faction.resources["Credits"] = 10000
 
-        # self.faction = Faction("Human")
-        # faction2 = Faction("Tauran")
-        # self.progress.factions["Human"] = self.faction
-        # self.progress.factions["Tauran"] = faction2
+        # Give a freebie of 10000 credits
+        if giveFreebies:
+            self.faction.resources["Credits"] = 10000
 
-        planetNames =  self.campaign.planetList#["firstCapital", "secondPlanet"]
-        for planetName in planetNames:
-            planet = Planet(planetName)
-            self.progress.allPlanets[planetName] = planet.getPlanetDict()
 
         self.continueGame()
         self.gui.updateUI()
@@ -342,9 +316,9 @@ class Universe(object):
 
         self.world.HUD.closeExtraWindows()
         self.world.destroy()
+        self.world.view.end()
 
         self.world.listener.detach()
-        del self.world.listener
         # if self.world.music:
         #     self.world.music.stop()
         #     del self.world.music
@@ -358,8 +332,6 @@ class Universe(object):
 
         # delete map and objects.
         model = self._engine.getModel()
-
-        self.world.view.end()
         model.deleteObjects()
 
         self.world = None

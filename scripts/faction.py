@@ -12,7 +12,7 @@ class Faction(object):
 
     # _RES_ENERGY, _RES_CREDITS, _RES_RESEARCH = xrange(3)
 
-    def __init__(self, name= ""):
+    def __init__(self, name= "Human"):
         self.resources = {"Energy": 0,
                      "Credits" : 0,
                      "Research" : 0}
@@ -26,7 +26,10 @@ class Faction(object):
 
         self.name = name
 
-        self.pwnedPlanets = ["firstCapital"]
+        if self.name == "Human":
+            self.pwnedPlanets = ["firstCapital"]
+        else:
+            self.pwnedPlanets = ["enemyPlanet"]
 
     def __setInfo__(self, factionInfo):
         [setattr(self, info, factionInfo[info]) for info in factionInfo.keys()]

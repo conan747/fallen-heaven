@@ -71,7 +71,10 @@ class Campaign(object):
                                                                                   'factionList',
                                                                                   'saveDir')
             if saveDir[-1] != "/":
-                saveDir += "/"
+                saveDir += "/" + campaignName + "/"
+            else:
+                saveDir += campaignName + "/"
+
             info = {"playerName" : playerName,
                     "campaignName" : campaignName,
                     "playerFaction" : factionList[playerFaction],
@@ -84,7 +87,8 @@ class Campaign(object):
                 if not os.path.isdir(path):
                     parent = os.path.dirname(path)
                     make_tree(parent)
-                    os.mkdir(path)
+                    if not os.path.isdir(path):
+                        os.mkdir(path)
 
             make_tree(saveDir)
 
@@ -154,8 +158,6 @@ class Campaign(object):
 
         root.destroy()
 
-
-
         if not "LocalPlayer" in info.keys():
 
             dialog = pychan.loadXML("gui/dialogs/createCampaign.xml")
@@ -165,6 +167,10 @@ class Campaign(object):
             dialog.distributeInitialData({"factionList" : factionList,
                                           "campaignNameText" : info["campaignName"],
                                           'saveDir' : info["saveDir"]})
+
+            #Block fields:
+            #dialog.findChildByName("campaignNameText").setEditable(False)
+            ##TODO: Add faction selection block.
 
             campaignInfo = { "RemotePlayer" : info}
 
@@ -210,9 +216,8 @@ class Campaign(object):
                                             title='Select saves parent directory.',
                                             initialdir="saves")
                 if dir:
-                    children = dialog.findChildren(name="saveDir")
-                    for child in children:
-                        child.text = os.path.abspath(dir)
+                    child = dialog.findChildByName("saveDir")
+                    child.text = os.path.abspath(dir) + "/" + info["campaignName"]
 
             dialog.mapEvents({'OkButton' : okCallback,
                           'saveDialog': saveDialogCallback})
@@ -222,6 +227,9 @@ class Campaign(object):
             # Information:
             infoDialog = InfoDialog("Campaign properly joined! Now send the .rsp file to your opponent. You can now start playing the first turn.")
             infoDialog.start()
+
+            self.newCampaign(campaignInfo)
+            self.universe.newGame(campaign=self, giveFreebies=True)
             self.saveCampaign()
 
         elif len(info) == 2:
@@ -231,7 +239,7 @@ class Campaign(object):
             infoDialog.start()
 
             self.newCampaign(info)
-            self.universe.newGame(self)
+            self.universe.newGame(campaign=self, giveFreebies=True)
             self.saveCampaign()
 
 
