@@ -13,29 +13,11 @@ from galaxy import Galaxy
 import Tkinter, tkFileDialog
 
 
-
-class Enemy(object):
-    '''
-    Holds the information of the other player.
-    '''
-
-    def __init__(self):
-
-        self.name = ""
-        self.factionName = ""
-        self.pwnedPlanets = []
-
-    def __getInfo__(self):
-        enemyInfo = {}
-        for atr in dir(self):
-            if not atr.startswith("__"):
-                enemyInfo[atr] = getattr(self, atr)
-        return enemyInfo
-
-
 class Campaign(object):
     '''
-    Campaign object deals with the information exchange between players.
+    Campaign object is the main object that holds all the information about the game.
+    In principle it holds public information i.e. could be shared among players. It also contains the
+    progress field scpecific for this player (private part).
     '''
 
     def __init__(self, universe, fileName=None):
@@ -48,9 +30,10 @@ class Campaign(object):
         self.turn = 0 # Tactic turn
         self.progress = None # Player progress.
         self.name = "ForeverWar" # Name of the campaign
-        self.factionNames = []
+        self.factions = {}  # Dictionary containing "factionName" : Faction()
         self.paused = False # Tells if it is waiting a response to be loaded.
         self.saveDir = ""
+        self.player2Faction = {} # Dictionary mapping the player name to the faction.
 
         if fileName:
             self.loadCampaign(fileName)
@@ -121,18 +104,6 @@ class Campaign(object):
             info = InfoDialog('Campaign creatinon cancelled! Press ESC to go back to main menu.')
             info.start()
 
-    # def createInvitation(self, info):
-    #     '''
-    #     Creates invitation file
-    #     :param info:
-    #     :return:
-    #     '''
-    #     print "CreateInvitation called with argument:"
-    #     print info
-    # 
-    #     pickle.dump(info, open("saves/invitation.inv" , 'wb'))
-        
-
 
     def joinGame(self):
         '''
@@ -170,7 +141,7 @@ class Campaign(object):
 
             #Block fields:
             #dialog.findChildByName("campaignNameText").setEditable(False)
-            ##TODO: Add faction selection block.
+            ##TODO: Add campaignNameText selection block.
 
             campaignInfo = { "RemotePlayer" : info}
 
@@ -243,46 +214,31 @@ class Campaign(object):
             self.saveCampaign()
 
 
-
     def newCampaign(self, campaignInfo= None):
 
         if not campaignInfo:
-            ## Ask for the name of the campaign:
-            self.name = "ForeverWar"
-            mainPlayer = "Me"
-            mainFaction = "Human"
+            InfoDialog(message="Error: No campaign info. This should never happen.").execute()
+            return
 
-            otherPlayer = "You"
-            otherFaction = "Tauran"
-            self.playerNames = [mainPlayer, otherPlayer]
-            self.factionNames = [mainFaction, otherFaction]
-        else:
-            localPlayerInfo = campaignInfo["LocalPlayer"]
-            self.name = localPlayerInfo["campaignName"]
-            self.playerNames = [localPlayerInfo["playerName"]]
-            self.factionNames = [localPlayerInfo["playerFaction"]]
-            remotePlayerInfo = campaignInfo["RemotePlayer"]
-            self.playerNames.append(remotePlayerInfo["playerName"])
-            self.factionNames.append(localPlayerInfo["playerFaction"])
-            self.saveDir = localPlayerInfo["saveDir"]
-            if self.saveDir[-1] != "/":
-                self.saveDir += "/"
+        localPlayerInfo = campaignInfo["LocalPlayer"]
+        self.name = localPlayerInfo["campaignName"]
+        self.saveDir = localPlayerInfo["saveDir"]
+        if self.saveDir[-1] != "/":
+            self.saveDir += "/"
 
-            mainFaction = self.factionNames[0]
-            otherFaction = self.factionNames[1]
-            mainPlayer = self.playerNames[0]
-            otherPlayer = self.playerNames[1]
+        for player in ["LocalPlayer", "RemotePlayer"]: # Maybe there should be more fields?
+            info = campaignInfo[player]
+            self.player2Faction[info["playerName"]] = info["playerFaction"]
 
-        progress = Progress(self.universe, playerFactionName= mainFaction, saveDir=self.saveDir)
-        faction = Faction(localPlayerInfo["playerFaction"])
-        progress.factionInfo = faction.__getInfo__()
-        progress.playerName = mainPlayer
-        self.progress = progress
+        myPlayer = localPlayerInfo["playerName"]
+        myFaction = self.player2Faction[myPlayer]
 
-        ## Create the enemy information:
-        self.enemy = Enemy()
-        self.enemy.name = otherPlayer
-        self.enemy.factionName = otherFaction
+        self.progress = Progress(self.universe, playerFactionName= myFaction, saveDir=self.saveDir)
+        for factionName in self.player2Faction.values():
+            self.factions[factionName] = Faction(factionName)
+
+        self.progress.factionInfo = self.factions[myFaction].__getInfo__()
+        self.progress.playerName = myPlayer
 
         print self.progress
 
@@ -327,14 +283,14 @@ class Campaign(object):
             packetOK = False
         if turn != self.turn:
             packetOK = False
-        if factionName != self.enemy.factionName:
-            packetOK = False
+        # if factionName != self.enemy.factionName:
+        #     packetOK = False
 
         if not packetOK:
             print "Packet invalid!"
             return
 
-        self.enemy.pwnedPlanets  = info["pwnedPlanets"]
+        self.factions[factionName].pwnedPlanets = info["pwnedPlanets"]
         ## TODO: Handle the attacking provinces
         self.year += 1
 
@@ -343,6 +299,21 @@ class Campaign(object):
         self.universe.gui.updateUI()
         self.saveCampaign()
 
+    def getEnemy(self):
+        '''
+        Returns the faction corresponding to the enemy
+        :return:
+        '''
+        playerFactionName = self.progress.playerFactionName
+        return [self.factions[name] for name in self.factions.keys()
+                if name != playerFactionName]
+
+    def getPlayerFaction(self):
+        '''
+        Returns the faction corresponding to the player
+        :return:
+        '''
+        return self.factions[self.progress.playerFactionName]
 
     def saveCampaign(self):
         '''
@@ -353,14 +324,14 @@ class Campaign(object):
         campaignDict = { "playerName" : self.progress.playerName,
                          "year" : self.year,
                          "turn" : self.turn,
-                         "planetList" : self.planetList,
-                         "factionNames" : self.factionNames,
+                         "player2Faction" : self.player2Faction,
                          "name" : self.name,
                          "paused" : self.paused,
-                         "saveDir" : self.saveDir
+                         "saveDir" : self.saveDir,
+                         "galaxy" : self.galaxyName
                         }
 
-        campaignDict["enemyInfo"] = self.enemy.__getInfo__()
+        campaignDict["factionInfo"] = [faction.__getInfo__() for faction in self.factions.values()]
 
         pickle.dump(campaignDict, open("%s/%s_%s.cpn" %
                                        (self.saveDir, self.name, self.progress.playerName), 'wb'))
@@ -378,8 +349,8 @@ class Campaign(object):
         self.name = campaignDict["name"]
         self.year = campaignDict["year"]
         self.turn = campaignDict["turn"]
-        self.planetList = campaignDict["planetList"]
-        self.factionNames = campaignDict["factionNames"]
+        self.galaxyName = campaignDict["galaxy"]
+        self.player2Faction = campaignDict["player2Faction"]
         self.paused = campaignDict["paused"]
         if "saveDir" in campaignDict.keys():
             self.saveDir = campaignDict["saveDir"]
@@ -392,13 +363,9 @@ class Campaign(object):
         progress.load(rootFolder + "/" + playerName + ".prg")
         self.progress = progress
 
-        self.enemy = Enemy()
-        enemyInfo = campaignDict["enemyInfo"]
-        [setattr(self.enemy, key, enemyInfo[key]) for key in enemyInfo.keys()]
-
-
-        # TODO: MAke this variable.
-        # return progress
+        for factionInfo in campaignDict["factionInfo"]:
+            factionName = factionInfo["name"]
+            self.factions[factionName] = Faction(factionInfo=factionInfo)
 
 
 ###################################################
@@ -422,15 +389,17 @@ class Progress(object):
         self.universe = universe # Points at the universe
 
         self.playerFactionName = playerFactionName
+        self.playerName = ""
+
         self.saveDir = saveDir   # Directory where the file should be saved/loaded
         self.allPlanets = {} # Dictionary containing planet name:planetInfo
-        self.factionInfo = None # Dictionary containing faction factionInfo.
+        #self.factionInfo = None # Dictionary containing faction factionInfo.
 
         # Dictionary containing all the information. Will be saved/loaded.
         self.progressDict = {"playerFactionName" : self.playerFactionName,
                              "saveDir" : self.saveDir}
 
-        self.playerName = ""
+
         self.waitingForResponse = False
         self.attacking = {} # list containing the "Attacking info" of the dropships of this player.
         ## Attacking will contain: {"origin": <name of the planet of origin>,
