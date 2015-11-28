@@ -23,9 +23,6 @@ class Campaign(object):
     def __init__(self, universe, fileName=None):
         self.universe = universe
         self.galaxyName = None
-        ## TODO: Change this, it should depend on the galaxy name.
-        galaxy = Galaxy()
-        self.planetList = galaxy.getPlanetNames()
         self.year = 0 # Strategic turn
         self.turn = 0 # Tactic turn
         self.progress = None # Player progress.
@@ -380,7 +377,6 @@ class Progress(object):
     '''
 
 
-
     def __init__(self, universe, playerFactionName="Human", saveDir="saves/test"):
         '''
 
@@ -392,8 +388,7 @@ class Progress(object):
         self.playerName = ""
 
         self.saveDir = saveDir   # Directory where the file should be saved/loaded
-        self.allPlanets = {} # Dictionary containing planet name:planetInfo
-        #self.factionInfo = None # Dictionary containing faction factionInfo.
+        self.planetInfos = {} # Dictionary containing planet name:planetInfo
 
         # Dictionary containing all the information. Will be saved/loaded.
         self.progressDict = {"playerFactionName" : self.playerFactionName,
@@ -422,9 +417,9 @@ class Progress(object):
                 storages = self.universe.world.getStorageDicts()
                 planetDict = self.universe.world.planet.getPlanetDict()
                 planetDict["storages"] = storages
-                self.allPlanets[planetDict["name"]] = planetDict
+                self.planetInfos[planetDict["name"]] = planetDict
 
-        self.progressDict["allPlanets"] = self.allPlanets
+        self.progressDict["planetInfos"] = self.planetInfos
         self.progressDict["playerName"] = self.playerName
 
         self.progressDict["waitingForResponse"] = self.waitingForResponse

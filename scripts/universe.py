@@ -270,8 +270,8 @@ class Universe(object):
     def goToPlanet(self, planetName):
         print "Going to Planet ", planetName
         self.gui.hide()
-        if planetName in self.progress.allPlanets.keys():
-            planetInfo = self.progress.allPlanets[planetName]
+        if planetName in self.galaxy.getPlanetNames():
+            planetInfo = self.progress.planetInfos[planetName]
         else:
             planetInfo = None
         self.selectedPlanet = Planet(planetName, planetInfo)
@@ -406,7 +406,6 @@ class Universe(object):
         print "Research points this turn:", researchDelta
         self.faction.resources["Credits"] += cashDelta
         self.faction.resources["Research"] += researchDelta
-
 
 
     def endTurn(self):
