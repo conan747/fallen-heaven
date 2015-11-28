@@ -202,16 +202,16 @@ class Universe(object):
     def load(self):
 
 
-        saveDir = "saves/test/"
+        saveDir = "saves/"
         # self.progress = Progress(self)
         root = Tkinter.Tk()
         file = tkFileDialog.askopenfilename(parent=root,
                                         title='Select campaign to load',
                                         initialdir=saveDir,
                                         filetypes=[("Campaign", "*.cpn")])
+        root.destroy()
 
         self.campaign = Campaign(self, file)
-        root.destroy()
         self.newGame()
 
 
@@ -242,13 +242,11 @@ class Universe(object):
         self.gui.show()
 
         self.progress = self.campaign.progress # to save the progress.
-        self.faction = Faction()
-        self.faction.__setInfo__(self.progress.factionInfo)
+        self.faction = self.campaign.getPlayerFaction()
 
         # Give a freebie of 10000 credits
         if giveFreebies:
             self.faction.resources["Credits"] = 10000
-
 
         self.continueGame()
         self.gui.updateUI()
@@ -270,7 +268,7 @@ class Universe(object):
     def goToPlanet(self, planetName):
         print "Going to Planet ", planetName
         self.gui.hide()
-        if planetName in self.galaxy.getPlanetNames():
+        if planetName in self.progress.planetInfos.keys():
             planetInfo = self.progress.planetInfos[planetName]
         else:
             planetInfo = None

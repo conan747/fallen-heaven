@@ -404,12 +404,6 @@ class Progress(object):
 
     def update(self):
 
-        # Update Faction
-        faction = self.universe.faction
-
-        self.factionInfo = faction.__getInfo__()
-        self.progressDict["factionInfo"] = self.factionInfo
-
         # Update open planet:
         if self.universe.world:
             if self.universe.world.planet:
