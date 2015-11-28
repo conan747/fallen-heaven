@@ -175,7 +175,6 @@ class StrategicWorld(World):
             # self._world.construction.remove()
             if self.construction.instance:
                 self.agentLayer.deleteInstance(self.construction.instance)
-                self.construction.__del__()
             self.construction = None
             self.selectUnit(None)
 

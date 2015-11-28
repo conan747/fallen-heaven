@@ -117,7 +117,8 @@ class UnitLoader(object):
             return
 
         if buildingName not in self.buildingProps.keys():
-            return "Found no building with that buildingName!"
+            print "Found no building with that buildingName!"
+            return
         buildingProps = self.buildingProps[buildingName]
         buildingProps["unitName"] = buildingName
 

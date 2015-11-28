@@ -828,6 +828,8 @@ class World(object):
             self.cursorHandler.setCursor(self.cursorHandler.CUR_RECYCLE)
         elif self.mode == self.MODE_GET_IN:
             self.cursorHandler.setCursor(self.cursorHandler.CUR_GET_IN)
+        elif self.mode == self.MODE_BUILD:
+            return
         else:
             self.cursorHandler.setCursor(self.cursorHandler.CUR_DEFAULT)
 

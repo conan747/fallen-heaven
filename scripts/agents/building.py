@@ -246,6 +246,24 @@ class Building(Agent):
 
         self.dummyInstances=[]
 
+    def createInstance(self, location):
+        '''
+        We should remove the blocking flag.
+        :param location:
+        :return:
+        '''
+        super(Building, self).createInstance(location)
+        self.instance.setBlocking(False)
+
+    def selectInstance(self, instanceName):
+        '''
+        We should remove the blocking flag.
+        :param instanceName:
+        :return:
+        '''
+        super(Building, self).selectInstance(instanceName)
+        self.instance.setBlocking(False)
+
 
     def calculateDistance(self, location):
         iPather = fife.RoutePather()
@@ -255,6 +273,11 @@ class Building(Agent):
 
 
     def teleport(self, location):
+        '''
+        Teleports the instance to the location if possible
+        :param location: Location to which it should be teleported.
+        :return: Boolean indicated if it could teleport.
+        '''
         if self.landed:
             print "Can't teleport! Already constructed here!"
             return False
@@ -318,8 +341,6 @@ class Building(Agent):
         dummyID = "dummy_%d" % self.getFifeId()
         for y in range(self.properties["SizeX"]):
             for x in range(self.properties["SizeY"]):
-                if (x == 0) and (y == 0):
-                    continue
                 cellPos = location.getLayerCoordinates()
                 cellPos.x -= x
                 cellPos.y -= y
@@ -372,16 +393,6 @@ class Building(Agent):
 
         location = self.instance.getLocation()
         layer = location.getLayer()
-        # cellCache = layer.getCellCache()
-        #
-        # for y in range(self.properties["SizeX"]):
-        #     for x in range(self.properties["SizeY"]):
-        #         cellPos = location.getLayerCoordinates()
-        #         cellPos.x -= x
-        #         cellPos.y -= y
-        #
-        #         cell = cellCache.getCell(cellPos)
-        #         cell.setCellType(fife.CTYPE_NO_BLOCKER)
 
         while len(self.dummyInstances) != 0:
             dummy = self.dummyInstances.pop()
