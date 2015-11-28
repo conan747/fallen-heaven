@@ -396,7 +396,7 @@ class Progress(object):
 
 
         self.waitingForResponse = False
-        self.attacking = {} # list containing the "Attacking info" of the dropships of this player.
+        self.attacking = [] # list containing the "Attacking info" of the dropships of this player.
         ## Attacking will contain: {"origin": <name of the planet of origin>,
         ##                  "target": <name of the destination planet>
         ##                  "storage": <storage dictionary that this dropship has>
