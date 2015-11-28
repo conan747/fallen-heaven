@@ -280,8 +280,6 @@ class Campaign(object):
             packetOK = False
         if turn != self.turn:
             packetOK = False
-        # if factionName != self.enemy.factionName:
-        #     packetOK = False
 
         if not packetOK:
             print "Packet invalid!"
@@ -294,6 +292,8 @@ class Campaign(object):
         self.paused = False
 
         self.universe.gui.updateUI()
+
+        self.universe.applyNewTurn()
         self.saveCampaign()
 
     def getEnemy(self):

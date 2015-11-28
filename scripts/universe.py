@@ -306,7 +306,6 @@ class Universe(object):
         if self.world:
             self.world.updatePlanetAgents()
         self.campaign.saveCampaign()
-        # self.progress.save()
 
 
     def backToUniverse(self):
@@ -405,6 +404,13 @@ class Universe(object):
         self.faction.resources["Credits"] += cashDelta
         self.faction.resources["Research"] += researchDelta
 
+    def applyNewTurn(self):
+        '''
+        This gets executed when a new turn is started. It involves calculation of resources.
+        :return:
+        '''
+        self.updateResources()
+
 
     def endTurn(self):
         '''
@@ -416,7 +422,6 @@ class Universe(object):
 
         print "Skipping turn!"
 
-        self.updateResources()
         self.progress.faction = self.faction
         self.progress.save()
         self.campaign.compileYear()
@@ -424,6 +429,3 @@ class Universe(object):
         self.campaign.saveCampaign()
 
         self.gui.updateUI()
-        # dialog = InfoDialog(message="Send the automatically generated .yer file and wait for the response.",
-        #                     title= "Turn skipped.")
-        # dialog.show()
