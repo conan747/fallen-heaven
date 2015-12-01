@@ -5,7 +5,7 @@ import os
 
 from fife.extensions import pychan
 
-
+from ..combatRecorder import CombatPlayer
 
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -78,13 +78,27 @@ class TacticalHUD(HUD):
         self.widget.mapEvents({
                 'nextTurnButton' : self.world.onSkipTurnPress,
                 'attackLightButton' : self.onAttackLightPressed,
-                'attackHeavyButton' : self.onAttackHeavyPressed
+                'attackHeavyButton' : self.onAttackHeavyPressed,
+                'miniMapButton' : self.reproduceTurn
         })
 
         self.structureWidget = StructureWidget(self)
         self.unitInfoWidget = UnitInfoWidget(self)
 
         self.adjustPos()
+
+    def reproduceTurn(self):
+        '''
+        This is just a test. It should be deleted!!!!
+        :return:
+        '''
+        if self.world.combatRecorder:
+            combatRecorder = self.world.combatRecorder
+
+        turnDump = combatRecorder.dumpTurn()
+        combatRecorder.turnActions = []
+        combatPlayer = self.world.combatPlayer.reproduce(turnDump)
+
 
     def onAttackLightPressed(self):
         self.world.onAttackButtonPressed(self.LWEAPON)

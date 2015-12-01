@@ -26,7 +26,7 @@ from world import *
 
 from gui.huds import TacticalHUD
 from combat import *
-
+from combatRecorder import CombatRecorder, CombatPlayer
 
 
 
@@ -315,6 +315,10 @@ class TacticWorld(World):
 
         self.selectUnit(None)
         self.projectileGraveyard = ProjectileGraveyard(self.view.layers["TrajectoryLayer"], self.combatManager)
+
+
+        self.combatRecorder = CombatRecorder(self.universe)
+        self.combatPlayer = CombatPlayer(self.universe)
 
 
     def resetAPs(self):

@@ -262,7 +262,7 @@ class Universe(object):
         self.gui.hide()
         planetName = "firstCapital"
         #self.progress.allPlanets[planetName]
-        self.selectedPlanet = Planet(planetName, self.progress.allPlanets[planetName])
+        self.selectedPlanet = Planet(planetName, self.progress.planetInfos[planetName])
         self.startTactic()
 
     def goToPlanet(self, planetName):

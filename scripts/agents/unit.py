@@ -168,6 +168,9 @@ class Unit(Agent):
             self.world.busy = True
             self.instance.move('stand', route.getEndNode(), 5)
 
+        if self.world.combatRecorder:
+            self.world.combatRecorder.onMoved(self, location)
+
         if runAfterFinish:
             runAfterFinish()
 
@@ -211,12 +214,9 @@ class Unit(Agent):
 
             location = self.computePrecision(weapon, location)
 
-            def callback(func = self.afterAttack, weapon= weapon, location = location):
-                func(weapon, location)
-
             # Signal the combatManager
             self.world.combatManager.newCombat(self)
-            self.world.combatManager.addProjectile(self.instance.getLocation(), location, weapon=weapon, callback=callback)
+            self.shoot(location, weapon)
 
             # Reduce APs
             percentTimeUnits = weapon.properties["PercentTimeUnits"]
@@ -227,8 +227,32 @@ class Unit(Agent):
             print "Not enough APs!"
             self.playError()
 
+    def shoot(self, realLocation, weaponType):
+        '''
+        Preforms a shot at the location without computing precision. It should be called from attack or combatPlayer.attack()
+        :param realLocation: Location where the projectile will travel.
+        :param weapon: The weapon that was used.
+        :return:
+        '''
+        if weaponType == self.LWEAPON:
+            weapon = self.lightWeapon
+        else:
+            weapon = self.heavyWeapon
+
+
+        def callback(func = self.afterAttack, weapon= weapon, location = realLocation):
+                func(weapon, location)
+
+        self.world.combatManager.addProjectile(self.instance.getLocation(), realLocation, weapon=weapon, callback=callback)
+        if self.world.combatRecorder:
+            self.world.combatRecorder.onAttack(self, realLocation, weaponType)
+
+
     def afterAttack(self, weapon, location):
         weapon.fire(location)
+
+        if self.world.combatPlayer:
+            self.world.combatPlayer.carryOn()
 
     def computePrecision(self, weapon, location):
         '''

@@ -68,6 +68,9 @@ class WorldListener(fife.IKeyListener, fife.IMouseListener):
         self._cellSelectionRenderer = None
         self.unitManager = None
 
+        self.combatPlayer = None
+        self.combatRecorder = None
+
         self._lastmousepos = (0.0, 0.0)
 
     def attach(self):

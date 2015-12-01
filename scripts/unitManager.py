@@ -86,6 +86,12 @@ class UnitManager(object):
 
         if argument in self.getFifeIds():
             return self.fife2Agent[argument]
+        elif ":" in argument:
+            # This means that we are looking for a "agentName" instead of a fifeID
+            print "Looking for %s in unit names." % argument
+            for agent in self.getAgents():
+                if argument== agent.agentName:
+                    return agent
         else:
             parentID = [key for key, value in self.dummyIDs.items() \
                       if argument in value]
