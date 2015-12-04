@@ -325,9 +325,9 @@ class CombatPlayer(object):
 
         unitName = inStorageID.split(":")[1]
         unit = self.universe.world.unitLoader.createUnit(unitName)
+        self.universe.world.unitManager.addAgent(unit, location)
+        unit.instance.setId(action.agentID)
         unit.agentName = action.agentID
-        unit.createInstance(location)
-        unit.instance.setId(unit.agentName)
 
         # Generate an instance for the unit.
         instanceID = unit.instance.getFifeId()

@@ -134,7 +134,7 @@ class TacticListener(WorldListener):
 
 
         # Generate an instance for the unit.
-        unit.createInstance(clickLocation)
+        self._world.unitManager.addAgent(unit, clickLocation)
 
         ## Record the deploying on combatRecorder.
         if self._world.combatRecorder:
