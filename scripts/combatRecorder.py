@@ -207,6 +207,7 @@ class CombatRecorder(object):
 class CombatPlayer(object):
     '''
     This class is able to read the turnActions message and reproduce the turn.
+    World.pump() should call the reproduce method
     '''
 
     def __init__(self, universe, turnMessages=None):
@@ -216,6 +217,12 @@ class CombatPlayer(object):
 
         self.turnMessages = None
         self.reproducing = False
+        self.paused = False
+        self.waiting = False
+        self.continueTime = 0
+
+        # Handle time
+        self.timer = self.universe._engine.getTimeManager()
 
         if turnMessages:
             self.turnMessages = turnMessages
@@ -227,19 +234,15 @@ class CombatPlayer(object):
             self.reproducing = False
             self.universe.world.combatRecorder.recording = True
         else:
-            self.reproduce()
+            self.continueTime = self.timer.getTime() + 1000 # Start after 1 second.
+            self.paused = False
 
-    def reproduce(self, turnMessages=None):
-
-        if turnMessages:
-            self.turnMessages = turnMessages
-
-        if not self.turnMessages:
-            print "Error: No turn turnMessages indicated."
+    def pump(self):
+        if (not self.reproducing) or self.paused:
             return
 
-        self.reproducing = True
-        self.universe.world.combatRecorder.recording = False
+        if self.timer.getTime() < self.continueTime:
+            return
 
         if self.turnMessages:
             message = self.turnMessages.pop(0)
@@ -248,7 +251,26 @@ class CombatPlayer(object):
                 self.carryOn()
                 return
 
+            self.paused = True
             action.execute(self)
+
+        else:
+            self.reproducing = False
+
+    def reproduce(self, turnMessages=None):
+
+        if turnMessages:
+            self.turnMessages = turnMessages
+
+        if not self.turnMessages:
+            print "Error: No turn turnMessages indicated."
+            self.paused = True
+            return
+
+        self.reproducing = True
+        self.paused = False
+        self.universe.world.combatRecorder.recording = False
+
 
     def getAgent(self, agentName):
         '''

@@ -126,6 +126,7 @@ class Agent(fife.InstanceActionListener):
         #TODO: Add here the trajectory erasing instead after run?
 
         if self.world.combatPlayer:
+            print action
             self.world.combatPlayer.carryOn()
         # if action.getId() == "explode":
         #     agent = self.world.unitManager.getAgent(instance)

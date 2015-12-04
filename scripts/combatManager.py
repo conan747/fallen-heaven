@@ -123,7 +123,7 @@ class CombatManager(object):
         self.inCombat = False
 
 
-    def next(self):
+    def pump(self):
         '''
         Handles the next thing to do.
         :return:

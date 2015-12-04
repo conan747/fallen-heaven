@@ -308,7 +308,9 @@ class TacticWorld(World):
 
     def pump(self):
         super(TacticWorld, self).pump()
-        self.combatManager.next()
+        self.combatManager.pump()
+        if self.combatPlayer:
+            self.combatPlayer.pump()
 
 
 
