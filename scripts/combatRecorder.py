@@ -3,6 +3,7 @@ __author__ = 'cos'
 
 from fife import fife
 
+import cPickle as pickle
 
 class Action(object):
     '''
@@ -83,12 +84,13 @@ class AGetIn(Action):
     '''
     Moves an agent into a storage.
     '''
-    def __init__(self, agent, storageOwner):
+    def __init__(self, agent, storageOwner, iconName):
         self.agentID = agent
         self.storageOwnerID = storageOwner
+        self.iconName = iconName
 
     def serialize(self):
-        return [self._GETIN, self.agentID, self.storageOwnerID]
+        return [self._GETIN, self.agentID, self.storageOwnerID, self.iconName]
 
     def execute(self, combatPlayer):
         combatPlayer.getIn(self)
@@ -97,13 +99,14 @@ class AGetOut(Action):
     '''
     Brings an agent out of the storage.
     '''
-    def __init__(self, agent, storageOwner, destination):
+    def __init__(self, agent, storageOwner, destination, inStorageID):
         self.agentID = agent
         self.storageOwnerID = storageOwner
         self.destination = destination
+        self.inStorageID = inStorageID
 
     def serialize(self):
-        return [self._GETOUT, self.agentID, self.storageOwnerID, self.destination]
+        return [self._GETOUT, self.agentID, self.storageOwnerID, self.destination, self.inStorageID]
 
     def execute(self, combatPlayer):
         combatPlayer.getOut(self)
@@ -153,7 +156,7 @@ class CombatRecorder(object):
         action = AAttack(agentName, destination, weaponType)
         self.turnActions.append(action)
 
-    def onGetIn(self, agent, storage):
+    def onGetIn(self, agent, storage, iconName):
         '''
         :param agent:
         :param storageOwner:
@@ -164,10 +167,10 @@ class CombatRecorder(object):
 
         agentName = agent.agentName
         storageOwner = storage.parent.agentName
-        action = AGetIn(agentName, storageOwner)
+        action = AGetIn(agentName, storageOwner, iconName)
         self.turnActions.append(action)
 
-    def onGetOut(self, agent, storage, location):
+    def onGetOut(self, agent, storage, location, inStorageID):
         '''
 
         :param agent:
@@ -180,7 +183,8 @@ class CombatRecorder(object):
         agentName = agent.agentName
         storageOwner = storage.parent.agentName
         destination = self.serializeLocation(location)
-        action = AGetOut(agentName, storageOwner, destination)
+        action = AGetOut(agentName, storageOwner, destination, inStorageID)
+        self.turnActions.append(action)
 
 
     def dumpTurn(self):
@@ -189,6 +193,14 @@ class CombatRecorder(object):
         :return:
         '''
         return [action.serialize() for action in self.turnActions]
+
+    def saveFile(self):
+        '''
+        Pickles a file with the actions.
+        :return:
+        '''
+        list = self.dumpTurn()
+        pickle.dump(list, open("saves/test.action" , 'wb'))
 
 
 
@@ -266,7 +278,44 @@ class CombatPlayer(object):
         agent.shoot(location, action.weaponType)
 
 
+    def getIn(self, action):
+        agent = self.getAgent(action.agentID)
+        storageOwner = self.getAgent(action.storageOwnerID)
+        storage = storageOwner.storage
+        iconName = action.iconName
 
+        if storage.addUnit(agent, iconName):
+            ## storage added correctly -> remove unit from the map.
+            agent.die()
 
-        
+        self.carryOn()
 
+    def getOut(self, action):
+
+        storageOwner = self.getAgent(action.storageOwnerID)
+
+        storage = storageOwner.storage
+        inStorageID = action.inStorageID
+
+        location = storageOwner.instance.getLocation()
+        point = fife.Point3D(*action.destination)
+        location.setLayerCoordinates(point)
+
+        unitName = inStorageID.split(":")[1]
+        unit = self.universe.world.unitLoader.createUnit(unitName)
+        unit.agentName = action.agentID
+        unit.createInstance(location)
+        unit.instance.setId(unit.agentName)
+
+        # Generate an instance for the unit.
+        instanceID = unit.instance.getFifeId()
+        faction = unit.properties["faction"]
+        self.universe.world.factionUnits[faction].append(instanceID)
+        self.universe.world.view.addPathVisual(unit.instance)
+        storage.unitDeployed(inStorageID)
+
+        self.carryOn()
+
+    def loadActions(self):
+        list = pickle.load(open("saves/test.action" , 'r'))
+        self.reproduce(list)

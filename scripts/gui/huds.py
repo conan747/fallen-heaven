@@ -79,13 +79,17 @@ class TacticalHUD(HUD):
                 'nextTurnButton' : self.world.onSkipTurnPress,
                 'attackLightButton' : self.onAttackLightPressed,
                 'attackHeavyButton' : self.onAttackHeavyPressed,
-                'miniMapButton' : self.reproduceTurn
+                'miniMapButton' : self.reproduceTurn,
+                "overwatchHeavyButton" : self.loadAndPlay
         })
 
         self.structureWidget = StructureWidget(self)
         self.unitInfoWidget = UnitInfoWidget(self)
 
         self.adjustPos()
+
+    def loadAndPlay(self):
+        combatPlayer = self.world.combatPlayer.loadActions()
 
     def reproduceTurn(self):
         '''
@@ -94,10 +98,11 @@ class TacticalHUD(HUD):
         '''
         if self.world.combatRecorder:
             combatRecorder = self.world.combatRecorder
-
-        turnDump = combatRecorder.dumpTurn()
-        combatRecorder.turnActions = []
-        combatPlayer = self.world.combatPlayer.reproduce(turnDump)
+        combatRecorder.saveFile()
+        #
+        # turnDump = combatRecorder.dumpTurn()
+        # combatRecorder.turnActions = []
+        # combatPlayer = self.world.combatPlayer.reproduce(turnDump)
 
 
     def onAttackLightPressed(self):

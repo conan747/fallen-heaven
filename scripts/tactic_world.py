@@ -132,7 +132,16 @@ class TacticListener(WorldListener):
             self.cancelDeploy()
             return
 
+
         # Generate an instance for the unit.
+        unit.createInstance(clickLocation)
+
+        ## Record the deploying on combatRecorder.
+        if self._world.combatRecorder:
+            storage = self._world.storage
+            self._world.combatRecorder.onGetOut(unit, storage, clickLocation, storage.deployingID)
+
+
         instanceID = unit.instance.getFifeId()
         faction = unit.properties["faction"]
         self._world.factionUnits[faction].append(instanceID)
@@ -221,8 +230,11 @@ class TacticListener(WorldListener):
                         ##HACK: only accept on dropships
                         if clickedAgent.properties["StructureCategory"] == "Dropship":
                             if self.canGetToPerimeter(activeUnit, clickedAgent):
-                                if storage.addUnit(activeUnit):
+                                iconId = storage.addUnit(activeUnit)
+                                if iconId:
                                     ## storage added correctly -> remove unit from the map.
+                                    if self._world.combatRecorder:
+                                        self._world.combatRecorder.onGetIn(activeUnit, storage, iconId)
                                     activeUnit.die() #TODO: This shouldn't be die.
                                     self._world.selectUnit(None)
 

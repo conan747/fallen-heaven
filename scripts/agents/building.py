@@ -114,23 +114,24 @@ class Storage(object):
         else:
             print "Not enough Credits!"
 
-    def addUnit(self, unit):
+    def addUnit(self, unit, iconName=None):
         '''
         Adds a unit into this storage.
         :param unit: Unit object to be added.
-        :return: boolean if it succedes.
+        :return: iconName if it succedes, else False.
         '''
         #TODO: Check if this storage accepts this units.
         if len(self.unitsReady) == self.storageSize:
             print "Storage is full!"
             return False
             ## Give feedback of why it didn't work!
-        unitName = unit.agentName
-        prefix = uuid.uuid4().int
-        iconName = str(prefix)+':'+ unitName
+        if not iconName:
+            unitName = unit.agentName
+            prefix = uuid.uuid4().int
+            iconName = str(prefix)+':'+ unitName
         self.unitsReady.append(iconName)
         self.updateUI()
-        return True
+        return iconName
 
 
 
@@ -163,8 +164,9 @@ class Storage(object):
         print "Deploying unit", unitName
 
 
-    def unitDeployed(self):
-        unitName = self.deployingID
+    def unitDeployed(self, unitName=None):
+        if not unitName:
+            unitName = self.deployingID
         self.unitsReady.remove(unitName)
 
         self.deployingID = None

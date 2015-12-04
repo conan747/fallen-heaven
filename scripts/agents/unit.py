@@ -216,7 +216,7 @@ class Unit(Agent):
 
             # Signal the combatManager
             self.world.combatManager.newCombat(self)
-            self.shoot(location, weapon)
+            self.shoot(location, weaponType)
 
             # Reduce APs
             percentTimeUnits = weapon.properties["PercentTimeUnits"]
@@ -246,6 +246,13 @@ class Unit(Agent):
         self.world.combatManager.addProjectile(self.instance.getLocation(), realLocation, weapon=weapon, callback=callback)
         if self.world.combatRecorder:
             self.world.combatRecorder.onAttack(self, realLocation, weaponType)
+
+
+        # Reduce APs # Activate this if necessary.
+        if False:
+            percentTimeUnits = weapon.properties["PercentTimeUnits"]
+            deducing = percentTimeUnits * self.properties["TimeUnits"] / 100
+            self.AP -= deducing
 
 
     def afterAttack(self, weapon, location):
