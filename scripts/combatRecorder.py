@@ -221,6 +221,8 @@ class CombatPlayer(object):
         self.waiting = False
         self.continueTime = 0
 
+        self.view = self.universe.world.view
+
         # Handle time
         self.timer = self.universe._engine.getTimeManager()
 
@@ -280,6 +282,11 @@ class CombatPlayer(object):
         '''
         return self.unitManager.getAgent(agentName)
 
+
+    def moveCam2Location(self, location):
+        self.view.moveCam2Location(location)
+
+
     def move(self, action):
 
         agent = self.getAgent(action.agentID)
@@ -288,6 +295,7 @@ class CombatPlayer(object):
         location = agent.instance.getLocation()
         point = fife.Point3D(*action.destination)
         location.setLayerCoordinates(point)
+        self.moveCam2Location(location)
         agent.run(location)
 
     def attack(self, action):
@@ -297,6 +305,8 @@ class CombatPlayer(object):
         point = fife.Point3D(*action.destination)
         location.setLayerCoordinates(point)
 
+        self.moveCam2Location(location)
+
         agent.shoot(location, action.weaponType)
 
 
@@ -305,6 +315,9 @@ class CombatPlayer(object):
         storageOwner = self.getAgent(action.storageOwnerID)
         storage = storageOwner.storage
         iconName = action.iconName
+        location = agent.instance.getLocation()
+
+        self.moveCam2Location(location)
 
         if storage.addUnit(agent, iconName):
             ## storage added correctly -> remove unit from the map.
@@ -335,6 +348,8 @@ class CombatPlayer(object):
         self.universe.world.factionUnits[faction].append(instanceID)
         self.universe.world.view.addPathVisual(unit.instance)
         storage.unitDeployed(inStorageID)
+
+        self.moveCam2Location(location)
 
         self.carryOn()
 

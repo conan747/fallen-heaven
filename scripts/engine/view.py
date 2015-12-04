@@ -145,6 +145,13 @@ class View(object):
         renderer.setEnabled(True)
 
 
+    def moveCam2Location(self, location):
+        '''
+        Moves the camera to the given location
+        :param location:
+        :return:
+        '''
+        self.cam.setLocation(location)
 
     def moveCamera(self, speedVector):
         ''' Checks if the mouse is on the edge of the screen and moves the camera accordingly'''
